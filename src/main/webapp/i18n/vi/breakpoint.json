@@ -1,0 +1,29 @@
+{
+  "amrInterpreationApp": {
+    "breakpoint": {
+      "home": {
+        "title": "Breakpoints",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Breakpoint",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Breakpoint",
+        "notFound": "No Breakpoints found"
+      },
+      "created": "Một Breakpoint mới được tạo với định danh {{ param }}",
+      "updated": "Một Breakpoint cập nhật với định danh {{ param }}",
+      "deleted": "Một Breakpoint đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Breakpoint {{ id }}?"
+      },
+      "detail": {
+        "title": "Breakpoint"
+      },
+      "id": "ID",
+      "path": "Path",
+      "query": "Query",
+      "antibioticQuery": "Antibiotic Query",
+      "organismQuery": "Organism Query",
+      "intrinsicResistanceQuery": "Intrinsic Resistance Query",
+      "binaryData": "Binary Data"
+    }
+  }
+}

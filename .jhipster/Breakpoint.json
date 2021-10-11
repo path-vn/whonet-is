@@ -1,0 +1,37 @@
+{
+  "fields": [
+    {
+      "fieldName": "path",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "query",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "antibioticQuery",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "organismQuery",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "intrinsicResistanceQuery",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "binaryData",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "any"
+    }
+  ],
+  "relationships": [],
+  "service": "serviceImpl",
+  "dto": "mapstruct",
+  "jpaMetamodelFiltering": true,
+  "readOnly": false,
+  "pagination": "pagination",
+  "name": "Breakpoint",
+  "changelogDate": "20211011080118"
+}

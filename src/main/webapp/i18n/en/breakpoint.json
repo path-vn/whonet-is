@@ -1,0 +1,29 @@
+{
+  "amrInterpreationApp": {
+    "breakpoint": {
+      "home": {
+        "title": "Breakpoints",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Breakpoint",
+        "createOrEditLabel": "Create or edit a Breakpoint",
+        "notFound": "No Breakpoints found"
+      },
+      "created": "A new Breakpoint is created with identifier {{ param }}",
+      "updated": "A Breakpoint is updated with identifier {{ param }}",
+      "deleted": "A Breakpoint is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Breakpoint {{ id }}?"
+      },
+      "detail": {
+        "title": "Breakpoint"
+      },
+      "id": "ID",
+      "path": "Path",
+      "query": "Query",
+      "antibioticQuery": "Antibiotic Query",
+      "organismQuery": "Organism Query",
+      "intrinsicResistanceQuery": "Intrinsic Resistance Query",
+      "binaryData": "Binary Data"
+    }
+  }
+}
