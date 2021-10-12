@@ -35,8 +35,8 @@ class BreakpointResourceIT {
     private static final String DEFAULT_GUIDELINES = "AAAAAAAAAA";
     private static final String UPDATED_GUIDELINES = "BBBBBBBBBB";
 
-    private static final String DEFAULT_YEAR = "AAAAAAAAAA";
-    private static final String UPDATED_YEAR = "BBBBBBBBBB";
+    private static final Integer DEFAULT_YEAR = 2020;
+    private static final Integer UPDATED_YEAR = 2020;
 
     private static final String DEFAULT_TEST_METHOD = "AAAAAAAAAA";
     private static final String UPDATED_TEST_METHOD = "BBBBBBBBBB";

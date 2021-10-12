@@ -28,7 +28,7 @@ public class BreakpointCriteria implements Serializable, Criteria {
 
     private StringFilter guidelines;
 
-    private StringFilter year;
+    private IntegerFilter year;
 
     private StringFilter testMethod;
 
@@ -130,18 +130,18 @@ public class BreakpointCriteria implements Serializable, Criteria {
         this.guidelines = guidelines;
     }
 
-    public StringFilter getYear() {
+    public IntegerFilter getYear() {
         return year;
     }
 
-    public StringFilter year() {
+    public IntegerFilter year() {
         if (year == null) {
-            year = new StringFilter();
+            year = new IntegerFilter();
         }
         return year;
     }
 
-    public void setYear(StringFilter year) {
+    public void setYear(IntegerFilter year) {
         this.year = year;
     }
 

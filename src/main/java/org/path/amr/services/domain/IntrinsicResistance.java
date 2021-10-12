@@ -19,37 +19,37 @@ public class IntrinsicResistance implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "guideline")
+    @Column(name = "guideline", columnDefinition = "TEXT")
     private String guideline;
 
-    @Column(name = "reference_table")
+    @Column(name = "reference_table", columnDefinition = "TEXT")
     private String referenceTable;
 
-    @Column(name = "organism_code")
+    @Column(name = "organism_code", columnDefinition = "TEXT")
     private String organismCode;
 
-    @Column(name = "organism_code_type")
+    @Column(name = "organism_code_type", columnDefinition = "TEXT")
     private String organismCodeType;
 
-    @Column(name = "exception_organism_code")
+    @Column(name = "exception_organism_code", columnDefinition = "TEXT")
     private String exceptionOrganismCode;
 
-    @Column(name = "exception_organism_code_type")
+    @Column(name = "exception_organism_code_type", columnDefinition = "TEXT")
     private String exceptionOrganismCodeType;
 
-    @Column(name = "abx_code")
+    @Column(name = "abx_code", columnDefinition = "TEXT")
     private String abxCode;
 
-    @Column(name = "abx_code_type")
+    @Column(name = "abx_code_type", columnDefinition = "TEXT")
     private String abxCodeType;
 
-    @Column(name = "date_entered")
+    @Column(name = "date_entered", columnDefinition = "TEXT")
     private String dateEntered;
 
-    @Column(name = "date_modified")
+    @Column(name = "date_modified", columnDefinition = "TEXT")
     private String dateModified;
 
-    @Column(name = "comments")
+    @Column(name = "comments", columnDefinition = "TEXT")
     private String comments;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

@@ -90,7 +90,7 @@ public class BreakpointQueryService extends QueryService<Breakpoint> {
                 specification = specification.and(buildStringSpecification(criteria.getGuidelines(), Breakpoint_.guidelines));
             }
             if (criteria.getYear() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getYear(), Breakpoint_.year));
+                specification = specification.and(buildRangeSpecification(criteria.getYear(), Breakpoint_.year));
             }
             if (criteria.getTestMethod() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getTestMethod(), Breakpoint_.testMethod));
