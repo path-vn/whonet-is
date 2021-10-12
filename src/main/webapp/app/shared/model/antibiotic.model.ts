@@ -1,0 +1,43 @@
+export interface IAntibiotic {
+  id?: number;
+  whonetAbxCode?: string | null;
+  whoCode?: string | null;
+  dinCode?: string | null;
+  jacCode?: string | null;
+  eucastCode?: string | null;
+  userCode?: string | null;
+  antibiotic?: string | null;
+  guidelines?: string | null;
+  clsi?: string | null;
+  eucast?: string | null;
+  sfm?: string | null;
+  srga?: string | null;
+  bsac?: string | null;
+  din?: string | null;
+  neo?: string | null;
+  afa?: string | null;
+  abxNumber?: string | null;
+  potency?: string | null;
+  atcCode?: string | null;
+  profClass?: string | null;
+  ciaCategory?: string | null;
+  clsiOrder?: string | null;
+  eucastOrder?: string | null;
+  human?: string | null;
+  veterinary?: string | null;
+  animalGp?: string | null;
+  loinccomp?: string | null;
+  loincgen?: string | null;
+  loincdisk?: string | null;
+  loincmic?: string | null;
+  loincetest?: string | null;
+  loincslow?: string | null;
+  loincafb?: string | null;
+  loincsbt?: string | null;
+  loincmlc?: string | null;
+  dateEntered?: string | null;
+  dateModified?: string | null;
+  comments?: string | null;
+}
+
+export const defaultValue: Readonly<IAntibiotic> = {};

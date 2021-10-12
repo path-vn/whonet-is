@@ -49,6 +49,9 @@ public class CacheConfiguration {
             createCache(cm, org.path.amr.services.domain.Authority.class.getName());
             createCache(cm, org.path.amr.services.domain.User.class.getName() + ".authorities");
             createCache(cm, org.path.amr.services.domain.Breakpoint.class.getName());
+            createCache(cm, org.path.amr.services.domain.Antibiotic.class.getName());
+            createCache(cm, org.path.amr.services.domain.IntrinsicResistance.class.getName());
+            createCache(cm, org.path.amr.services.domain.Organism.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

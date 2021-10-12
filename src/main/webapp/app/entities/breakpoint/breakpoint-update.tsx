@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Row, Col, Label } from 'reactstrap';
 import { AvFeedback, AvForm, AvGroup, AvInput, AvField } from 'availity-reactstrap-validation';
-import { setFileData, openFile, byteSize, Translate, translate } from 'react-jhipster';
+import { Translate, translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IRootState } from 'app/shared/reducers';
 
-import { getEntity, updateEntity, createEntity, setBlob, reset } from './breakpoint.reducer';
+import { getEntity, updateEntity, createEntity, reset } from './breakpoint.reducer';
 import { IBreakpoint } from 'app/shared/model/breakpoint.model';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { mapIdList } from 'app/shared/util/entity-utils';
@@ -18,8 +18,6 @@ export const BreakpointUpdate = (props: IBreakpointUpdateProps) => {
   const [isNew] = useState(!props.match.params || !props.match.params.id);
 
   const { breakpointEntity, loading, updating } = props;
-
-  const { binaryData, binaryDataContentType } = breakpointEntity;
 
   const handleClose = () => {
     props.history.push('/breakpoint' + props.location.search);
@@ -32,14 +30,6 @@ export const BreakpointUpdate = (props: IBreakpointUpdateProps) => {
       props.getEntity(props.match.params.id);
     }
   }, []);
-
-  const onBlobChange = (isAnImage, name) => event => {
-    setFileData(event, (contentType, data) => props.setBlob(name, data, contentType), isAnImage);
-  };
-
-  const clearBlob = name => () => {
-    props.setBlob(name, undefined, undefined);
-  };
 
   useEffect(() => {
     if (props.updateSuccess) {
@@ -86,71 +76,130 @@ export const BreakpointUpdate = (props: IBreakpointUpdateProps) => {
                 </AvGroup>
               ) : null}
               <AvGroup>
-                <Label id="pathLabel" for="breakpoint-path">
-                  <Translate contentKey="amrInterpreationApp.breakpoint.path">Path</Translate>
+                <Label id="guidelinesLabel" for="breakpoint-guidelines">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.guidelines">Guidelines</Translate>
                 </Label>
-                <AvField id="breakpoint-path" data-cy="path" type="text" name="path" />
+                <AvField id="breakpoint-guidelines" data-cy="guidelines" type="text" name="guidelines" />
               </AvGroup>
               <AvGroup>
-                <Label id="queryLabel" for="breakpoint-query">
-                  <Translate contentKey="amrInterpreationApp.breakpoint.query">Query</Translate>
+                <Label id="yearLabel" for="breakpoint-year">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.year">Year</Translate>
                 </Label>
-                <AvField id="breakpoint-query" data-cy="query" type="text" name="query" />
+                <AvField id="breakpoint-year" data-cy="year" type="text" name="year" />
               </AvGroup>
               <AvGroup>
-                <Label id="antibioticQueryLabel" for="breakpoint-antibioticQuery">
-                  <Translate contentKey="amrInterpreationApp.breakpoint.antibioticQuery">Antibiotic Query</Translate>
+                <Label id="testMethodLabel" for="breakpoint-testMethod">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.testMethod">Test Method</Translate>
                 </Label>
-                <AvField id="breakpoint-antibioticQuery" data-cy="antibioticQuery" type="text" name="antibioticQuery" />
+                <AvField id="breakpoint-testMethod" data-cy="testMethod" type="text" name="testMethod" />
               </AvGroup>
               <AvGroup>
-                <Label id="organismQueryLabel" for="breakpoint-organismQuery">
-                  <Translate contentKey="amrInterpreationApp.breakpoint.organismQuery">Organism Query</Translate>
+                <Label id="potencyLabel" for="breakpoint-potency">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.potency">Potency</Translate>
                 </Label>
-                <AvField id="breakpoint-organismQuery" data-cy="organismQuery" type="text" name="organismQuery" />
+                <AvField id="breakpoint-potency" data-cy="potency" type="text" name="potency" />
               </AvGroup>
               <AvGroup>
-                <Label id="intrinsicResistanceQueryLabel" for="breakpoint-intrinsicResistanceQuery">
-                  <Translate contentKey="amrInterpreationApp.breakpoint.intrinsicResistanceQuery">Intrinsic Resistance Query</Translate>
+                <Label id="organismCodeLabel" for="breakpoint-organismCode">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.organismCode">Organism Code</Translate>
                 </Label>
-                <AvField
-                  id="breakpoint-intrinsicResistanceQuery"
-                  data-cy="intrinsicResistanceQuery"
-                  type="text"
-                  name="intrinsicResistanceQuery"
-                />
+                <AvField id="breakpoint-organismCode" data-cy="organismCode" type="text" name="organismCode" />
               </AvGroup>
               <AvGroup>
-                <AvGroup>
-                  <Label id="binaryDataLabel" for="binaryData">
-                    <Translate contentKey="amrInterpreationApp.breakpoint.binaryData">Binary Data</Translate>
-                  </Label>
-                  <br />
-                  {binaryData ? (
-                    <div>
-                      {binaryDataContentType ? (
-                        <a onClick={openFile(binaryDataContentType, binaryData)}>
-                          <Translate contentKey="entity.action.open">Open</Translate>
-                        </a>
-                      ) : null}
-                      <br />
-                      <Row>
-                        <Col md="11">
-                          <span>
-                            {binaryDataContentType}, {byteSize(binaryData)}
-                          </span>
-                        </Col>
-                        <Col md="1">
-                          <Button color="danger" onClick={clearBlob('binaryData')}>
-                            <FontAwesomeIcon icon="times-circle" />
-                          </Button>
-                        </Col>
-                      </Row>
-                    </div>
-                  ) : null}
-                  <input id="file_binaryData" data-cy="binaryData" type="file" onChange={onBlobChange(false, 'binaryData')} />
-                  <AvInput type="hidden" name="binaryData" value={binaryData} />
-                </AvGroup>
+                <Label id="organismCodeTypeLabel" for="breakpoint-organismCodeType">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.organismCodeType">Organism Code Type</Translate>
+                </Label>
+                <AvField id="breakpoint-organismCodeType" data-cy="organismCodeType" type="text" name="organismCodeType" />
+              </AvGroup>
+              <AvGroup>
+                <Label id="breakpointTypeLabel" for="breakpoint-breakpointType">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.breakpointType">Breakpoint Type</Translate>
+                </Label>
+                <AvField id="breakpoint-breakpointType" data-cy="breakpointType" type="text" name="breakpointType" />
+              </AvGroup>
+              <AvGroup>
+                <Label id="hostLabel" for="breakpoint-host">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.host">Host</Translate>
+                </Label>
+                <AvField id="breakpoint-host" data-cy="host" type="text" name="host" />
+              </AvGroup>
+              <AvGroup>
+                <Label id="siteOfInfectionLabel" for="breakpoint-siteOfInfection">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.siteOfInfection">Site Of Infection</Translate>
+                </Label>
+                <AvField id="breakpoint-siteOfInfection" data-cy="siteOfInfection" type="text" name="siteOfInfection" />
+              </AvGroup>
+              <AvGroup>
+                <Label id="referenceTableLabel" for="breakpoint-referenceTable">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.referenceTable">Reference Table</Translate>
+                </Label>
+                <AvField id="breakpoint-referenceTable" data-cy="referenceTable" type="text" name="referenceTable" />
+              </AvGroup>
+              <AvGroup>
+                <Label id="referenceSequenceLabel" for="breakpoint-referenceSequence">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.referenceSequence">Reference Sequence</Translate>
+                </Label>
+                <AvField id="breakpoint-referenceSequence" data-cy="referenceSequence" type="text" name="referenceSequence" />
+              </AvGroup>
+              <AvGroup>
+                <Label id="whonetAbxCodeLabel" for="breakpoint-whonetAbxCode">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.whonetAbxCode">Whonet Abx Code</Translate>
+                </Label>
+                <AvField id="breakpoint-whonetAbxCode" data-cy="whonetAbxCode" type="text" name="whonetAbxCode" />
+              </AvGroup>
+              <AvGroup>
+                <Label id="whonetTestLabel" for="breakpoint-whonetTest">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.whonetTest">Whonet Test</Translate>
+                </Label>
+                <AvField id="breakpoint-whonetTest" data-cy="whonetTest" type="text" name="whonetTest" />
+              </AvGroup>
+              <AvGroup>
+                <Label id="rLabel" for="breakpoint-r">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.r">R</Translate>
+                </Label>
+                <AvField id="breakpoint-r" data-cy="r" type="text" name="r" />
+              </AvGroup>
+              <AvGroup>
+                <Label id="iLabel" for="breakpoint-i">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.i">I</Translate>
+                </Label>
+                <AvField id="breakpoint-i" data-cy="i" type="text" name="i" />
+              </AvGroup>
+              <AvGroup>
+                <Label id="sddLabel" for="breakpoint-sdd">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.sdd">Sdd</Translate>
+                </Label>
+                <AvField id="breakpoint-sdd" data-cy="sdd" type="text" name="sdd" />
+              </AvGroup>
+              <AvGroup>
+                <Label id="sLabel" for="breakpoint-s">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.s">S</Translate>
+                </Label>
+                <AvField id="breakpoint-s" data-cy="s" type="text" name="s" />
+              </AvGroup>
+              <AvGroup>
+                <Label id="ecvEcoffLabel" for="breakpoint-ecvEcoff">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.ecvEcoff">Ecv Ecoff</Translate>
+                </Label>
+                <AvField id="breakpoint-ecvEcoff" data-cy="ecvEcoff" type="text" name="ecvEcoff" />
+              </AvGroup>
+              <AvGroup>
+                <Label id="dateEnteredLabel" for="breakpoint-dateEntered">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.dateEntered">Date Entered</Translate>
+                </Label>
+                <AvField id="breakpoint-dateEntered" data-cy="dateEntered" type="text" name="dateEntered" />
+              </AvGroup>
+              <AvGroup>
+                <Label id="dateModifiedLabel" for="breakpoint-dateModified">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.dateModified">Date Modified</Translate>
+                </Label>
+                <AvField id="breakpoint-dateModified" data-cy="dateModified" type="text" name="dateModified" />
+              </AvGroup>
+              <AvGroup>
+                <Label id="commentsLabel" for="breakpoint-comments">
+                  <Translate contentKey="amrInterpreationApp.breakpoint.comments">Comments</Translate>
+                </Label>
+                <AvField id="breakpoint-comments" data-cy="comments" type="text" name="comments" />
               </AvGroup>
               <Button tag={Link} id="cancel-save" to="/breakpoint" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
@@ -183,7 +232,6 @@ const mapStateToProps = (storeState: IRootState) => ({
 const mapDispatchToProps = {
   getEntity,
   updateEntity,
-  setBlob,
   createEntity,
   reset,
 };

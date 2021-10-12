@@ -2,7 +2,6 @@ package org.path.amr.services.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Lob;
 
 /**
  * A DTO for the {@link org.path.amr.services.domain.Breakpoint} entity.
@@ -11,20 +10,47 @@ public class BreakpointDTO implements Serializable {
 
     private Long id;
 
-    private String path;
+    private String guidelines;
 
-    private String query;
+    private String year;
 
-    private String antibioticQuery;
+    private String testMethod;
 
-    private String organismQuery;
+    private String potency;
 
-    private String intrinsicResistanceQuery;
+    private String organismCode;
 
-    @Lob
-    private byte[] binaryData;
+    private String organismCodeType;
 
-    private String binaryDataContentType;
+    private String breakpointType;
+
+    private String host;
+
+    private String siteOfInfection;
+
+    private String referenceTable;
+
+    private String referenceSequence;
+
+    private String whonetAbxCode;
+
+    private String whonetTest;
+
+    private String r;
+
+    private String i;
+
+    private String sdd;
+
+    private String s;
+
+    private String ecvEcoff;
+
+    private String dateEntered;
+
+    private String dateModified;
+
+    private String comments;
 
     public Long getId() {
         return id;
@@ -34,60 +60,172 @@ public class BreakpointDTO implements Serializable {
         this.id = id;
     }
 
-    public String getPath() {
-        return path;
+    public String getGuidelines() {
+        return guidelines;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setGuidelines(String guidelines) {
+        this.guidelines = guidelines;
     }
 
-    public String getQuery() {
-        return query;
+    public String getYear() {
+        return year;
     }
 
-    public void setQuery(String query) {
-        this.query = query;
+    public void setYear(String year) {
+        this.year = year;
     }
 
-    public String getAntibioticQuery() {
-        return antibioticQuery;
+    public String getTestMethod() {
+        return testMethod;
     }
 
-    public void setAntibioticQuery(String antibioticQuery) {
-        this.antibioticQuery = antibioticQuery;
+    public void setTestMethod(String testMethod) {
+        this.testMethod = testMethod;
     }
 
-    public String getOrganismQuery() {
-        return organismQuery;
+    public String getPotency() {
+        return potency;
     }
 
-    public void setOrganismQuery(String organismQuery) {
-        this.organismQuery = organismQuery;
+    public void setPotency(String potency) {
+        this.potency = potency;
     }
 
-    public String getIntrinsicResistanceQuery() {
-        return intrinsicResistanceQuery;
+    public String getOrganismCode() {
+        return organismCode;
     }
 
-    public void setIntrinsicResistanceQuery(String intrinsicResistanceQuery) {
-        this.intrinsicResistanceQuery = intrinsicResistanceQuery;
+    public void setOrganismCode(String organismCode) {
+        this.organismCode = organismCode;
     }
 
-    public byte[] getBinaryData() {
-        return binaryData;
+    public String getOrganismCodeType() {
+        return organismCodeType;
     }
 
-    public void setBinaryData(byte[] binaryData) {
-        this.binaryData = binaryData;
+    public void setOrganismCodeType(String organismCodeType) {
+        this.organismCodeType = organismCodeType;
     }
 
-    public String getBinaryDataContentType() {
-        return binaryDataContentType;
+    public String getBreakpointType() {
+        return breakpointType;
     }
 
-    public void setBinaryDataContentType(String binaryDataContentType) {
-        this.binaryDataContentType = binaryDataContentType;
+    public void setBreakpointType(String breakpointType) {
+        this.breakpointType = breakpointType;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getSiteOfInfection() {
+        return siteOfInfection;
+    }
+
+    public void setSiteOfInfection(String siteOfInfection) {
+        this.siteOfInfection = siteOfInfection;
+    }
+
+    public String getReferenceTable() {
+        return referenceTable;
+    }
+
+    public void setReferenceTable(String referenceTable) {
+        this.referenceTable = referenceTable;
+    }
+
+    public String getReferenceSequence() {
+        return referenceSequence;
+    }
+
+    public void setReferenceSequence(String referenceSequence) {
+        this.referenceSequence = referenceSequence;
+    }
+
+    public String getWhonetAbxCode() {
+        return whonetAbxCode;
+    }
+
+    public void setWhonetAbxCode(String whonetAbxCode) {
+        this.whonetAbxCode = whonetAbxCode;
+    }
+
+    public String getWhonetTest() {
+        return whonetTest;
+    }
+
+    public void setWhonetTest(String whonetTest) {
+        this.whonetTest = whonetTest;
+    }
+
+    public String getR() {
+        return r;
+    }
+
+    public void setR(String r) {
+        this.r = r;
+    }
+
+    public String getI() {
+        return i;
+    }
+
+    public void setI(String i) {
+        this.i = i;
+    }
+
+    public String getSdd() {
+        return sdd;
+    }
+
+    public void setSdd(String sdd) {
+        this.sdd = sdd;
+    }
+
+    public String getS() {
+        return s;
+    }
+
+    public void setS(String s) {
+        this.s = s;
+    }
+
+    public String getEcvEcoff() {
+        return ecvEcoff;
+    }
+
+    public void setEcvEcoff(String ecvEcoff) {
+        this.ecvEcoff = ecvEcoff;
+    }
+
+    public String getDateEntered() {
+        return dateEntered;
+    }
+
+    public void setDateEntered(String dateEntered) {
+        this.dateEntered = dateEntered;
+    }
+
+    public String getDateModified() {
+        return dateModified;
+    }
+
+    public void setDateModified(String dateModified) {
+        this.dateModified = dateModified;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     @Override
@@ -116,12 +254,27 @@ public class BreakpointDTO implements Serializable {
     public String toString() {
         return "BreakpointDTO{" +
             "id=" + getId() +
-            ", path='" + getPath() + "'" +
-            ", query='" + getQuery() + "'" +
-            ", antibioticQuery='" + getAntibioticQuery() + "'" +
-            ", organismQuery='" + getOrganismQuery() + "'" +
-            ", intrinsicResistanceQuery='" + getIntrinsicResistanceQuery() + "'" +
-            ", binaryData='" + getBinaryData() + "'" +
+            ", guidelines='" + getGuidelines() + "'" +
+            ", year='" + getYear() + "'" +
+            ", testMethod='" + getTestMethod() + "'" +
+            ", potency='" + getPotency() + "'" +
+            ", organismCode='" + getOrganismCode() + "'" +
+            ", organismCodeType='" + getOrganismCodeType() + "'" +
+            ", breakpointType='" + getBreakpointType() + "'" +
+            ", host='" + getHost() + "'" +
+            ", siteOfInfection='" + getSiteOfInfection() + "'" +
+            ", referenceTable='" + getReferenceTable() + "'" +
+            ", referenceSequence='" + getReferenceSequence() + "'" +
+            ", whonetAbxCode='" + getWhonetAbxCode() + "'" +
+            ", whonetTest='" + getWhonetTest() + "'" +
+            ", r='" + getR() + "'" +
+            ", i='" + getI() + "'" +
+            ", sdd='" + getSdd() + "'" +
+            ", s='" + getS() + "'" +
+            ", ecvEcoff='" + getEcvEcoff() + "'" +
+            ", dateEntered='" + getDateEntered() + "'" +
+            ", dateModified='" + getDateModified() + "'" +
+            ", comments='" + getComments() + "'" +
             "}";
     }
 }

@@ -1,0 +1,164 @@
+{
+  "fields": [
+    {
+      "fieldName": "whonetAbxCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "whoCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dinCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "jacCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "eucastCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "userCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "antibiotic",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "guidelines",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "clsi",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "eucast",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "sfm",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "srga",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "bsac",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "din",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "neo",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "afa",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "abxNumber",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "potency",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "atcCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "profClass",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "ciaCategory",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "clsiOrder",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "eucastOrder",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "human",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "veterinary",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "animalGp",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "loinccomp",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "loincgen",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "loincdisk",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "loincmic",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "loincetest",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "loincslow",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "loincafb",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "loincsbt",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "loincmlc",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dateEntered",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dateModified",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "comments",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [],
+  "service": "serviceImpl",
+  "dto": "mapstruct",
+  "jpaMetamodelFiltering": true,
+  "readOnly": false,
+  "pagination": "pagination",
+  "name": "Antibiotic",
+  "changelogDate": "20211012015410"
+}

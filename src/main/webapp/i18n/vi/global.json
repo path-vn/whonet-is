@@ -8,6 +8,9 @@
       "entities": {
         "main": "Thực thể",
         "breakpoint": "Breakpoint",
+        "antibiotic": "Antibiotic",
+        "intrinsicResistance": "Intrinsic Resistance",
+        "organism": "Organism",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

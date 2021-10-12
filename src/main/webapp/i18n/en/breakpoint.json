@@ -18,12 +18,27 @@
         "title": "Breakpoint"
       },
       "id": "ID",
-      "path": "Path",
-      "query": "Query",
-      "antibioticQuery": "Antibiotic Query",
-      "organismQuery": "Organism Query",
-      "intrinsicResistanceQuery": "Intrinsic Resistance Query",
-      "binaryData": "Binary Data"
+      "guidelines": "Guidelines",
+      "year": "Year",
+      "testMethod": "Test Method",
+      "potency": "Potency",
+      "organismCode": "Organism Code",
+      "organismCodeType": "Organism Code Type",
+      "breakpointType": "Breakpoint Type",
+      "host": "Host",
+      "siteOfInfection": "Site Of Infection",
+      "referenceTable": "Reference Table",
+      "referenceSequence": "Reference Sequence",
+      "whonetAbxCode": "Whonet Abx Code",
+      "whonetTest": "Whonet Test",
+      "r": "R",
+      "i": "I",
+      "sdd": "Sdd",
+      "s": "S",
+      "ecvEcoff": "Ecv Ecoff",
+      "dateEntered": "Date Entered",
+      "dateModified": "Date Modified",
+      "comments": "Comments"
     }
   }
 }

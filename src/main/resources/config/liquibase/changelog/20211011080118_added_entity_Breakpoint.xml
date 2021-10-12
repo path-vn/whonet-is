@@ -14,25 +14,67 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="path" type="varchar(255)">
+            <column name="guidelines" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="query" type="varchar(255)">
+            <column name="year" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="antibiotic_query" type="varchar(255)">
+            <column name="test_method" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="organism_query" type="varchar(255)">
+            <column name="potency" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="intrinsic_resistance_query" type="varchar(255)">
+            <column name="organism_code" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="binary_data" type="longblob">
+            <column name="organism_code_type" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="binary_data_content_type" type="varchar(255)">
+            <column name="breakpoint_type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="host" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="site_of_infection" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="reference_table" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="reference_sequence" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="whonet_abx_code" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="whonet_test" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="r" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="i" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="sdd" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="s" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="ecv_ecoff" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="date_entered" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="date_modified" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="comments" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
@@ -55,13 +97,27 @@
                   separator=";"
                   tableName="breakpoint">
             <column name="id" type="numeric"/>
-            <column name="path" type="string"/>
-            <column name="query" type="string"/>
-            <column name="antibiotic_query" type="string"/>
-            <column name="organism_query" type="string"/>
-            <column name="intrinsic_resistance_query" type="string"/>
-            <column name="binary_data" type="blob"/>
-            <column name="binary_data_content_type" type="string"/>
+            <column name="guidelines" type="string"/>
+            <column name="year" type="string"/>
+            <column name="test_method" type="string"/>
+            <column name="potency" type="string"/>
+            <column name="organism_code" type="string"/>
+            <column name="organism_code_type" type="string"/>
+            <column name="breakpoint_type" type="string"/>
+            <column name="host" type="string"/>
+            <column name="site_of_infection" type="string"/>
+            <column name="reference_table" type="string"/>
+            <column name="reference_sequence" type="string"/>
+            <column name="whonet_abx_code" type="string"/>
+            <column name="whonet_test" type="string"/>
+            <column name="r" type="string"/>
+            <column name="i" type="string"/>
+            <column name="sdd" type="string"/>
+            <column name="s" type="string"/>
+            <column name="ecv_ecoff" type="string"/>
+            <column name="date_entered" type="string"/>
+            <column name="date_modified" type="string"/>
+            <column name="comments" type="string"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

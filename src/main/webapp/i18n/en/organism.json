@@ -1,0 +1,50 @@
+{
+  "amrInterpreationApp": {
+    "organism": {
+      "home": {
+        "title": "Organisms",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Organism",
+        "createOrEditLabel": "Create or edit a Organism",
+        "notFound": "No Organisms found"
+      },
+      "created": "A new Organism is created with identifier {{ param }}",
+      "updated": "A Organism is updated with identifier {{ param }}",
+      "deleted": "A Organism is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Organism {{ id }}?"
+      },
+      "detail": {
+        "title": "Organism"
+      },
+      "id": "ID",
+      "whonetOrgCode": "Whonet Org Code",
+      "organism": "Organism",
+      "taxonomicStatus": "Taxonomic Status",
+      "common": "Common",
+      "organismType": "Organism Type",
+      "anaerobe": "Anaerobe",
+      "morphology": "Morphology",
+      "subkingdomCode": "Subkingdom Code",
+      "familyCode": "Family Code",
+      "genusGroup": "Genus Group",
+      "genusCode": "Genus Code",
+      "speciesGroup": "Species Group",
+      "serovarGroup": "Serovar Group",
+      "msfGrpClin": "Msf Grp Clin",
+      "sctCode": "Sct Code",
+      "sctText": "Sct Text",
+      "dwcTaxonId": "Dwc Taxon Id",
+      "dwcTaxonomicStatus": "Dwc Taxonomic Status",
+      "gbifTaxonId": "Gbif Taxon Id",
+      "gbifDatasetId": "Gbif Dataset Id",
+      "gbifTaxonomicStatus": "Gbif Taxonomic Status",
+      "kingdom": "Kingdom",
+      "phylum": "Phylum",
+      "organismClass": "Organism Class",
+      "order": "Order",
+      "family": "Family",
+      "genus": "Genus"
+    }
+  }
+}

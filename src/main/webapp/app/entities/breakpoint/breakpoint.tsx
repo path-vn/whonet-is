@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Col, Row, Table } from 'reactstrap';
-import { openFile, byteSize, Translate, getSortState, IPaginationBaseState, JhiPagination, JhiItemCount } from 'react-jhipster';
+import { Translate, getSortState, IPaginationBaseState, JhiPagination, JhiItemCount } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
@@ -93,26 +93,77 @@ export const Breakpoint = (props: IBreakpointProps) => {
                 <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="amrInterpreationApp.breakpoint.id">ID</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th className="hand" onClick={sort('path')}>
-                  <Translate contentKey="amrInterpreationApp.breakpoint.path">Path</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand" onClick={sort('guidelines')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.guidelines">Guidelines</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th className="hand" onClick={sort('query')}>
-                  <Translate contentKey="amrInterpreationApp.breakpoint.query">Query</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand" onClick={sort('year')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.year">Year</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th className="hand" onClick={sort('antibioticQuery')}>
-                  <Translate contentKey="amrInterpreationApp.breakpoint.antibioticQuery">Antibiotic Query</Translate>{' '}
+                <th className="hand" onClick={sort('testMethod')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.testMethod">Test Method</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('potency')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.potency">Potency</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('organismCode')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.organismCode">Organism Code</Translate>{' '}
                   <FontAwesomeIcon icon="sort" />
                 </th>
-                <th className="hand" onClick={sort('organismQuery')}>
-                  <Translate contentKey="amrInterpreationApp.breakpoint.organismQuery">Organism Query</Translate>{' '}
+                <th className="hand" onClick={sort('organismCodeType')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.organismCodeType">Organism Code Type</Translate>{' '}
                   <FontAwesomeIcon icon="sort" />
                 </th>
-                <th className="hand" onClick={sort('intrinsicResistanceQuery')}>
-                  <Translate contentKey="amrInterpreationApp.breakpoint.intrinsicResistanceQuery">Intrinsic Resistance Query</Translate>{' '}
+                <th className="hand" onClick={sort('breakpointType')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.breakpointType">Breakpoint Type</Translate>{' '}
                   <FontAwesomeIcon icon="sort" />
                 </th>
-                <th className="hand" onClick={sort('binaryData')}>
-                  <Translate contentKey="amrInterpreationApp.breakpoint.binaryData">Binary Data</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand" onClick={sort('host')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.host">Host</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('siteOfInfection')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.siteOfInfection">Site Of Infection</Translate>{' '}
+                  <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('referenceTable')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.referenceTable">Reference Table</Translate>{' '}
+                  <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('referenceSequence')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.referenceSequence">Reference Sequence</Translate>{' '}
+                  <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('whonetAbxCode')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.whonetAbxCode">Whonet Abx Code</Translate>{' '}
+                  <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('whonetTest')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.whonetTest">Whonet Test</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('r')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.r">R</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('i')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.i">I</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('sdd')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.sdd">Sdd</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('s')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.s">S</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('ecvEcoff')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.ecvEcoff">Ecv Ecoff</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('dateEntered')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.dateEntered">Date Entered</Translate>{' '}
+                  <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('dateModified')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.dateModified">Date Modified</Translate>{' '}
+                  <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('comments')}>
+                  <Translate contentKey="amrInterpreationApp.breakpoint.comments">Comments</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th />
               </tr>
@@ -126,26 +177,27 @@ export const Breakpoint = (props: IBreakpointProps) => {
                     </Button>
                   </td>
                   <td>{breakpoint.id}</td>
-                  <td>{breakpoint.path}</td>
-                  <td>{breakpoint.query}</td>
-                  <td>{breakpoint.antibioticQuery}</td>
-                  <td>{breakpoint.organismQuery}</td>
-                  <td>{breakpoint.intrinsicResistanceQuery}</td>
-                  <td>
-                    {breakpoint.binaryData ? (
-                      <div>
-                        {breakpoint.binaryDataContentType ? (
-                          <a onClick={openFile(breakpoint.binaryDataContentType, breakpoint.binaryData)}>
-                            <Translate contentKey="entity.action.open">Open</Translate>
-                            &nbsp;
-                          </a>
-                        ) : null}
-                        <span>
-                          {breakpoint.binaryDataContentType}, {byteSize(breakpoint.binaryData)}
-                        </span>
-                      </div>
-                    ) : null}
-                  </td>
+                  <td>{breakpoint.guidelines}</td>
+                  <td>{breakpoint.year}</td>
+                  <td>{breakpoint.testMethod}</td>
+                  <td>{breakpoint.potency}</td>
+                  <td>{breakpoint.organismCode}</td>
+                  <td>{breakpoint.organismCodeType}</td>
+                  <td>{breakpoint.breakpointType}</td>
+                  <td>{breakpoint.host}</td>
+                  <td>{breakpoint.siteOfInfection}</td>
+                  <td>{breakpoint.referenceTable}</td>
+                  <td>{breakpoint.referenceSequence}</td>
+                  <td>{breakpoint.whonetAbxCode}</td>
+                  <td>{breakpoint.whonetTest}</td>
+                  <td>{breakpoint.r}</td>
+                  <td>{breakpoint.i}</td>
+                  <td>{breakpoint.sdd}</td>
+                  <td>{breakpoint.s}</td>
+                  <td>{breakpoint.ecvEcoff}</td>
+                  <td>{breakpoint.dateEntered}</td>
+                  <td>{breakpoint.dateModified}</td>
+                  <td>{breakpoint.comments}</td>
                   <td className="text-right">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`${match.url}/${breakpoint.id}`} color="info" size="sm" data-cy="entityDetailsButton">

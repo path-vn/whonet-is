@@ -1,0 +1,56 @@
+{
+  "fields": [
+    {
+      "fieldName": "guideline",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "referenceTable",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "organismCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "organismCodeType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "exceptionOrganismCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "exceptionOrganismCodeType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "abxCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "abxCodeType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dateEntered",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dateModified",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "comments",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [],
+  "service": "serviceImpl",
+  "dto": "mapstruct",
+  "jpaMetamodelFiltering": true,
+  "readOnly": false,
+  "pagination": "pagination",
+  "name": "IntrinsicResistance",
+  "changelogDate": "20211011080118"
+}

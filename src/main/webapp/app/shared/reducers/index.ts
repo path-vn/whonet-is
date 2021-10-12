@@ -16,6 +16,18 @@ import passwordReset, { PasswordResetState } from 'app/modules/account/password-
 import breakpoint, {
   BreakpointState
 } from 'app/entities/breakpoint/breakpoint.reducer';
+// prettier-ignore
+import antibiotic, {
+  AntibioticState
+} from 'app/entities/antibiotic/antibiotic.reducer';
+// prettier-ignore
+import intrinsicResistance, {
+  IntrinsicResistanceState
+} from 'app/entities/intrinsic-resistance/intrinsic-resistance.reducer';
+// prettier-ignore
+import organism, {
+  OrganismState
+} from 'app/entities/organism/organism.reducer';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 export interface IRootState {
@@ -30,6 +42,9 @@ export interface IRootState {
   readonly password: PasswordState;
   readonly settings: SettingsState;
   readonly breakpoint: BreakpointState;
+  readonly antibiotic: AntibioticState;
+  readonly intrinsicResistance: IntrinsicResistanceState;
+  readonly organism: OrganismState;
   /* jhipster-needle-add-reducer-type - JHipster will add reducer type here */
   readonly loadingBar: any;
 }
@@ -46,6 +61,9 @@ const rootReducer = combineReducers<IRootState>({
   password,
   settings,
   breakpoint,
+  antibiotic,
+  intrinsicResistance,
+  organism,
   /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
   loadingBar,
 });

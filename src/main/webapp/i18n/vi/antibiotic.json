@@ -1,0 +1,61 @@
+{
+  "amrInterpreationApp": {
+    "antibiotic": {
+      "home": {
+        "title": "Antibiotics",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Antibiotic",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Antibiotic",
+        "notFound": "No Antibiotics found"
+      },
+      "created": "Một Antibiotic mới được tạo với định danh {{ param }}",
+      "updated": "Một Antibiotic cập nhật với định danh {{ param }}",
+      "deleted": "Một Antibiotic đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Antibiotic {{ id }}?"
+      },
+      "detail": {
+        "title": "Antibiotic"
+      },
+      "id": "ID",
+      "whonetAbxCode": "Whonet Abx Code",
+      "whoCode": "Who Code",
+      "dinCode": "Din Code",
+      "jacCode": "Jac Code",
+      "eucastCode": "Eucast Code",
+      "userCode": "User Code",
+      "antibiotic": "Antibiotic",
+      "guidelines": "Guidelines",
+      "clsi": "Clsi",
+      "eucast": "Eucast",
+      "sfm": "Sfm",
+      "srga": "Srga",
+      "bsac": "Bsac",
+      "din": "Din",
+      "neo": "Neo",
+      "afa": "Afa",
+      "abxNumber": "Abx Number",
+      "potency": "Potency",
+      "atcCode": "Atc Code",
+      "profClass": "Prof Class",
+      "ciaCategory": "Cia Category",
+      "clsiOrder": "Clsi Order",
+      "eucastOrder": "Eucast Order",
+      "human": "Human",
+      "veterinary": "Veterinary",
+      "animalGp": "Animal Gp",
+      "loinccomp": "Loinccomp",
+      "loincgen": "Loincgen",
+      "loincdisk": "Loincdisk",
+      "loincmic": "Loincmic",
+      "loincetest": "Loincetest",
+      "loincslow": "Loincslow",
+      "loincafb": "Loincafb",
+      "loincsbt": "Loincsbt",
+      "loincmlc": "Loincmlc",
+      "dateEntered": "Date Entered",
+      "dateModified": "Date Modified",
+      "comments": "Comments"
+    }
+  }
+}

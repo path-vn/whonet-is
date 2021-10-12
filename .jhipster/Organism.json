@@ -1,0 +1,120 @@
+{
+  "fields": [
+    {
+      "fieldName": "whonetOrgCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "organism",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "taxonomicStatus",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "common",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "organismType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "anaerobe",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "morphology",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "subkingdomCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "familyCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "genusGroup",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "genusCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "speciesGroup",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "serovarGroup",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "msfGrpClin",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "sctCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "sctText",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dwcTaxonId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dwcTaxonomicStatus",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "gbifTaxonId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "gbifDatasetId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "gbifTaxonomicStatus",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "kingdom",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "phylum",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "organismClass",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "order",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "family",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "genus",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [],
+  "service": "serviceImpl",
+  "dto": "mapstruct",
+  "jpaMetamodelFiltering": true,
+  "readOnly": false,
+  "pagination": "pagination",
+  "name": "Organism",
+  "changelogDate": "20211012022953"
+}

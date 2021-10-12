@@ -85,23 +85,86 @@ describe('Breakpoint e2e test', () => {
     cy.get(entityCreateButtonSelector).click({ force: true });
     cy.getEntityCreateUpdateHeading('Breakpoint');
 
-    cy.get(`[data-cy="path"]`).type('Card generate feed', { force: true }).invoke('val').should('match', new RegExp('Card generate feed'));
+    cy.get(`[data-cy="guidelines"]`)
+      .type('Card generate feed', { force: true })
+      .invoke('val')
+      .should('match', new RegExp('Card generate feed'));
 
-    cy.get(`[data-cy="query"]`).type('Handcrafted', { force: true }).invoke('val').should('match', new RegExp('Handcrafted'));
+    cy.get(`[data-cy="year"]`).type('Handcrafted', { force: true }).invoke('val').should('match', new RegExp('Handcrafted'));
 
-    cy.get(`[data-cy="antibioticQuery"]`)
+    cy.get(`[data-cy="testMethod"]`)
       .type('Towels needs-based', { force: true })
       .invoke('val')
       .should('match', new RegExp('Towels needs-based'));
 
-    cy.get(`[data-cy="organismQuery"]`)
+    cy.get(`[data-cy="potency"]`)
       .type('invoice Coordinator Officer', { force: true })
       .invoke('val')
       .should('match', new RegExp('invoice Coordinator Officer'));
 
-    cy.get(`[data-cy="intrinsicResistanceQuery"]`).type('Phased', { force: true }).invoke('val').should('match', new RegExp('Phased'));
+    cy.get(`[data-cy="organismCode"]`).type('Phased', { force: true }).invoke('val').should('match', new RegExp('Phased'));
 
-    cy.setFieldImageAsBytesOfEntity('binaryData', 'integration-test.png', 'image/png');
+    cy.get(`[data-cy="organismCodeType"]`).type('Avon', { force: true }).invoke('val').should('match', new RegExp('Avon'));
+
+    cy.get(`[data-cy="breakpointType"]`)
+      .type('mindshare input global', { force: true })
+      .invoke('val')
+      .should('match', new RegExp('mindshare input global'));
+
+    cy.get(`[data-cy="host"]`)
+      .type('Program Sleek didactic', { force: true })
+      .invoke('val')
+      .should('match', new RegExp('Program Sleek didactic'));
+
+    cy.get(`[data-cy="siteOfInfection"]`)
+      .type('Rubber Shoes Electronics', { force: true })
+      .invoke('val')
+      .should('match', new RegExp('Rubber Shoes Electronics'));
+
+    cy.get(`[data-cy="referenceTable"]`).type('Officer', { force: true }).invoke('val').should('match', new RegExp('Officer'));
+
+    cy.get(`[data-cy="referenceSequence"]`).type('SCSI', { force: true }).invoke('val').should('match', new RegExp('SCSI'));
+
+    cy.get(`[data-cy="whonetAbxCode"]`).type('Tobago', { force: true }).invoke('val').should('match', new RegExp('Tobago'));
+
+    cy.get(`[data-cy="whonetTest"]`)
+      .type('solid capacitor compressing', { force: true })
+      .invoke('val')
+      .should('match', new RegExp('solid capacitor compressing'));
+
+    cy.get(`[data-cy="r"]`)
+      .type('copying connecting Switchable', { force: true })
+      .invoke('val')
+      .should('match', new RegExp('copying connecting Switchable'));
+
+    cy.get(`[data-cy="i"]`).type('Borders', { force: true }).invoke('val').should('match', new RegExp('Borders'));
+
+    cy.get(`[data-cy="sdd"]`)
+      .type('portals analyzing Steel', { force: true })
+      .invoke('val')
+      .should('match', new RegExp('portals analyzing Steel'));
+
+    cy.get(`[data-cy="s"]`)
+      .type('synergize Handmade Research', { force: true })
+      .invoke('val')
+      .should('match', new RegExp('synergize Handmade Research'));
+
+    cy.get(`[data-cy="ecvEcoff"]`)
+      .type('Hat e-markets Profit-focused', { force: true })
+      .invoke('val')
+      .should('match', new RegExp('Hat e-markets Profit-focused'));
+
+    cy.get(`[data-cy="dateEntered"]`)
+      .type('Turnpike Computer', { force: true })
+      .invoke('val')
+      .should('match', new RegExp('Turnpike Computer'));
+
+    cy.get(`[data-cy="dateModified"]`)
+      .type('Loan deposit Franc', { force: true })
+      .invoke('val')
+      .should('match', new RegExp('Loan deposit Franc'));
+
+    cy.get(`[data-cy="comments"]`).type('Administrator', { force: true }).invoke('val').should('match', new RegExp('Administrator'));
 
     cy.get(entityCreateSaveButtonSelector).click({ force: true });
     cy.scrollTo('top', { ensureScrollable: false });

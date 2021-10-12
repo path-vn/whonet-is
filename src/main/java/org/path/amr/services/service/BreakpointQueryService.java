@@ -86,23 +86,68 @@ public class BreakpointQueryService extends QueryService<Breakpoint> {
             if (criteria.getId() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getId(), Breakpoint_.id));
             }
-            if (criteria.getPath() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getPath(), Breakpoint_.path));
+            if (criteria.getGuidelines() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getGuidelines(), Breakpoint_.guidelines));
             }
-            if (criteria.getQuery() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getQuery(), Breakpoint_.query));
+            if (criteria.getYear() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getYear(), Breakpoint_.year));
             }
-            if (criteria.getAntibioticQuery() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getAntibioticQuery(), Breakpoint_.antibioticQuery));
+            if (criteria.getTestMethod() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getTestMethod(), Breakpoint_.testMethod));
             }
-            if (criteria.getOrganismQuery() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getOrganismQuery(), Breakpoint_.organismQuery));
+            if (criteria.getPotency() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getPotency(), Breakpoint_.potency));
             }
-            if (criteria.getIntrinsicResistanceQuery() != null) {
-                specification =
-                    specification.and(
-                        buildStringSpecification(criteria.getIntrinsicResistanceQuery(), Breakpoint_.intrinsicResistanceQuery)
-                    );
+            if (criteria.getOrganismCode() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getOrganismCode(), Breakpoint_.organismCode));
+            }
+            if (criteria.getOrganismCodeType() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getOrganismCodeType(), Breakpoint_.organismCodeType));
+            }
+            if (criteria.getBreakpointType() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getBreakpointType(), Breakpoint_.breakpointType));
+            }
+            if (criteria.getHost() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getHost(), Breakpoint_.host));
+            }
+            if (criteria.getSiteOfInfection() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getSiteOfInfection(), Breakpoint_.siteOfInfection));
+            }
+            if (criteria.getReferenceTable() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getReferenceTable(), Breakpoint_.referenceTable));
+            }
+            if (criteria.getReferenceSequence() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getReferenceSequence(), Breakpoint_.referenceSequence));
+            }
+            if (criteria.getWhonetAbxCode() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getWhonetAbxCode(), Breakpoint_.whonetAbxCode));
+            }
+            if (criteria.getWhonetTest() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getWhonetTest(), Breakpoint_.whonetTest));
+            }
+            if (criteria.getR() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getR(), Breakpoint_.r));
+            }
+            if (criteria.getI() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getI(), Breakpoint_.i));
+            }
+            if (criteria.getSdd() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getSdd(), Breakpoint_.sdd));
+            }
+            if (criteria.getS() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getS(), Breakpoint_.s));
+            }
+            if (criteria.getEcvEcoff() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getEcvEcoff(), Breakpoint_.ecvEcoff));
+            }
+            if (criteria.getDateEntered() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getDateEntered(), Breakpoint_.dateEntered));
+            }
+            if (criteria.getDateModified() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getDateModified(), Breakpoint_.dateModified));
+            }
+            if (criteria.getComments() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getComments(), Breakpoint_.comments));
             }
         }
         return specification;

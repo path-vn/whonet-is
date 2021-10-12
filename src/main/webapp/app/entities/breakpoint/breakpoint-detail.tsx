@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Row, Col } from 'reactstrap';
-import { Translate, openFile, byteSize } from 'react-jhipster';
+import { Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
@@ -31,54 +31,131 @@ export const BreakpointDetail = (props: IBreakpointDetailProps) => {
           </dt>
           <dd>{breakpointEntity.id}</dd>
           <dt>
-            <span id="path">
-              <Translate contentKey="amrInterpreationApp.breakpoint.path">Path</Translate>
+            <span id="guidelines">
+              <Translate contentKey="amrInterpreationApp.breakpoint.guidelines">Guidelines</Translate>
             </span>
           </dt>
-          <dd>{breakpointEntity.path}</dd>
+          <dd>{breakpointEntity.guidelines}</dd>
           <dt>
-            <span id="query">
-              <Translate contentKey="amrInterpreationApp.breakpoint.query">Query</Translate>
+            <span id="year">
+              <Translate contentKey="amrInterpreationApp.breakpoint.year">Year</Translate>
             </span>
           </dt>
-          <dd>{breakpointEntity.query}</dd>
+          <dd>{breakpointEntity.year}</dd>
           <dt>
-            <span id="antibioticQuery">
-              <Translate contentKey="amrInterpreationApp.breakpoint.antibioticQuery">Antibiotic Query</Translate>
+            <span id="testMethod">
+              <Translate contentKey="amrInterpreationApp.breakpoint.testMethod">Test Method</Translate>
             </span>
           </dt>
-          <dd>{breakpointEntity.antibioticQuery}</dd>
+          <dd>{breakpointEntity.testMethod}</dd>
           <dt>
-            <span id="organismQuery">
-              <Translate contentKey="amrInterpreationApp.breakpoint.organismQuery">Organism Query</Translate>
+            <span id="potency">
+              <Translate contentKey="amrInterpreationApp.breakpoint.potency">Potency</Translate>
             </span>
           </dt>
-          <dd>{breakpointEntity.organismQuery}</dd>
+          <dd>{breakpointEntity.potency}</dd>
           <dt>
-            <span id="intrinsicResistanceQuery">
-              <Translate contentKey="amrInterpreationApp.breakpoint.intrinsicResistanceQuery">Intrinsic Resistance Query</Translate>
+            <span id="organismCode">
+              <Translate contentKey="amrInterpreationApp.breakpoint.organismCode">Organism Code</Translate>
             </span>
           </dt>
-          <dd>{breakpointEntity.intrinsicResistanceQuery}</dd>
+          <dd>{breakpointEntity.organismCode}</dd>
           <dt>
-            <span id="binaryData">
-              <Translate contentKey="amrInterpreationApp.breakpoint.binaryData">Binary Data</Translate>
+            <span id="organismCodeType">
+              <Translate contentKey="amrInterpreationApp.breakpoint.organismCodeType">Organism Code Type</Translate>
             </span>
           </dt>
-          <dd>
-            {breakpointEntity.binaryData ? (
-              <div>
-                {breakpointEntity.binaryDataContentType ? (
-                  <a onClick={openFile(breakpointEntity.binaryDataContentType, breakpointEntity.binaryData)}>
-                    <Translate contentKey="entity.action.open">Open</Translate>&nbsp;
-                  </a>
-                ) : null}
-                <span>
-                  {breakpointEntity.binaryDataContentType}, {byteSize(breakpointEntity.binaryData)}
-                </span>
-              </div>
-            ) : null}
-          </dd>
+          <dd>{breakpointEntity.organismCodeType}</dd>
+          <dt>
+            <span id="breakpointType">
+              <Translate contentKey="amrInterpreationApp.breakpoint.breakpointType">Breakpoint Type</Translate>
+            </span>
+          </dt>
+          <dd>{breakpointEntity.breakpointType}</dd>
+          <dt>
+            <span id="host">
+              <Translate contentKey="amrInterpreationApp.breakpoint.host">Host</Translate>
+            </span>
+          </dt>
+          <dd>{breakpointEntity.host}</dd>
+          <dt>
+            <span id="siteOfInfection">
+              <Translate contentKey="amrInterpreationApp.breakpoint.siteOfInfection">Site Of Infection</Translate>
+            </span>
+          </dt>
+          <dd>{breakpointEntity.siteOfInfection}</dd>
+          <dt>
+            <span id="referenceTable">
+              <Translate contentKey="amrInterpreationApp.breakpoint.referenceTable">Reference Table</Translate>
+            </span>
+          </dt>
+          <dd>{breakpointEntity.referenceTable}</dd>
+          <dt>
+            <span id="referenceSequence">
+              <Translate contentKey="amrInterpreationApp.breakpoint.referenceSequence">Reference Sequence</Translate>
+            </span>
+          </dt>
+          <dd>{breakpointEntity.referenceSequence}</dd>
+          <dt>
+            <span id="whonetAbxCode">
+              <Translate contentKey="amrInterpreationApp.breakpoint.whonetAbxCode">Whonet Abx Code</Translate>
+            </span>
+          </dt>
+          <dd>{breakpointEntity.whonetAbxCode}</dd>
+          <dt>
+            <span id="whonetTest">
+              <Translate contentKey="amrInterpreationApp.breakpoint.whonetTest">Whonet Test</Translate>
+            </span>
+          </dt>
+          <dd>{breakpointEntity.whonetTest}</dd>
+          <dt>
+            <span id="r">
+              <Translate contentKey="amrInterpreationApp.breakpoint.r">R</Translate>
+            </span>
+          </dt>
+          <dd>{breakpointEntity.r}</dd>
+          <dt>
+            <span id="i">
+              <Translate contentKey="amrInterpreationApp.breakpoint.i">I</Translate>
+            </span>
+          </dt>
+          <dd>{breakpointEntity.i}</dd>
+          <dt>
+            <span id="sdd">
+              <Translate contentKey="amrInterpreationApp.breakpoint.sdd">Sdd</Translate>
+            </span>
+          </dt>
+          <dd>{breakpointEntity.sdd}</dd>
+          <dt>
+            <span id="s">
+              <Translate contentKey="amrInterpreationApp.breakpoint.s">S</Translate>
+            </span>
+          </dt>
+          <dd>{breakpointEntity.s}</dd>
+          <dt>
+            <span id="ecvEcoff">
+              <Translate contentKey="amrInterpreationApp.breakpoint.ecvEcoff">Ecv Ecoff</Translate>
+            </span>
+          </dt>
+          <dd>{breakpointEntity.ecvEcoff}</dd>
+          <dt>
+            <span id="dateEntered">
+              <Translate contentKey="amrInterpreationApp.breakpoint.dateEntered">Date Entered</Translate>
+            </span>
+          </dt>
+          <dd>{breakpointEntity.dateEntered}</dd>
+          <dt>
+            <span id="dateModified">
+              <Translate contentKey="amrInterpreationApp.breakpoint.dateModified">Date Modified</Translate>
+            </span>
+          </dt>
+          <dd>{breakpointEntity.dateModified}</dd>
+          <dt>
+            <span id="comments">
+              <Translate contentKey="amrInterpreationApp.breakpoint.comments">Comments</Translate>
+            </span>
+          </dt>
+          <dd>{breakpointEntity.comments}</dd>
         </dl>
         <Button tag={Link} to="/breakpoint" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

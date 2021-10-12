@@ -1,29 +1,88 @@
 {
   "fields": [
     {
-      "fieldName": "path",
+      "fieldName": "guidelines",
       "fieldType": "String"
     },
     {
-      "fieldName": "query",
+      "fieldName": "year",
       "fieldType": "String"
     },
     {
-      "fieldName": "antibioticQuery",
+      "fieldName": "testMethod",
       "fieldType": "String"
     },
     {
-      "fieldName": "organismQuery",
+      "fieldName": "potency",
       "fieldType": "String"
     },
     {
-      "fieldName": "intrinsicResistanceQuery",
+      "fieldName": "organismCode",
       "fieldType": "String"
     },
     {
-      "fieldName": "binaryData",
-      "fieldType": "byte[]",
-      "fieldTypeBlobContent": "any"
+      "fieldName": "organismCodeType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "breakpointType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "host",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "siteOfInfection",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "referenceTable",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "referenceSequence",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "whonetAbxCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "whonetTest",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "r",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "i",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "sdd",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "s",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "ecvEcoff",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dateEntered",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dateModified",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "comments",
+      "fieldType": "String"
     }
   ],
   "relationships": [],

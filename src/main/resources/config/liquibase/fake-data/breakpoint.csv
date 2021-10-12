@@ -1,11 +1,1 @@
-id;path;query;antibiotic_query;organism_query;intrinsic_resistance_query;binary_data;binary_data_content_type
-1;function Licensed Consultant;Tenge Causeway;Lek Wisconsin;bricks-and-clicks Gateway B2C;Officer Self-enabling;../fake-data/blob/hipster.png;image/png
-2;optimize;web-readiness Granite HDD;Wooden Pound;Pula Coordinator Home;Public-key;../fake-data/blob/hipster.png;image/png
-3;SDR bus;virtual encompassing;Plastic;solid;leading-edge;../fake-data/blob/hipster.png;image/png
-4;indigo;Georgia Chicken;optimize emulation;Bike;Avon;../fake-data/blob/hipster.png;image/png
-5;navigate web-readiness;Associate Gorgeous application;Anguilla envisioneer;programming Georgia Internal;reintermediate Michigan;../fake-data/blob/hipster.png;image/png
-6;Hat Pizza Auto;McDonald Sleek;Licensed;strategize;asymmetric Hampshire Mauritania;../fake-data/blob/hipster.png;image/png
-7;SQL Dynamic Arizona;Montana Developer;synthesizing;Steel Dong model;ubiquitous 24/365;../fake-data/blob/hipster.png;image/png
-8;Chief program;Pizza;transition streamline azure;Mouse Persevering;CSS;../fake-data/blob/hipster.png;image/png
-9;deposit invoice empower;multi-byte;Card;Awesome compress end-to-end;deposit;../fake-data/blob/hipster.png;image/png
-10;Intranet calculate Functionality;Practical;parallelism orchid;Washington Solutions;Quality Anguilla Bedfordshire;../fake-data/blob/hipster.png;image/png
+id;guidelines;year;test_method;potency;organism_code;organism_code_type;breakpoint_type;host;site_of_infection;reference_table;reference_sequence;whonet_abx_code;whonet_test;r;i;sdd;s;ecv_ecoff;date_entered;date_modified;comments
