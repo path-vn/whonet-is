@@ -1,13 +1,12 @@
 package org.path.amr.services.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.path.amr.services.AmrInterpreationApp;
 import org.path.amr.services.service.dto.OrganismBreakPointDTO;
+import org.path.amr.services.service.dto.TestResultDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -27,8 +26,21 @@ class InterpretationServiceTest {
 
     @Test
     void getBreakpoints() {
-        List<OrganismBreakPointDTO> organismBreakPointDTOList = interpretationService.getBreakpoints();
+        List<OrganismBreakPointDTO> organismBreakPointDTOList = interpretationService.getBreakpoints("aba", "SAM_ND10");
         organismBreakPointDTOList.forEach(f -> System.out.println("KKK => " + f.getBreakPointID()));
         assert organismBreakPointDTOList.size() > 0;
+    }
+
+    @Test
+    void execute() {
+        TestResultDTO result = interpretationService.execute("6", "aba", "SAM_ND10", "");
+        System.out.println("SIZE: " + result.getResult().size());
+        result
+            .getResult()
+            .forEach(
+                r -> {
+                    System.out.println("Result: " + r.getResult() + " , breaking: " + r.getBreaking());
+                }
+            );
     }
 }

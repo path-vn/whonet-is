@@ -1,20 +1,24 @@
 package org.path.amr.services.web.rest;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.path.amr.services.service.InterpretationService;
+import org.path.amr.services.service.dto.TestResultDTO;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
 public class WhonetResource {
 
+    InterpretationService interpretationService;
+
+    public WhonetResource(InterpretationService interpretationService) {
+        this.interpretationService = interpretationService;
+    }
+
     /**
      * {@code GET /antibiotics/getAntibiotics} : get all antibiotics.
      */
     @GetMapping("/whonet/antibiotics")
-    public List<String> getAntibiotics() {
-        return new ArrayList<>();
+    public TestResultDTO getAntibiotics(@RequestParam String test, @RequestParam String orgCode, @RequestParam String result) {
+        return this.interpretationService.execute(result, orgCode, test, "");
     }
 }
