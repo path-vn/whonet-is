@@ -1,7 +1,7 @@
 export interface IBreakpoint {
   id?: number;
   guidelines?: string | null;
-  year?: string | null;
+  year?: number | null;
   testMethod?: string | null;
   potency?: string | null;
   organismCode?: string | null;

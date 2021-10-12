@@ -9,7 +9,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * A Organism.
  */
 @Entity
-@Table(name = "organisms")
+@Table(name = "organism")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Organism implements Serializable {
 
@@ -88,10 +88,10 @@ public class Organism implements Serializable {
     @Column(name = "phylum")
     private String phylum;
 
-    @Column(name = "class")
+    @Column(name = "organism_class")
     private String organismClass;
 
-    @Column(name = "order")
+    @Column(name = "jhi_order")
     private String order;
 
     @Column(name = "family")

@@ -35,8 +35,9 @@ class BreakpointResourceIT {
     private static final String DEFAULT_GUIDELINES = "AAAAAAAAAA";
     private static final String UPDATED_GUIDELINES = "BBBBBBBBBB";
 
-    private static final String DEFAULT_YEAR = "AAAAAAAAAA";
-    private static final String UPDATED_YEAR = "BBBBBBBBBB";
+    private static final Integer DEFAULT_YEAR = 1;
+    private static final Integer UPDATED_YEAR = 2;
+    private static final Integer SMALLER_YEAR = 1 - 1;
 
     private static final String DEFAULT_TEST_METHOD = "AAAAAAAAAA";
     private static final String UPDATED_TEST_METHOD = "BBBBBBBBBB";
@@ -460,28 +461,54 @@ class BreakpointResourceIT {
 
     @Test
     @Transactional
-    void getAllBreakpointsByYearContainsSomething() throws Exception {
+    void getAllBreakpointsByYearIsGreaterThanOrEqualToSomething() throws Exception {
         // Initialize the database
         breakpointRepository.saveAndFlush(breakpoint);
 
-        // Get all the breakpointList where year contains DEFAULT_YEAR
-        defaultBreakpointShouldBeFound("year.contains=" + DEFAULT_YEAR);
+        // Get all the breakpointList where year is greater than or equal to DEFAULT_YEAR
+        defaultBreakpointShouldBeFound("year.greaterThanOrEqual=" + DEFAULT_YEAR);
 
-        // Get all the breakpointList where year contains UPDATED_YEAR
-        defaultBreakpointShouldNotBeFound("year.contains=" + UPDATED_YEAR);
+        // Get all the breakpointList where year is greater than or equal to UPDATED_YEAR
+        defaultBreakpointShouldNotBeFound("year.greaterThanOrEqual=" + UPDATED_YEAR);
     }
 
     @Test
     @Transactional
-    void getAllBreakpointsByYearNotContainsSomething() throws Exception {
+    void getAllBreakpointsByYearIsLessThanOrEqualToSomething() throws Exception {
         // Initialize the database
         breakpointRepository.saveAndFlush(breakpoint);
 
-        // Get all the breakpointList where year does not contain DEFAULT_YEAR
-        defaultBreakpointShouldNotBeFound("year.doesNotContain=" + DEFAULT_YEAR);
+        // Get all the breakpointList where year is less than or equal to DEFAULT_YEAR
+        defaultBreakpointShouldBeFound("year.lessThanOrEqual=" + DEFAULT_YEAR);
 
-        // Get all the breakpointList where year does not contain UPDATED_YEAR
-        defaultBreakpointShouldBeFound("year.doesNotContain=" + UPDATED_YEAR);
+        // Get all the breakpointList where year is less than or equal to SMALLER_YEAR
+        defaultBreakpointShouldNotBeFound("year.lessThanOrEqual=" + SMALLER_YEAR);
+    }
+
+    @Test
+    @Transactional
+    void getAllBreakpointsByYearIsLessThanSomething() throws Exception {
+        // Initialize the database
+        breakpointRepository.saveAndFlush(breakpoint);
+
+        // Get all the breakpointList where year is less than DEFAULT_YEAR
+        defaultBreakpointShouldNotBeFound("year.lessThan=" + DEFAULT_YEAR);
+
+        // Get all the breakpointList where year is less than UPDATED_YEAR
+        defaultBreakpointShouldBeFound("year.lessThan=" + UPDATED_YEAR);
+    }
+
+    @Test
+    @Transactional
+    void getAllBreakpointsByYearIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        breakpointRepository.saveAndFlush(breakpoint);
+
+        // Get all the breakpointList where year is greater than DEFAULT_YEAR
+        defaultBreakpointShouldNotBeFound("year.greaterThan=" + DEFAULT_YEAR);
+
+        // Get all the breakpointList where year is greater than SMALLER_YEAR
+        defaultBreakpointShouldBeFound("year.greaterThan=" + SMALLER_YEAR);
     }
 
     @Test

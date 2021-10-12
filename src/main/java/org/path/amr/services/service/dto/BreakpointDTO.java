@@ -12,7 +12,7 @@ public class BreakpointDTO implements Serializable {
 
     private String guidelines;
 
-    private String year;
+    private Integer year;
 
     private String testMethod;
 
@@ -68,11 +68,11 @@ public class BreakpointDTO implements Serializable {
         this.guidelines = guidelines;
     }
 
-    public String getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(String year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
@@ -255,7 +255,7 @@ public class BreakpointDTO implements Serializable {
         return "BreakpointDTO{" +
             "id=" + getId() +
             ", guidelines='" + getGuidelines() + "'" +
-            ", year='" + getYear() + "'" +
+            ", year=" + getYear() +
             ", testMethod='" + getTestMethod() + "'" +
             ", potency='" + getPotency() + "'" +
             ", organismCode='" + getOrganismCode() + "'" +

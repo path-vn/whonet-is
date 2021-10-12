@@ -6,7 +6,7 @@
     },
     {
       "fieldName": "year",
-      "fieldType": "String"
+      "fieldType": "Integer"
     },
     {
       "fieldName": "testMethod",

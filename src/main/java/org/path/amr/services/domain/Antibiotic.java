@@ -9,7 +9,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * A Antibiotic.
  */
 @Entity
-@Table(name = "antibiotics")
+@Table(name = "antibiotic")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Antibiotic implements Serializable {
 

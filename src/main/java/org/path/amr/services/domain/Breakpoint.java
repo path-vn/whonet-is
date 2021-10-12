@@ -9,7 +9,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * A Breakpoint.
  */
 @Entity
-@Table(name = "breakpoints")
+@Table(name = "breakpoint")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Breakpoint implements Serializable {
 
@@ -23,7 +23,7 @@ public class Breakpoint implements Serializable {
     private String guidelines;
 
     @Column(name = "year")
-    private String year;
+    private Integer year;
 
     @Column(name = "test_method")
     private String testMethod;
@@ -109,16 +109,16 @@ public class Breakpoint implements Serializable {
         this.guidelines = guidelines;
     }
 
-    public String getYear() {
+    public Integer getYear() {
         return this.year;
     }
 
-    public Breakpoint year(String year) {
+    public Breakpoint year(Integer year) {
         this.year = year;
         return this;
     }
 
-    public void setYear(String year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
@@ -394,7 +394,7 @@ public class Breakpoint implements Serializable {
         return "Breakpoint{" +
             "id=" + getId() +
             ", guidelines='" + getGuidelines() + "'" +
-            ", year='" + getYear() + "'" +
+            ", year=" + getYear() +
             ", testMethod='" + getTestMethod() + "'" +
             ", potency='" + getPotency() + "'" +
             ", organismCode='" + getOrganismCode() + "'" +
