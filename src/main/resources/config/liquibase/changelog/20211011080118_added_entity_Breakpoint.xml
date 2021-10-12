@@ -17,7 +17,7 @@
             <column name="guidelines" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="year" type="varchar(255)">
+            <column name="year" type="integer">
                 <constraints nullable="true" />
             </column>
             <column name="test_method" type="varchar(255)">
@@ -98,7 +98,7 @@
                   tableName="breakpoint">
             <column name="id" type="numeric"/>
             <column name="guidelines" type="string"/>
-            <column name="year" type="string"/>
+            <column name="year" type="numeric"/>
             <column name="test_method" type="string"/>
             <column name="potency" type="string"/>
             <column name="organism_code" type="string"/>

@@ -255,7 +255,7 @@ public class BreakpointDTO implements Serializable {
         return "BreakpointDTO{" +
             "id=" + getId() +
             ", guidelines='" + getGuidelines() + "'" +
-            ", year='" + getYear() + "'" +
+            ", year=" + getYear() +
             ", testMethod='" + getTestMethod() + "'" +
             ", potency='" + getPotency() + "'" +
             ", organismCode='" + getOrganismCode() + "'" +

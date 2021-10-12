@@ -85,7 +85,7 @@ export const BreakpointUpdate = (props: IBreakpointUpdateProps) => {
                 <Label id="yearLabel" for="breakpoint-year">
                   <Translate contentKey="amrInterpreationApp.breakpoint.year">Year</Translate>
                 </Label>
-                <AvField id="breakpoint-year" data-cy="year" type="text" name="year" />
+                <AvField id="breakpoint-year" data-cy="year" type="string" className="form-control" name="year" />
               </AvGroup>
               <AvGroup>
                 <Label id="testMethodLabel" for="breakpoint-testMethod">

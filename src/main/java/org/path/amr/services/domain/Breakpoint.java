@@ -395,7 +395,7 @@ public class Breakpoint implements Serializable {
         return "Breakpoint{" +
             "id=" + getId() +
             ", guidelines='" + getGuidelines() + "'" +
-            ", year='" + getYear() + "'" +
+            ", year=" + getYear() +
             ", testMethod='" + getTestMethod() + "'" +
             ", potency='" + getPotency() + "'" +
             ", organismCode='" + getOrganismCode() + "'" +

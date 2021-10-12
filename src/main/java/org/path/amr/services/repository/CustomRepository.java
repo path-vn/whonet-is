@@ -28,21 +28,18 @@ public class CustomRepository {
         return em.unwrap(Session.class);
     }
 
-    public int updateAdExchangeWebsite() {
-        String sql =
-            "update report_ad_exchange  " +
-            "set website_id = website.id, status = website.status " +
-            "from website where network_partner_name=domain;";
-
-        NativeQuery qry = getCurrentSession().createNativeQuery(sql);
-
-        return qry.executeUpdate();
+    public List<OrganismBreakPointDTO> getBreakPoints() {
+        return getBreakPoints("spn", "CRO_NM");
     }
 
-    public List<OrganismBreakPointDTO> getBreakPoints() {
+    public List<OrganismBreakPointDTO> getBreakPoints(String orgCode, String whonetTest) {
+        return this.getBreakPoints(orgCode, whonetTest, "C", 2021);
+    }
+
+    public List<OrganismBreakPointDTO> getBreakPoints(String orgCode, String whonetTest, String status, int year) {
         String sql =
-            " SELECT o.ID, b.ID " +
-            "FROM organisms o " +
+            " SELECT o.ID as organismID, b.ID breakpointID " +
+            " FROM organisms o " +
             " INNER JOIN breakpoints b " +
             "  ON b.ORGANISM_CODE_TYPE <> 'ALL' AND ( " +
             "   o.SEROVAR_GROUP IS NOT NULL " +
@@ -82,14 +79,14 @@ public class CustomRepository {
             "   AND b.ORGANISM_CODE_TYPE = 'ANAEROBE' " +
             "   AND b.ORGANISM_CODE = 'ANA' " +
             "  ) " +
-            "WHERE o.WHONET_ORG_CODE = 'spn' " +
-            " AND o.TAXONOMIC_STATUS = 'C' " +
+            "WHERE o.WHONET_ORG_CODE = :orgCode " +
+            " AND o.TAXONOMIC_STATUS = :status " +
             //            "-- AND b.GUIDELINES = 'EUCAST' " +
-            " AND b.YEAR = 2021  " +
+            " AND b.YEAR = :year  " +
             //            "-- AND b.BREAKPOINT_TYPE = 'Animal'  " +
             //            "-- AND b.TEST_METHOD = 'MIC' " +
             //            "-- Filter on one drug. " +
-            " AND b.WHONET_TEST = 'CRO_NM' " +
+            " AND b.WHONET_TEST = :whonetTest " +
             //            "-- AND b.WHONET_ABX_CODE = 'CRO' " +
             "ORDER BY o.WHONET_ORG_CODE ASC, " +
             " b.GUIDELINES ASC, " +
@@ -121,12 +118,18 @@ public class CustomRepository {
             " b.SITE_OF_INFECTION ASC";
 
         NativeQuery qry = getCurrentSession().createNativeQuery(sql);
+        qry.setParameter("year", year);
+        qry.setParameter("orgCode", orgCode);
+        qry.setParameter("status", status);
+        qry.setParameter("whonetTest", whonetTest);
+
         List<OrganismBreakPointDTO> result = new ArrayList<>();
         List<Object[]> rows = qry.getResultList();
         for (int i = 0; i < rows.size(); i++) {
             OrganismBreakPointDTO breakPoint = new OrganismBreakPointDTO();
             breakPoint.setOrganismID(Long.valueOf(rows.get(i)[0].toString()));
             breakPoint.setBreakPointID(Long.valueOf(rows.get(i)[1].toString()));
+            result.add(breakPoint);
         }
         return result;
     }

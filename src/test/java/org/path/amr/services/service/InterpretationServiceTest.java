@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(classes = AmrInterpreationApp.class)
-@ActiveProfiles("test")
+@ActiveProfiles("testcontainers")
 class InterpretationServiceTest {
 
     @Autowired
@@ -28,6 +28,7 @@ class InterpretationServiceTest {
     @Test
     void getBreakpoints() {
         List<OrganismBreakPointDTO> organismBreakPointDTOList = interpretationService.getBreakpoints();
-        organismBreakPointDTOList.forEach(f -> System.out.println(f.getBreakPointID()));
+        organismBreakPointDTOList.forEach(f -> System.out.println("KKK => " + f.getBreakPointID()));
+        assert organismBreakPointDTOList.size() > 0;
     }
 }
