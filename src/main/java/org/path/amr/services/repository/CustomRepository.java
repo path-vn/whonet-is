@@ -29,14 +29,14 @@ public class CustomRepository {
     }
 
     public List<OrganismBreakPointDTO> getBreakPoints() {
-        return getBreakPoints("spn", "CRO_NM");
+        return getBreakPoints("spn", "CRO_NM", "Human");
     }
 
-    public List<OrganismBreakPointDTO> getBreakPoints(String orgCode, String whonetTest) {
-        return this.getBreakPoints(orgCode, whonetTest, "C", 2021);
+    public List<OrganismBreakPointDTO> getBreakPoints(String orgCode, String whonetTest, String breakpointType) {
+        return this.getBreakPoints(orgCode, whonetTest, breakpointType, "C", 2021);
     }
 
-    public List<OrganismBreakPointDTO> getBreakPoints(String orgCode, String whonetTest, String status, int year) {
+    public List<OrganismBreakPointDTO> getBreakPoints(String orgCode, String whonetTest, String breakpointType, String status, int year) {
         String sql =
             " SELECT o.ID as organismID, b.ID breakpointID " +
             " FROM organisms o " +
@@ -83,7 +83,7 @@ public class CustomRepository {
             " AND o.TAXONOMIC_STATUS = :status " +
             //            "-- AND b.GUIDELINES = 'EUCAST' " +
             " AND b.YEAR = :year  " +
-            //            "-- AND b.BREAKPOINT_TYPE = 'Animal'  " +
+            " AND b.BREAKPOINT_TYPE = :breakpointType  " +
             //            "-- AND b.TEST_METHOD = 'MIC' " +
             //            "-- Filter on one drug. " +
             " AND b.WHONET_TEST = :whonetTest " +
@@ -122,6 +122,7 @@ public class CustomRepository {
         qry.setParameter("orgCode", orgCode);
         qry.setParameter("status", status);
         qry.setParameter("whonetTest", whonetTest);
+        qry.setParameter("breakpointType", breakpointType);
 
         List<OrganismBreakPointDTO> result = new ArrayList<>();
         List<Object[]> rows = qry.getResultList();

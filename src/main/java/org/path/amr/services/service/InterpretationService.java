@@ -60,9 +60,9 @@ public class InterpretationService {
         this.antibioticMapper = antibioticMapper;
     }
 
-    public List<OrganismBreakPointDTO> getBreakpoints(String orgCode, String whonet5Test) {
+    public List<OrganismBreakPointDTO> getBreakpoints(String orgCode, String whonet5Test, String breakpointType) {
         return customRepository
-            .getBreakPoints(orgCode, whonet5Test)
+            .getBreakPoints(orgCode, whonet5Test, breakpointType)
             .stream()
             .peek(
                 ob -> {
@@ -117,7 +117,7 @@ public class InterpretationService {
         return result;
     }
 
-    public TestResultDTO execute(String tmpStringValue, String orgCode, String whonet5Test, String specType) {
+    public TestResultDTO execute(String tmpStringValue, String orgCode, String whonet5Test, String specType, String breakpointType) {
         TestResultDTO testResult = new TestResultDTO();
 
         tmpStringValue = tmpStringValue.replaceAll(PATTERN_0, "");
@@ -153,7 +153,7 @@ public class InterpretationService {
 
         testResult.setOrgCode(orgCode);
 
-        List<OrganismBreakPointDTO> organismBreakPointDTOList = getBreakpoints(orgCode, whonet5Test);
+        List<OrganismBreakPointDTO> organismBreakPointDTOList = getBreakpoints(orgCode, whonet5Test, breakpointType);
         organismBreakPointDTOList.forEach(
             o -> {
                 testResult.addResult(interpretation(testResult, o));
@@ -178,10 +178,10 @@ public class InterpretationService {
         if (hasBreakpoint) {
             Double R = notEmpty(g.getR()) ? Double.valueOf(g.getR()) : null;
             Double S = notEmpty(g.getS()) ? Double.valueOf(g.getS()) : null;
-            String[] Ix = g.getI().split("-");
-            Double IMin = notEmpty(Ix[0]) ? Double.valueOf(Ix[0]) : null;
+            String[] Ix = notEmpty(g.getI()) ? g.getI().split("-") : null;
+            Double IMin = Ix != null && notEmpty(Ix[0]) ? Double.valueOf(Ix[0]) : null;
             Double IMax = null;
-            if (Ix.length > 1) {
+            if (Ix != null && Ix.length > 1) {
                 IMax = notEmpty(Ix[Ix.length - 1]) ? Double.valueOf(Ix[Ix.length - 1]) : null;
             }
 

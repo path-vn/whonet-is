@@ -26,14 +26,27 @@ class InterpretationServiceTest {
 
     @Test
     void getBreakpoints() {
-        List<OrganismBreakPointDTO> organismBreakPointDTOList = interpretationService.getBreakpoints("aba", "SAM_ND10");
+        List<OrganismBreakPointDTO> organismBreakPointDTOList = interpretationService.getBreakpoints("aba", "SAM_ND10", "Human");
         organismBreakPointDTOList.forEach(f -> System.out.println("KKK => " + f.getBreakPointID()));
         assert organismBreakPointDTOList.size() > 0;
     }
 
     @Test
     void execute() {
-        TestResultDTO result = interpretationService.execute("6", "aba", "SAM_ND10", "");
+        TestResultDTO result = interpretationService.execute("6", "aba", "SAM_ND10", "", "Human");
+        System.out.println("SIZE: " + result.getResult().size());
+        result
+            .getResult()
+            .forEach(
+                r -> {
+                    System.out.println("Result: " + r.getResult() + " , breaking: " + r.getBreaking());
+                }
+            );
+    }
+
+    @Test
+    void execute2() {
+        TestResultDTO result = interpretationService.execute("0.25", "sau", "CLI_NM", "", "Human");
         System.out.println("SIZE: " + result.getResult().size());
         result
             .getResult()
