@@ -2,15 +2,11 @@ package org.path.amr.services.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.path.amr.services.repository.AntibioticRepository;
-import org.path.amr.services.repository.BreakpointRepository;
-import org.path.amr.services.repository.CustomRepository;
-import org.path.amr.services.repository.OrganismRepository;
-import org.path.amr.services.service.dto.BreakpointDTO;
-import org.path.amr.services.service.dto.OrganismBreakPointDTO;
-import org.path.amr.services.service.dto.TestResultDTO;
+import org.path.amr.services.repository.*;
+import org.path.amr.services.service.dto.*;
 import org.path.amr.services.service.mapper.AntibioticMapper;
 import org.path.amr.services.service.mapper.BreakpointMapper;
+import org.path.amr.services.service.mapper.IntrinsicResistanceMapper;
 import org.path.amr.services.service.mapper.OrganismMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +37,8 @@ public class InterpretationService {
     BreakpointMapper breakpointMapper;
     AntibioticRepository antibioticRepository;
     AntibioticMapper antibioticMapper;
+    IntrinsicResistanceRepository intrinsicResistanceRepository;
+    IntrinsicResistanceMapper intrinsicResistanceMapper;
 
     public InterpretationService(
         CustomRepository customRepository,
@@ -49,7 +47,9 @@ public class InterpretationService {
         BreakpointRepository breakpointRepository,
         BreakpointMapper breakpointMapper,
         AntibioticRepository antibioticRepository,
-        AntibioticMapper antibioticMapper
+        AntibioticMapper antibioticMapper,
+        IntrinsicResistanceRepository intrinsicResistanceRepository,
+        IntrinsicResistanceMapper intrinsicResistanceMapper
     ) {
         this.customRepository = customRepository;
         this.organismRepository = organismRepository;
@@ -58,6 +58,8 @@ public class InterpretationService {
         this.organismMapper = organismMapper;
         this.breakpointMapper = breakpointMapper;
         this.antibioticMapper = antibioticMapper;
+        this.intrinsicResistanceMapper = intrinsicResistanceMapper;
+        this.intrinsicResistanceRepository = intrinsicResistanceRepository;
     }
 
     public List<OrganismBreakPointDTO> getBreakpoints(String orgCode, String whonet5Test, String breakpointType) {
@@ -66,8 +68,8 @@ public class InterpretationService {
             .stream()
             .peek(
                 ob -> {
-                    breakpointRepository.findById(ob.getBreakPointID()).map(breakpointMapper::toDto).ifPresent(ob::setBreakpointDTO);
-                    organismRepository.findById(ob.getOrganismID()).map(organismMapper::toDto).ifPresent(ob::setOrganismDTO);
+                    breakpointRepository.findById(ob.getBreakPointID()).map(breakpointMapper::toDto).ifPresent(ob::setBreakpoint);
+                    organismRepository.findById(ob.getOrganismID()).map(organismMapper::toDto).ifPresent(ob::setOrganism);
                 }
             )
             .collect(Collectors.toList());
@@ -170,7 +172,7 @@ public class InterpretationService {
         InterpretationResult result = new InterpretationResult();
 
         Double valueToInterpretation = testResult.getValue();
-        BreakpointDTO g = organismBreakPointDTO.getBreakpointDTO();
+        BreakpointDTO g = organismBreakPointDTO.getBreakpoint();
         String method = g.getTestMethod();
         short oper = testResult.getOper();
         boolean hasBreakpoint = notEmpty(g.getI()) || notEmpty(g.getR()) || notEmpty(g.getS());
@@ -300,5 +302,22 @@ public class InterpretationService {
             }
         }
         return result;
+    }
+
+    public List<OrganismIntrinsicResistanceAntibioticDTO> intrinsicResistance(String orgCode, String abxCode) {
+        return customRepository
+            .getIntrinsicResistance(orgCode, abxCode)
+            .stream()
+            .map(
+                oir -> {
+                    antibioticRepository.findById(oir.getAntibioticId()).map(antibioticMapper::toDto).ifPresent(oir::setAntibiotic);
+                    intrinsicResistanceRepository
+                        .findById(oir.getIntrinsicResistanceId())
+                        .map(intrinsicResistanceMapper::toDto)
+                        .ifPresent(oir::setIntrinsicResistance);
+                    return oir;
+                }
+            )
+            .collect(Collectors.toList());
     }
 }

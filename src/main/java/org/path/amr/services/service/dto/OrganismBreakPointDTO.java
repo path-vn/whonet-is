@@ -4,8 +4,9 @@ public class OrganismBreakPointDTO {
 
     Long breakPointID;
     Long organismID;
-    BreakpointDTO breakpointDTO;
-    OrganismDTO organismDTO;
+
+    BreakpointDTO breakpoint;
+    OrganismDTO organism;
 
     public Long getBreakPointID() {
         return breakPointID;
@@ -23,19 +24,19 @@ public class OrganismBreakPointDTO {
         this.organismID = organismID;
     }
 
-    public BreakpointDTO getBreakpointDTO() {
-        return breakpointDTO;
+    public BreakpointDTO getBreakpoint() {
+        return breakpoint;
     }
 
-    public void setBreakpointDTO(BreakpointDTO breakpointDTO) {
-        this.breakpointDTO = breakpointDTO;
+    public void setBreakpoint(BreakpointDTO breakpoint) {
+        this.breakpoint = breakpoint;
     }
 
-    public OrganismDTO getOrganismDTO() {
-        return organismDTO;
+    public OrganismDTO getOrganism() {
+        return organism;
     }
 
-    public void setOrganismDTO(OrganismDTO organismDTO) {
-        this.organismDTO = organismDTO;
+    public void setOrganism(OrganismDTO organism) {
+        this.organism = organism;
     }
 }
