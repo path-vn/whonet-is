@@ -28,6 +28,10 @@ import intrinsicResistance, {
 import organism, {
   OrganismState
 } from 'app/entities/organism/organism.reducer';
+// prettier-ignore
+import expertInterpretationRules, {
+  ExpertInterpretationRulesState
+} from 'app/entities/expert-interpretation-rules/expert-interpretation-rules.reducer';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 export interface IRootState {
@@ -45,6 +49,7 @@ export interface IRootState {
   readonly antibiotic: AntibioticState;
   readonly intrinsicResistance: IntrinsicResistanceState;
   readonly organism: OrganismState;
+  readonly expertInterpretationRules: ExpertInterpretationRulesState;
   /* jhipster-needle-add-reducer-type - JHipster will add reducer type here */
   readonly loadingBar: any;
 }
@@ -64,6 +69,7 @@ const rootReducer = combineReducers<IRootState>({
   antibiotic,
   intrinsicResistance,
   organism,
+  expertInterpretationRules,
   /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
   loadingBar,
 });

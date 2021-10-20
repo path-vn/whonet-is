@@ -1,0 +1,30 @@
+{
+  "amrInterpreationApp": {
+    "expertInterpretationRules": {
+      "home": {
+        "title": "Expert Interpretation Rules",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Expert Interpretation Rules",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Expert Interpretation Rules",
+        "notFound": "No Expert Interpretation Rules found"
+      },
+      "created": "Một Expert Interpretation Rules mới được tạo với định danh {{ param }}",
+      "updated": "Một Expert Interpretation Rules cập nhật với định danh {{ param }}",
+      "deleted": "Một Expert Interpretation Rules đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Expert Interpretation Rules {{ id }}?"
+      },
+      "detail": {
+        "title": "Expert Interpretation Rules"
+      },
+      "id": "ID",
+      "ruleCode": "Rule Code",
+      "description": "Description",
+      "organismCode": "Organism Code",
+      "organismCodeType": "Organism Code Type",
+      "ruleCriteria": "Rule Criteria",
+      "affectedAntibiotics": "Affected Antibiotics",
+      "antibioticExceptions": "Antibiotic Exceptions"
+    }
+  }
+}

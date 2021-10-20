@@ -8,6 +8,7 @@ import Breakpoint from './breakpoint';
 import Antibiotic from './antibiotic';
 import IntrinsicResistance from './intrinsic-resistance';
 import Organism from './organism';
+import ExpertInterpretationRules from './expert-interpretation-rules';
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 const Routes = ({ match }) => (
@@ -18,6 +19,7 @@ const Routes = ({ match }) => (
       <ErrorBoundaryRoute path={`${match.url}antibiotic`} component={Antibiotic} />
       <ErrorBoundaryRoute path={`${match.url}intrinsic-resistance`} component={IntrinsicResistance} />
       <ErrorBoundaryRoute path={`${match.url}organism`} component={Organism} />
+      <ErrorBoundaryRoute path={`${match.url}expert-interpretation-rules`} component={ExpertInterpretationRules} />
       {/* jhipster-needle-add-route-path - JHipster will add routes here */}
     </Switch>
   </div>

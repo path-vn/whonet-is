@@ -1,0 +1,30 @@
+{
+  "amrInterpreationApp": {
+    "expertInterpretationRules": {
+      "home": {
+        "title": "Expert Interpretation Rules",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Expert Interpretation Rules",
+        "createOrEditLabel": "Create or edit a Expert Interpretation Rules",
+        "notFound": "No Expert Interpretation Rules found"
+      },
+      "created": "A new Expert Interpretation Rules is created with identifier {{ param }}",
+      "updated": "A Expert Interpretation Rules is updated with identifier {{ param }}",
+      "deleted": "A Expert Interpretation Rules is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Expert Interpretation Rules {{ id }}?"
+      },
+      "detail": {
+        "title": "Expert Interpretation Rules"
+      },
+      "id": "ID",
+      "ruleCode": "Rule Code",
+      "description": "Description",
+      "organismCode": "Organism Code",
+      "organismCodeType": "Organism Code Type",
+      "ruleCriteria": "Rule Criteria",
+      "affectedAntibiotics": "Affected Antibiotics",
+      "antibioticExceptions": "Antibiotic Exceptions"
+    }
+  }
+}
