@@ -1,0 +1,40 @@
+{
+  "fields": [
+    {
+      "fieldName": "ruleCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "organismCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "organismCodeType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "ruleCriteria",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "affectedAntibiotics",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "antibioticExceptions",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [],
+  "service": "serviceImpl",
+  "dto": "mapstruct",
+  "jpaMetamodelFiltering": true,
+  "readOnly": false,
+  "pagination": "pagination",
+  "name": "ExpertInterpretationRules",
+  "changelogDate": "20211020025828"
+}

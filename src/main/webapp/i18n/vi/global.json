@@ -11,6 +11,7 @@
         "antibiotic": "Antibiotic",
         "intrinsicResistance": "Intrinsic Resistance",
         "organism": "Organism",
+        "expertInterpretationRules": "Expert Interpretation Rules",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

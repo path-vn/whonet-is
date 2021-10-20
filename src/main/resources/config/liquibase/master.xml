@@ -21,6 +21,7 @@
     <include file="config/liquibase/changelog/20211011080118_added_entity_IntrinsicResistance.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20211012022025_added_entity_Organism.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20211012022953_added_entity_Organism.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20211020025828_added_entity_ExpertInterpretationRules.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->

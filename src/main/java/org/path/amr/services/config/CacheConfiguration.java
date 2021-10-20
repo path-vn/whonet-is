@@ -52,6 +52,7 @@ public class CacheConfiguration {
             createCache(cm, org.path.amr.services.domain.Antibiotic.class.getName());
             createCache(cm, org.path.amr.services.domain.IntrinsicResistance.class.getName());
             createCache(cm, org.path.amr.services.domain.Organism.class.getName());
+            createCache(cm, org.path.amr.services.domain.ExpertInterpretationRules.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }
