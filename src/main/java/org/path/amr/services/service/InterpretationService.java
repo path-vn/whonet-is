@@ -1,13 +1,18 @@
 package org.path.amr.services.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.path.amr.services.domain.Antibiotic;
+import org.path.amr.services.domain.ExpertInterpretationRules;
 import org.path.amr.services.repository.*;
 import org.path.amr.services.service.dto.*;
-import org.path.amr.services.service.mapper.AntibioticMapper;
-import org.path.amr.services.service.mapper.BreakpointMapper;
-import org.path.amr.services.service.mapper.IntrinsicResistanceMapper;
-import org.path.amr.services.service.mapper.OrganismMapper;
+import org.path.amr.services.service.mapper.*;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +25,10 @@ public class InterpretationService {
     public static final String PATTERN_2 = "[^0-9]";
     public static final String PATTERN_3 = "[0-9.RSI]";
     public static final String PATTERN_4 = "[0-9.<=>]";
+
+    public static final String GENUS_CODE = "GENUS_CODE";
+    public static final String FAMILY_CODE = "FAMILY_CODE";
+    public static final String SEROVAR_GROUP = "SEROVAR_GROUP";
 
     public static final short LESS_THAN = 1;
     public static final short LESS_THAN_OR_EQUAL = 2;
@@ -39,6 +48,8 @@ public class InterpretationService {
     AntibioticMapper antibioticMapper;
     IntrinsicResistanceRepository intrinsicResistanceRepository;
     IntrinsicResistanceMapper intrinsicResistanceMapper;
+    ExpertInterpretationRulesRepository expertInterpretationRulesRepository;
+    ExpertInterpretationRulesMapper expertInterpretationRulesMapper;
 
     public InterpretationService(
         CustomRepository customRepository,
@@ -49,7 +60,9 @@ public class InterpretationService {
         AntibioticRepository antibioticRepository,
         AntibioticMapper antibioticMapper,
         IntrinsicResistanceRepository intrinsicResistanceRepository,
-        IntrinsicResistanceMapper intrinsicResistanceMapper
+        IntrinsicResistanceMapper intrinsicResistanceMapper,
+        ExpertInterpretationRulesRepository expertInterpretationRulesRepository,
+        ExpertInterpretationRulesMapper expertInterpretationRulesMapper
     ) {
         this.customRepository = customRepository;
         this.organismRepository = organismRepository;
@@ -60,6 +73,8 @@ public class InterpretationService {
         this.antibioticMapper = antibioticMapper;
         this.intrinsicResistanceMapper = intrinsicResistanceMapper;
         this.intrinsicResistanceRepository = intrinsicResistanceRepository;
+        this.expertInterpretationRulesMapper = expertInterpretationRulesMapper;
+        this.expertInterpretationRulesRepository = expertInterpretationRulesRepository;
     }
 
     public List<OrganismBreakPointDTO> getBreakpoints(String orgCode, String whonet5Test, String breakpointType) {
@@ -119,56 +134,276 @@ public class InterpretationService {
         return result;
     }
 
-    public TestResultDTO execute(String tmpStringValue, String orgCode, String whonet5Test, String specType, String breakpointType) {
-        TestResultDTO testResult = new TestResultDTO();
+    /**
+     * A. Interpretation algorithm – single measurement
+     * <p>
+     * 1.Determine whether the organism and antibiotic combination in question has a matching rule in
+     * the Intrinsic Resistance table. This will also involve the Organisms table to extract information
+     * about the organism (such as the genus for intrinsic rules which apply to a whole genus).
+     * a. If yes, then this organism is intrinsically resistant to the antibiotic, and should be
+     * interpreted as resistant.
+     * <p>
+     * 2. If the organism is not intrinsically resistant (an absence of matching intrinsic resistance rules
+     * above), then we determine if there are applicable breakpoints. After filtering the Breakpoints
+     * table on your desired guideline and year, the Organisms table is used to further match the
+     * Breakpoints table with your organism. For example, a breakpoint rule might apply to the
+     * GENUS_CODE “HA-“, so we must use the Organisms table to determine this membership based
+     * on the actual organism code, which might be “hin” for Haemophilus influenzae.
+     * a. If one or more breakpoint rules match the organism and antibiotic, you can either
+     * evaluate and report all of them, or sort them in a particular order to determine the
+     * “default” or “best” interpretation.
+     * b. The precise order of breakpoints partially depends upon your needs. For example, a
+     * veterinary isolate might require that the BREAKPOINT_TYPE = “Animal” take precedence
+     * over any “Human” breakpoints.
+     * c. There are also non-variable parts to the sorting order. For example, we must prefer a
+     * more-specific breakpoint over a less-specific, such as favoring a breakpoint specifically
+     * for E. coli over a broader breakpoint which applies for all Enterobacteriaceae.
+     * <p>
+     * 3. Now that you have a sorted list of breakpoints, you can evaluate one or more of them to
+     * determine the interpretation for your measurement.
+     * <p>
+     * B. Interpretation algorithm – complete isolate
+     */
+    public void execute(IsolateDTO isolate) {
+        for (int i = 0; i < isolate.getTest().size(); i++) {
+            TestDTO test = isolate.getTest().get(i);
+            String tmpStringValue = test.getRawValue();
+            tmpStringValue = tmpStringValue.replaceAll(PATTERN_0, "");
+            String testValue = tmpStringValue.replaceAll(PATTERN_1, "");
+            String oper = tmpStringValue.replaceAll(PATTERN_3, "");
+            String result = tmpStringValue.replaceAll(PATTERN_4, "");
+            String abxCode = test.getWhonet5Code().split("_")[0];
 
-        tmpStringValue = tmpStringValue.replaceAll(PATTERN_0, "");
-        String testValue = tmpStringValue.replaceAll(PATTERN_1, "");
-        String oper = tmpStringValue.replaceAll(PATTERN_3, "");
-        String result = tmpStringValue.replaceAll(PATTERN_4, "");
-        //Sai tên vi khuẩn, không thể tìm được vi khuẩn hoặc gen tương ứng
-
-        if (!testValue.isEmpty()) {
-            testResult.setValue(Double.valueOf(testValue));
-        }
-
-        switch (oper) {
-            case "<":
-                testResult.setOper(LESS_THAN);
-                break;
-            case "<=":
-                testResult.setOper(LESS_THAN_OR_EQUAL);
-                break;
-            case ">=":
-                testResult.setOper(GREATER_THAN_OR_EQUAL);
-                break;
-            case ">":
-                testResult.setOper(GREATER_THAN);
-                break;
-            default:
-                testResult.setOper(EQUAL);
-                break;
-        }
-        if (!result.isEmpty()) {
-            testResult.addResult(result);
-        }
-
-        testResult.setOrgCode(orgCode);
-
-        List<OrganismBreakPointDTO> organismBreakPointDTOList = getBreakpoints(orgCode, whonet5Test, breakpointType);
-        organismBreakPointDTOList.forEach(
-            o -> {
-                testResult.addResult(interpretation(testResult, o));
+            Optional<Antibiotic> antibiotic = antibioticRepository.findFirstByWhonetAbxCode(abxCode);
+            if (antibiotic.isEmpty()) {
+                continue;
             }
-        );
-        return testResult;
+            test.setAntibiotic(antibioticMapper.toDto(antibiotic.get()));
+
+            if (!testValue.isEmpty()) {
+                test.setValue(Double.valueOf(testValue));
+            }
+
+            switch (oper) {
+                case "<":
+                    test.setOper(LESS_THAN);
+                    break;
+                case "<=":
+                    test.setOper(LESS_THAN_OR_EQUAL);
+                    break;
+                case ">=":
+                    test.setOper(GREATER_THAN_OR_EQUAL);
+                    break;
+                case ">":
+                    test.setOper(GREATER_THAN);
+                    break;
+                default:
+                    test.setOper(EQUAL);
+                    break;
+            }
+            if (!result.isEmpty()) {
+                test.addResult(result);
+            }
+
+            // A.1 Check intrinsic resistance
+            List<OrganismIntrinsicResistanceAntibioticDTO> organismIntrinsicResistanceAntibioticDTOList = customRepository
+                .getIntrinsicResistance(isolate.getOrgCode(), test.getWhonet5Code())
+                .stream()
+                .peek(
+                    oir -> {
+                        antibioticRepository.findById(oir.getAntibioticId()).map(antibioticMapper::toDto).ifPresent(oir::setAntibiotic);
+                        intrinsicResistanceRepository
+                            .findById(oir.getIntrinsicResistanceId())
+                            .map(intrinsicResistanceMapper::toDto)
+                            .ifPresent(oir::setIntrinsicResistance);
+                    }
+                )
+                .collect(Collectors.toList());
+            if (organismIntrinsicResistanceAntibioticDTOList.size() > 0) {
+                test.setIntrinsicResistance(organismIntrinsicResistanceAntibioticDTOList);
+                test.addResult("R");
+            } else {
+                // A.2, 3 Apply breakpoints
+                List<OrganismBreakPointDTO> organismBreakPointDTOList = getBreakpoints(
+                    isolate.getOrgCode(),
+                    test.getWhonet5Code(),
+                    isolate.getBreakpointType()
+                );
+                organismBreakPointDTOList.forEach(
+                    o -> {
+                        InterpretationResult interpretationResult = interpretation(test, o);
+                        isolate.setOrganism(o.getOrganism());
+                        test.addResult(interpretationResult);
+                    }
+                );
+            }
+        }
+
+        // B. Apply expert rules
+        applyExpertRules(isolate);
+    }
+
+    private void applyExpertRules(IsolateDTO isolate) {
+        List<ExpertInterpretationRules> expertInterpretationRulesList = expertInterpretationRulesRepository.findAll();
+        for (int i = 0; i < expertInterpretationRulesList.size(); i++) {
+            ExpertInterpretationRules expertInterpretationRules = expertInterpretationRulesList.get(i);
+
+            switch (expertInterpretationRules.getOrganismCodeType()) {
+                case GENUS_CODE:
+                    if (isolate.getOrganism().getGenusCode().equals(expertInterpretationRules.getOrganismCode())) {
+                        applyExpertRule(expertInterpretationRules, isolate);
+                    }
+                    break;
+                case FAMILY_CODE:
+                    if (isolate.getOrganism().getFamilyCode().equals(expertInterpretationRules.getOrganismCode())) {
+                        applyExpertRule(expertInterpretationRules, isolate);
+                    }
+                    break;
+                case SEROVAR_GROUP:
+                    if (isolate.getOrganism().getSerovarGroup().equals(expertInterpretationRules.getOrganismCode())) {
+                        applyExpertRule(expertInterpretationRules, isolate);
+                    }
+                    break;
+                default:
+            }
+        }
+    }
+
+    public boolean notMatchRuleCriteria(ExpertInterpretationRules expertInterpretationRules, IsolateDTO isolate) {
+        List<RuleDTO> ruleDTOList = parseRules(expertInterpretationRules.getRuleCriteria())
+            .stream()
+            .map(
+                r -> {
+                    processRule(r, isolate);
+                    return r;
+                }
+            )
+            .collect(Collectors.toList());
+        // Rebuild the rule to boolean logic
+        String rule = expertInterpretationRules.getRuleCriteria();
+        for (int i = 0; i < ruleDTOList.size(); i++) {
+            rule = rule.replace(ruleDTOList.get(i).getRaw(), ruleDTOList.get(i).getResult() ? "true" : "false");
+        }
+        ExpressionParser parser = new SpelExpressionParser();
+        Boolean apply = parser.parseExpression(rule).getValue(Boolean.class);
+        if (apply == null || !apply) {
+            return true;
+        }
+        return false;
+    }
+
+    public void applyExpertRule(ExpertInterpretationRules expertInterpretationRules, IsolateDTO isolate) {
+        // CHECK RULE CRITERIA
+        if (notMatchRuleCriteria(expertInterpretationRules, isolate)) {
+            return;
+        }
+
+        // ANTIBIOTIC
+        String affectAntibiotic = expertInterpretationRules.getAffectedAntibiotics() + ",";
+        String exceptionAntibiotic = expertInterpretationRules.getAntibioticExceptions() + ",";
+        for (int i = 0; i < isolate.getTest().size(); i++) {
+            // no result => not set
+            if (isolate.getTest().get(i).getResult() == null) {
+                continue;
+            }
+            // antibiotic in the exception list => not set
+            if (exceptionAntibiotic.contains(isolate.getTest().get(i).getAntibiotic().getWhonetAbxCode() + ",")) {
+                continue;
+            }
+            isolate.getTest().get(i).setExpertRuleCode(expertInterpretationRules.getRuleCode());
+            if (affectAntibiotic.contains(isolate.getTest().get(i).getAntibiotic().getWhonetAbxCode() + ",")) {
+                for (int j = 0; j < isolate.getTest().get(i).getResult().size(); j++) {
+                    isolate.getTest().get(i).getResult().get(j).setResult("R");
+                }
+            }
+        }
+    }
+
+    /***
+     *
+     *
+     * @param r
+     * @param isolate
+     *
+     * RULE_CRITERIA are of three types.
+     *   i. A three-letter antibiotic code. e.g., OXA=NS, which means “Not susceptible to
+     * Oxacillin”
+     *
+     *   ii. A data field. e.g., ESBL=+, which means “The ESBL data field must have a value
+     * of ‘+’”
+     *
+     *   iii. Antibiotic class. There is only one example in use presently: CEPH3=R, meaning
+     * “Resistant to any of the Cephalosporin III antibiotics.” In this case, it will be
+     * necessary to join or otherwise lookup the PROF_CLASS=CEPH3 antibiotics.
+     *
+     */
+    public void processRule(RuleDTO r, IsolateDTO isolate) {
+        // case 2
+        if (isolate.getDataFields().containsKey(r.getName())) {
+            r.setResult(isolate.getDataFields().get(r.getName()).contains(r.getValue()));
+        }
+
+        // case 1
+        r.setResult(false);
+        for (int i = 0; i < isolate.getTest().size(); i++) {
+            System.out.println(isolate.getTest().get(i).getAntibiotic() == null ? "null" : "?");
+            // case 2
+            if (
+                (
+                    isolate.getTest().get(i).getAntibiotic().getWhonetAbxCode() != null &&
+                    isolate.getTest().get(i).getAntibiotic().getWhonetAbxCode().equals(r.getName())
+                ) ||
+                // case 3
+                (
+                    isolate.getTest().get(i).getAntibiotic().getProfClass() != null &&
+                    isolate.getTest().get(i).getAntibiotic().getProfClass().equals(r.getName())
+                )
+            ) {
+                for (int j = 0; j < isolate.getTest().get(i).getResult().size(); j++) {
+                    if (isolate.getTest().get(i).getResult().get(j).getResult().equals(r.getValue())) {
+                        r.setResult(true);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    /***
+     *
+     * Parse rules into chunks
+     *      *
+     *      * MECA_PCR=+ OR MRSA=+ OR OXA_SCREEN=+ OR MRSA_SCRN=+ OR PBP2A_AGGL=+
+     *      *
+     *      * => List Rule
+     *      *        - name = MECA_PCR, value = +
+     *      *        - name = MRSA, value = +
+     *      *        - name = OXA_SCREEN, value = +
+     *      *        ...
+     *
+     * */
+    public List<RuleDTO> parseRules(String ruleCriteria) {
+        String pattern = "(\\w+)=(\\w+|-|\\+)";
+
+        // Create a Pattern object
+        Pattern r = Pattern.compile(pattern);
+
+        // Now create matcher object.
+        Matcher m = r.matcher(ruleCriteria);
+        List<RuleDTO> result = new ArrayList<>();
+        while (m.find()) {
+            if (m.groupCount() == 2) {
+                result.add(new RuleDTO(m.group(0), m.group(1), m.group(2)));
+            }
+        }
+        return result;
     }
 
     private boolean notEmpty(String s) {
         return s != null && !s.equals("");
     }
 
-    public InterpretationResult interpretation(TestResultDTO testResult, OrganismBreakPointDTO organismBreakPointDTO) {
+    public InterpretationResult interpretation(TestDTO testResult, OrganismBreakPointDTO organismBreakPointDTO) {
         InterpretationResult result = new InterpretationResult();
 
         Double valueToInterpretation = testResult.getValue();

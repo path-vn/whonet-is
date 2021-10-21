@@ -38,17 +38,18 @@ public class CustomRepository {
     }
 
     public List<OrganismIntrinsicResistanceAntibioticDTO> getIntrinsicResistance(String orgCode, String abxCode) {
+        abxCode = abxCode.split("_")[0];
         String sql =
-            "-- Find the intrinsic resistance rules for the organism specified in the WHERE clause. " +
-            "-- The organism might only match at a higher level. For example, a rule applying to all Enterobacterales should be returned " +
-            "-- when the isolate's organism is a Salmonella sp. " +
+            //            "-- Find the intrinsic resistance rules for the organism specified in the WHERE clause. " +
+            //            "-- The organism might only match at a higher level. For example, a rule applying to all Enterobacterales should be returned " +
+            //            "-- when the isolate's organism is a Salmonella sp. " +
             "SELECT i.id as iid, a.id as aid " +
             "FROM organisms o " +
             " INNER JOIN ( " +
             "  SELECT *, " +
-            "   -- This would need to be expanded if we needed to support more than two exceptions for a single rule. " +
-            "   -- In C# it will be implemented to handle an arbitrary number of items. " +
-            "   -- Tried a CTE here, but couldn't get EXCEPTION_ORGANISM_CODE to feed into the base case of the recurrsion. " +
+            //            "   -- This would need to be expanded if we needed to support more than two exceptions for a single rule. " +
+            //            "   -- In C# it will be implemented to handle an arbitrary number of items. " +
+            //            "   -- Tried a CTE here, but couldn't get EXCEPTION_ORGANISM_CODE to feed into the base case of the recurrsion. " +
             "   substr(EXCEPTION_ORGANISM_CODE, 1, instr(EXCEPTION_ORGANISM_CODE, ',') - 1)  AS FirstException,  " +
             "   substr(EXCEPTION_ORGANISM_CODE, instr(EXCEPTION_ORGANISM_CODE, ',') + 1) AS SecondException " +
             "  FROM intrinsic_resistance " +
@@ -116,7 +117,7 @@ public class CustomRepository {
             " AND o.TAXONOMIC_STATUS = 'C' " +
             " AND i.ABX_CODE = :abxCode " +
             " AND ( " +
-            "   -- Organism exceptions to the intrinsic rule, if applicable. " +
+            //            "   -- Organism exceptions to the intrinsic rule, if applicable. " +
             "   coalesce(i.EXCEPTION_ORGANISM_CODE, '') = '' " +
             "   OR NOT ( " +
             "    ( " +
