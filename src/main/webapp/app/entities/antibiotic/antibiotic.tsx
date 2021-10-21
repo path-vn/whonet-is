@@ -118,6 +118,10 @@ export const Antibiotic = (props: IAntibioticProps) => {
                 <th className="hand" onClick={sort('guidelines')}>
                   <Translate contentKey="amrInterpreationApp.antibiotic.guidelines">Guidelines</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
+                <th className="hand" onClick={sort('antiboticClass')}>
+                  <Translate contentKey="amrInterpreationApp.antibiotic.antiboticClass">Antibotic Class</Translate>{' '}
+                  <FontAwesomeIcon icon="sort" />
+                </th>
                 <th className="hand" onClick={sort('clsi')}>
                   <Translate contentKey="amrInterpreationApp.antibiotic.clsi">Clsi</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
@@ -232,6 +236,7 @@ export const Antibiotic = (props: IAntibioticProps) => {
                   <td>{antibiotic.userCode}</td>
                   <td>{antibiotic.antibiotic}</td>
                   <td>{antibiotic.guidelines}</td>
+                  <td>{antibiotic.antiboticClass}</td>
                   <td>{antibiotic.clsi}</td>
                   <td>{antibiotic.eucast}</td>
                   <td>{antibiotic.sfm}</td>

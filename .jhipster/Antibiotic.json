@@ -33,6 +33,10 @@
       "fieldType": "String"
     },
     {
+      "fieldName": "antiboticClass",
+      "fieldType": "String"
+    },
+    {
       "fieldName": "clsi",
       "fieldType": "String"
     },

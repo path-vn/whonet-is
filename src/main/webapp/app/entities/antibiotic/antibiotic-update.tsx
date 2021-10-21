@@ -124,6 +124,12 @@ export const AntibioticUpdate = (props: IAntibioticUpdateProps) => {
                 <AvField id="antibiotic-guidelines" data-cy="guidelines" type="text" name="guidelines" />
               </AvGroup>
               <AvGroup>
+                <Label id="antiboticClassLabel" for="antibiotic-antiboticClass">
+                  <Translate contentKey="amrInterpreationApp.antibiotic.antiboticClass">Antibotic Class</Translate>
+                </Label>
+                <AvField id="antibiotic-antiboticClass" data-cy="antiboticClass" type="text" name="antiboticClass" />
+              </AvGroup>
+              <AvGroup>
                 <Label id="clsiLabel" for="antibiotic-clsi">
                   <Translate contentKey="amrInterpreationApp.antibiotic.clsi">Clsi</Translate>
                 </Label>

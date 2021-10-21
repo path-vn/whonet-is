@@ -26,6 +26,7 @@
       "userCode": "User Code",
       "antibiotic": "Antibiotic",
       "guidelines": "Guidelines",
+      "antiboticClass": "Antibotic Class",
       "clsi": "Clsi",
       "eucast": "Eucast",
       "sfm": "Sfm",

@@ -110,6 +110,9 @@ public class AntibioticQueryService extends QueryService<Antibiotic> {
             if (criteria.getGuidelines() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getGuidelines(), Antibiotic_.guidelines));
             }
+            if (criteria.getAntiboticClass() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getAntiboticClass(), Antibiotic_.antiboticClass));
+            }
             if (criteria.getClsi() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getClsi(), Antibiotic_.clsi));
             }

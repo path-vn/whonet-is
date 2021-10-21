@@ -56,6 +56,9 @@ class AntibioticResourceIT {
     private static final String DEFAULT_GUIDELINES = "AAAAAAAAAA";
     private static final String UPDATED_GUIDELINES = "BBBBBBBBBB";
 
+    private static final String DEFAULT_ANTIBOTIC_CLASS = "AAAAAAAAAA";
+    private static final String UPDATED_ANTIBOTIC_CLASS = "BBBBBBBBBB";
+
     private static final String DEFAULT_CLSI = "AAAAAAAAAA";
     private static final String UPDATED_CLSI = "BBBBBBBBBB";
 
@@ -182,6 +185,7 @@ class AntibioticResourceIT {
             .userCode(DEFAULT_USER_CODE)
             .antibiotic(DEFAULT_ANTIBIOTIC)
             .guidelines(DEFAULT_GUIDELINES)
+            .antiboticClass(DEFAULT_ANTIBOTIC_CLASS)
             .clsi(DEFAULT_CLSI)
             .eucast(DEFAULT_EUCAST)
             .sfm(DEFAULT_SFM)
@@ -231,6 +235,7 @@ class AntibioticResourceIT {
             .userCode(UPDATED_USER_CODE)
             .antibiotic(UPDATED_ANTIBIOTIC)
             .guidelines(UPDATED_GUIDELINES)
+            .antiboticClass(UPDATED_ANTIBOTIC_CLASS)
             .clsi(UPDATED_CLSI)
             .eucast(UPDATED_EUCAST)
             .sfm(UPDATED_SFM)
@@ -291,6 +296,7 @@ class AntibioticResourceIT {
         assertThat(testAntibiotic.getUserCode()).isEqualTo(DEFAULT_USER_CODE);
         assertThat(testAntibiotic.getAntibiotic()).isEqualTo(DEFAULT_ANTIBIOTIC);
         assertThat(testAntibiotic.getGuidelines()).isEqualTo(DEFAULT_GUIDELINES);
+        assertThat(testAntibiotic.getAntiboticClass()).isEqualTo(DEFAULT_ANTIBOTIC_CLASS);
         assertThat(testAntibiotic.getClsi()).isEqualTo(DEFAULT_CLSI);
         assertThat(testAntibiotic.getEucast()).isEqualTo(DEFAULT_EUCAST);
         assertThat(testAntibiotic.getSfm()).isEqualTo(DEFAULT_SFM);
@@ -362,6 +368,7 @@ class AntibioticResourceIT {
             .andExpect(jsonPath("$.[*].userCode").value(hasItem(DEFAULT_USER_CODE)))
             .andExpect(jsonPath("$.[*].antibiotic").value(hasItem(DEFAULT_ANTIBIOTIC)))
             .andExpect(jsonPath("$.[*].guidelines").value(hasItem(DEFAULT_GUIDELINES)))
+            .andExpect(jsonPath("$.[*].antiboticClass").value(hasItem(DEFAULT_ANTIBOTIC_CLASS)))
             .andExpect(jsonPath("$.[*].clsi").value(hasItem(DEFAULT_CLSI)))
             .andExpect(jsonPath("$.[*].eucast").value(hasItem(DEFAULT_EUCAST)))
             .andExpect(jsonPath("$.[*].sfm").value(hasItem(DEFAULT_SFM)))
@@ -414,6 +421,7 @@ class AntibioticResourceIT {
             .andExpect(jsonPath("$.userCode").value(DEFAULT_USER_CODE))
             .andExpect(jsonPath("$.antibiotic").value(DEFAULT_ANTIBIOTIC))
             .andExpect(jsonPath("$.guidelines").value(DEFAULT_GUIDELINES))
+            .andExpect(jsonPath("$.antiboticClass").value(DEFAULT_ANTIBOTIC_CLASS))
             .andExpect(jsonPath("$.clsi").value(DEFAULT_CLSI))
             .andExpect(jsonPath("$.eucast").value(DEFAULT_EUCAST))
             .andExpect(jsonPath("$.sfm").value(DEFAULT_SFM))
@@ -1086,6 +1094,84 @@ class AntibioticResourceIT {
 
         // Get all the antibioticList where guidelines does not contain UPDATED_GUIDELINES
         defaultAntibioticShouldBeFound("guidelines.doesNotContain=" + UPDATED_GUIDELINES);
+    }
+
+    @Test
+    @Transactional
+    void getAllAntibioticsByAntiboticClassIsEqualToSomething() throws Exception {
+        // Initialize the database
+        antibioticRepository.saveAndFlush(antibiotic);
+
+        // Get all the antibioticList where antiboticClass equals to DEFAULT_ANTIBOTIC_CLASS
+        defaultAntibioticShouldBeFound("antiboticClass.equals=" + DEFAULT_ANTIBOTIC_CLASS);
+
+        // Get all the antibioticList where antiboticClass equals to UPDATED_ANTIBOTIC_CLASS
+        defaultAntibioticShouldNotBeFound("antiboticClass.equals=" + UPDATED_ANTIBOTIC_CLASS);
+    }
+
+    @Test
+    @Transactional
+    void getAllAntibioticsByAntiboticClassIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        antibioticRepository.saveAndFlush(antibiotic);
+
+        // Get all the antibioticList where antiboticClass not equals to DEFAULT_ANTIBOTIC_CLASS
+        defaultAntibioticShouldNotBeFound("antiboticClass.notEquals=" + DEFAULT_ANTIBOTIC_CLASS);
+
+        // Get all the antibioticList where antiboticClass not equals to UPDATED_ANTIBOTIC_CLASS
+        defaultAntibioticShouldBeFound("antiboticClass.notEquals=" + UPDATED_ANTIBOTIC_CLASS);
+    }
+
+    @Test
+    @Transactional
+    void getAllAntibioticsByAntiboticClassIsInShouldWork() throws Exception {
+        // Initialize the database
+        antibioticRepository.saveAndFlush(antibiotic);
+
+        // Get all the antibioticList where antiboticClass in DEFAULT_ANTIBOTIC_CLASS or UPDATED_ANTIBOTIC_CLASS
+        defaultAntibioticShouldBeFound("antiboticClass.in=" + DEFAULT_ANTIBOTIC_CLASS + "," + UPDATED_ANTIBOTIC_CLASS);
+
+        // Get all the antibioticList where antiboticClass equals to UPDATED_ANTIBOTIC_CLASS
+        defaultAntibioticShouldNotBeFound("antiboticClass.in=" + UPDATED_ANTIBOTIC_CLASS);
+    }
+
+    @Test
+    @Transactional
+    void getAllAntibioticsByAntiboticClassIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        antibioticRepository.saveAndFlush(antibiotic);
+
+        // Get all the antibioticList where antiboticClass is not null
+        defaultAntibioticShouldBeFound("antiboticClass.specified=true");
+
+        // Get all the antibioticList where antiboticClass is null
+        defaultAntibioticShouldNotBeFound("antiboticClass.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllAntibioticsByAntiboticClassContainsSomething() throws Exception {
+        // Initialize the database
+        antibioticRepository.saveAndFlush(antibiotic);
+
+        // Get all the antibioticList where antiboticClass contains DEFAULT_ANTIBOTIC_CLASS
+        defaultAntibioticShouldBeFound("antiboticClass.contains=" + DEFAULT_ANTIBOTIC_CLASS);
+
+        // Get all the antibioticList where antiboticClass contains UPDATED_ANTIBOTIC_CLASS
+        defaultAntibioticShouldNotBeFound("antiboticClass.contains=" + UPDATED_ANTIBOTIC_CLASS);
+    }
+
+    @Test
+    @Transactional
+    void getAllAntibioticsByAntiboticClassNotContainsSomething() throws Exception {
+        // Initialize the database
+        antibioticRepository.saveAndFlush(antibiotic);
+
+        // Get all the antibioticList where antiboticClass does not contain DEFAULT_ANTIBOTIC_CLASS
+        defaultAntibioticShouldNotBeFound("antiboticClass.doesNotContain=" + DEFAULT_ANTIBOTIC_CLASS);
+
+        // Get all the antibioticList where antiboticClass does not contain UPDATED_ANTIBOTIC_CLASS
+        defaultAntibioticShouldBeFound("antiboticClass.doesNotContain=" + UPDATED_ANTIBOTIC_CLASS);
     }
 
     @Test
@@ -3445,6 +3531,7 @@ class AntibioticResourceIT {
             .andExpect(jsonPath("$.[*].userCode").value(hasItem(DEFAULT_USER_CODE)))
             .andExpect(jsonPath("$.[*].antibiotic").value(hasItem(DEFAULT_ANTIBIOTIC)))
             .andExpect(jsonPath("$.[*].guidelines").value(hasItem(DEFAULT_GUIDELINES)))
+            .andExpect(jsonPath("$.[*].antiboticClass").value(hasItem(DEFAULT_ANTIBOTIC_CLASS)))
             .andExpect(jsonPath("$.[*].clsi").value(hasItem(DEFAULT_CLSI)))
             .andExpect(jsonPath("$.[*].eucast").value(hasItem(DEFAULT_EUCAST)))
             .andExpect(jsonPath("$.[*].sfm").value(hasItem(DEFAULT_SFM)))
@@ -3531,6 +3618,7 @@ class AntibioticResourceIT {
             .userCode(UPDATED_USER_CODE)
             .antibiotic(UPDATED_ANTIBIOTIC)
             .guidelines(UPDATED_GUIDELINES)
+            .antiboticClass(UPDATED_ANTIBOTIC_CLASS)
             .clsi(UPDATED_CLSI)
             .eucast(UPDATED_EUCAST)
             .sfm(UPDATED_SFM)
@@ -3583,6 +3671,7 @@ class AntibioticResourceIT {
         assertThat(testAntibiotic.getUserCode()).isEqualTo(UPDATED_USER_CODE);
         assertThat(testAntibiotic.getAntibiotic()).isEqualTo(UPDATED_ANTIBIOTIC);
         assertThat(testAntibiotic.getGuidelines()).isEqualTo(UPDATED_GUIDELINES);
+        assertThat(testAntibiotic.getAntiboticClass()).isEqualTo(UPDATED_ANTIBOTIC_CLASS);
         assertThat(testAntibiotic.getClsi()).isEqualTo(UPDATED_CLSI);
         assertThat(testAntibiotic.getEucast()).isEqualTo(UPDATED_EUCAST);
         assertThat(testAntibiotic.getSfm()).isEqualTo(UPDATED_SFM);
@@ -3697,18 +3786,19 @@ class AntibioticResourceIT {
             .dinCode(UPDATED_DIN_CODE)
             .eucastCode(UPDATED_EUCAST_CODE)
             .userCode(UPDATED_USER_CODE)
-            .clsi(UPDATED_CLSI)
-            .sfm(UPDATED_SFM)
-            .din(UPDATED_DIN)
+            .antiboticClass(UPDATED_ANTIBOTIC_CLASS)
+            .eucast(UPDATED_EUCAST)
+            .bsac(UPDATED_BSAC)
+            .abxNumber(UPDATED_ABX_NUMBER)
             .potency(UPDATED_POTENCY)
-            .atcCode(UPDATED_ATC_CODE)
+            .ciaCategory(UPDATED_CIA_CATEGORY)
             .clsiOrder(UPDATED_CLSI_ORDER)
             .eucastOrder(UPDATED_EUCAST_ORDER)
-            .human(UPDATED_HUMAN)
+            .veterinary(UPDATED_VETERINARY)
             .animalGp(UPDATED_ANIMAL_GP)
             .loinccomp(UPDATED_LOINCCOMP)
-            .loincgen(UPDATED_LOINCGEN)
-            .loincmic(UPDATED_LOINCMIC)
+            .loincdisk(UPDATED_LOINCDISK)
+            .loincafb(UPDATED_LOINCAFB)
             .loincsbt(UPDATED_LOINCSBT)
             .loincmlc(UPDATED_LOINCMLC)
             .dateEntered(UPDATED_DATE_ENTERED)
@@ -3735,31 +3825,32 @@ class AntibioticResourceIT {
         assertThat(testAntibiotic.getUserCode()).isEqualTo(UPDATED_USER_CODE);
         assertThat(testAntibiotic.getAntibiotic()).isEqualTo(DEFAULT_ANTIBIOTIC);
         assertThat(testAntibiotic.getGuidelines()).isEqualTo(DEFAULT_GUIDELINES);
-        assertThat(testAntibiotic.getClsi()).isEqualTo(UPDATED_CLSI);
-        assertThat(testAntibiotic.getEucast()).isEqualTo(DEFAULT_EUCAST);
-        assertThat(testAntibiotic.getSfm()).isEqualTo(UPDATED_SFM);
+        assertThat(testAntibiotic.getAntiboticClass()).isEqualTo(UPDATED_ANTIBOTIC_CLASS);
+        assertThat(testAntibiotic.getClsi()).isEqualTo(DEFAULT_CLSI);
+        assertThat(testAntibiotic.getEucast()).isEqualTo(UPDATED_EUCAST);
+        assertThat(testAntibiotic.getSfm()).isEqualTo(DEFAULT_SFM);
         assertThat(testAntibiotic.getSrga()).isEqualTo(DEFAULT_SRGA);
-        assertThat(testAntibiotic.getBsac()).isEqualTo(DEFAULT_BSAC);
-        assertThat(testAntibiotic.getDin()).isEqualTo(UPDATED_DIN);
+        assertThat(testAntibiotic.getBsac()).isEqualTo(UPDATED_BSAC);
+        assertThat(testAntibiotic.getDin()).isEqualTo(DEFAULT_DIN);
         assertThat(testAntibiotic.getNeo()).isEqualTo(DEFAULT_NEO);
         assertThat(testAntibiotic.getAfa()).isEqualTo(DEFAULT_AFA);
-        assertThat(testAntibiotic.getAbxNumber()).isEqualTo(DEFAULT_ABX_NUMBER);
+        assertThat(testAntibiotic.getAbxNumber()).isEqualTo(UPDATED_ABX_NUMBER);
         assertThat(testAntibiotic.getPotency()).isEqualTo(UPDATED_POTENCY);
-        assertThat(testAntibiotic.getAtcCode()).isEqualTo(UPDATED_ATC_CODE);
+        assertThat(testAntibiotic.getAtcCode()).isEqualTo(DEFAULT_ATC_CODE);
         assertThat(testAntibiotic.getProfClass()).isEqualTo(DEFAULT_PROF_CLASS);
-        assertThat(testAntibiotic.getCiaCategory()).isEqualTo(DEFAULT_CIA_CATEGORY);
+        assertThat(testAntibiotic.getCiaCategory()).isEqualTo(UPDATED_CIA_CATEGORY);
         assertThat(testAntibiotic.getClsiOrder()).isEqualTo(UPDATED_CLSI_ORDER);
         assertThat(testAntibiotic.getEucastOrder()).isEqualTo(UPDATED_EUCAST_ORDER);
-        assertThat(testAntibiotic.getHuman()).isEqualTo(UPDATED_HUMAN);
-        assertThat(testAntibiotic.getVeterinary()).isEqualTo(DEFAULT_VETERINARY);
+        assertThat(testAntibiotic.getHuman()).isEqualTo(DEFAULT_HUMAN);
+        assertThat(testAntibiotic.getVeterinary()).isEqualTo(UPDATED_VETERINARY);
         assertThat(testAntibiotic.getAnimalGp()).isEqualTo(UPDATED_ANIMAL_GP);
         assertThat(testAntibiotic.getLoinccomp()).isEqualTo(UPDATED_LOINCCOMP);
-        assertThat(testAntibiotic.getLoincgen()).isEqualTo(UPDATED_LOINCGEN);
-        assertThat(testAntibiotic.getLoincdisk()).isEqualTo(DEFAULT_LOINCDISK);
-        assertThat(testAntibiotic.getLoincmic()).isEqualTo(UPDATED_LOINCMIC);
+        assertThat(testAntibiotic.getLoincgen()).isEqualTo(DEFAULT_LOINCGEN);
+        assertThat(testAntibiotic.getLoincdisk()).isEqualTo(UPDATED_LOINCDISK);
+        assertThat(testAntibiotic.getLoincmic()).isEqualTo(DEFAULT_LOINCMIC);
         assertThat(testAntibiotic.getLoincetest()).isEqualTo(DEFAULT_LOINCETEST);
         assertThat(testAntibiotic.getLoincslow()).isEqualTo(DEFAULT_LOINCSLOW);
-        assertThat(testAntibiotic.getLoincafb()).isEqualTo(DEFAULT_LOINCAFB);
+        assertThat(testAntibiotic.getLoincafb()).isEqualTo(UPDATED_LOINCAFB);
         assertThat(testAntibiotic.getLoincsbt()).isEqualTo(UPDATED_LOINCSBT);
         assertThat(testAntibiotic.getLoincmlc()).isEqualTo(UPDATED_LOINCMLC);
         assertThat(testAntibiotic.getDateEntered()).isEqualTo(UPDATED_DATE_ENTERED);
@@ -3788,6 +3879,7 @@ class AntibioticResourceIT {
             .userCode(UPDATED_USER_CODE)
             .antibiotic(UPDATED_ANTIBIOTIC)
             .guidelines(UPDATED_GUIDELINES)
+            .antiboticClass(UPDATED_ANTIBOTIC_CLASS)
             .clsi(UPDATED_CLSI)
             .eucast(UPDATED_EUCAST)
             .sfm(UPDATED_SFM)
@@ -3839,6 +3931,7 @@ class AntibioticResourceIT {
         assertThat(testAntibiotic.getUserCode()).isEqualTo(UPDATED_USER_CODE);
         assertThat(testAntibiotic.getAntibiotic()).isEqualTo(UPDATED_ANTIBIOTIC);
         assertThat(testAntibiotic.getGuidelines()).isEqualTo(UPDATED_GUIDELINES);
+        assertThat(testAntibiotic.getAntiboticClass()).isEqualTo(UPDATED_ANTIBOTIC_CLASS);
         assertThat(testAntibiotic.getClsi()).isEqualTo(UPDATED_CLSI);
         assertThat(testAntibiotic.getEucast()).isEqualTo(UPDATED_EUCAST);
         assertThat(testAntibiotic.getSfm()).isEqualTo(UPDATED_SFM);
