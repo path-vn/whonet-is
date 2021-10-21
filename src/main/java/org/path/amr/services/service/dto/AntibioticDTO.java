@@ -26,6 +26,8 @@ public class AntibioticDTO implements Serializable {
 
     private String guidelines;
 
+    private String antiboticClass;
+
     private String clsi;
 
     private String eucast;
@@ -156,6 +158,14 @@ public class AntibioticDTO implements Serializable {
 
     public void setGuidelines(String guidelines) {
         this.guidelines = guidelines;
+    }
+
+    public String getAntiboticClass() {
+        return antiboticClass;
+    }
+
+    public void setAntiboticClass(String antiboticClass) {
+        this.antiboticClass = antiboticClass;
     }
 
     public String getClsi() {
@@ -432,6 +442,7 @@ public class AntibioticDTO implements Serializable {
             ", userCode='" + getUserCode() + "'" +
             ", antibiotic='" + getAntibiotic() + "'" +
             ", guidelines='" + getGuidelines() + "'" +
+            ", antiboticClass='" + getAntiboticClass() + "'" +
             ", clsi='" + getClsi() + "'" +
             ", eucast='" + getEucast() + "'" +
             ", sfm='" + getSfm() + "'" +

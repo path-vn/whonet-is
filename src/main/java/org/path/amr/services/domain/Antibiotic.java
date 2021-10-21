@@ -43,6 +43,9 @@ public class Antibiotic implements Serializable {
     @Column(name = "guidelines")
     private String guidelines;
 
+    @Column(name = "antibotic_class")
+    private String antiboticClass;
+
     @Column(name = "clsi")
     private String clsi;
 
@@ -249,6 +252,19 @@ public class Antibiotic implements Serializable {
 
     public void setGuidelines(String guidelines) {
         this.guidelines = guidelines;
+    }
+
+    public String getAntiboticClass() {
+        return this.antiboticClass;
+    }
+
+    public Antibiotic antiboticClass(String antiboticClass) {
+        this.antiboticClass = antiboticClass;
+        return this;
+    }
+
+    public void setAntiboticClass(String antiboticClass) {
+        this.antiboticClass = antiboticClass;
     }
 
     public String getClsi() {
@@ -673,6 +689,7 @@ public class Antibiotic implements Serializable {
             ", userCode='" + getUserCode() + "'" +
             ", antibiotic='" + getAntibiotic() + "'" +
             ", guidelines='" + getGuidelines() + "'" +
+            ", antiboticClass='" + getAntiboticClass() + "'" +
             ", clsi='" + getClsi() + "'" +
             ", eucast='" + getEucast() + "'" +
             ", sfm='" + getSfm() + "'" +

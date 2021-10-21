@@ -119,95 +119,97 @@ describe('Antibiotic e2e test', () => {
 
     cy.get(`[data-cy="guidelines"]`).type('Shoes', { force: true }).invoke('val').should('match', new RegExp('Shoes'));
 
-    cy.get(`[data-cy="clsi"]`).type('blockchains', { force: true }).invoke('val').should('match', new RegExp('blockchains'));
+    cy.get(`[data-cy="antiboticClass"]`).type('blockchains', { force: true }).invoke('val').should('match', new RegExp('blockchains'));
 
-    cy.get(`[data-cy="eucast"]`)
+    cy.get(`[data-cy="clsi"]`)
       .type('Cotton Implementation solution', { force: true })
       .invoke('val')
       .should('match', new RegExp('Cotton Implementation solution'));
 
-    cy.get(`[data-cy="sfm"]`).type('Towels Gambia', { force: true }).invoke('val').should('match', new RegExp('Towels Gambia'));
+    cy.get(`[data-cy="eucast"]`).type('Towels Gambia', { force: true }).invoke('val').should('match', new RegExp('Towels Gambia'));
 
-    cy.get(`[data-cy="srga"]`)
+    cy.get(`[data-cy="sfm"]`)
       .type('Cambridgeshire Designer', { force: true })
       .invoke('val')
       .should('match', new RegExp('Cambridgeshire Designer'));
 
-    cy.get(`[data-cy="bsac"]`).type('primary', { force: true }).invoke('val').should('match', new RegExp('primary'));
+    cy.get(`[data-cy="srga"]`).type('primary', { force: true }).invoke('val').should('match', new RegExp('primary'));
 
-    cy.get(`[data-cy="din"]`).type('virtual', { force: true }).invoke('val').should('match', new RegExp('virtual'));
+    cy.get(`[data-cy="bsac"]`).type('virtual', { force: true }).invoke('val').should('match', new RegExp('virtual'));
 
-    cy.get(`[data-cy="neo"]`).type('port Minnesota plum', { force: true }).invoke('val').should('match', new RegExp('port Minnesota plum'));
+    cy.get(`[data-cy="din"]`).type('port Minnesota plum', { force: true }).invoke('val').should('match', new RegExp('port Minnesota plum'));
 
-    cy.get(`[data-cy="afa"]`).type('Program', { force: true }).invoke('val').should('match', new RegExp('Program'));
+    cy.get(`[data-cy="neo"]`).type('Program', { force: true }).invoke('val').should('match', new RegExp('Program'));
 
-    cy.get(`[data-cy="abxNumber"]`).type('Loan', { force: true }).invoke('val').should('match', new RegExp('Loan'));
+    cy.get(`[data-cy="afa"]`).type('Loan', { force: true }).invoke('val').should('match', new RegExp('Loan'));
 
-    cy.get(`[data-cy="potency"]`).type('Panama Iowa', { force: true }).invoke('val').should('match', new RegExp('Panama Iowa'));
+    cy.get(`[data-cy="abxNumber"]`).type('Panama Iowa', { force: true }).invoke('val').should('match', new RegExp('Panama Iowa'));
 
-    cy.get(`[data-cy="atcCode"]`)
+    cy.get(`[data-cy="potency"]`)
       .type('hacking turquoise Synergistic', { force: true })
       .invoke('val')
       .should('match', new RegExp('hacking turquoise Synergistic'));
 
-    cy.get(`[data-cy="profClass"]`)
+    cy.get(`[data-cy="atcCode"]`)
       .type('Tasty analyzer Small', { force: true })
       .invoke('val')
       .should('match', new RegExp('Tasty analyzer Small'));
 
-    cy.get(`[data-cy="ciaCategory"]`).type('Health', { force: true }).invoke('val').should('match', new RegExp('Health'));
+    cy.get(`[data-cy="profClass"]`).type('Health', { force: true }).invoke('val').should('match', new RegExp('Health'));
 
-    cy.get(`[data-cy="clsiOrder"]`).type('firewall', { force: true }).invoke('val').should('match', new RegExp('firewall'));
+    cy.get(`[data-cy="ciaCategory"]`).type('firewall', { force: true }).invoke('val').should('match', new RegExp('firewall'));
 
-    cy.get(`[data-cy="eucastOrder"]`)
+    cy.get(`[data-cy="clsiOrder"]`)
       .type('Toys National Branding', { force: true })
       .invoke('val')
       .should('match', new RegExp('Toys National Branding'));
 
-    cy.get(`[data-cy="human"]`)
+    cy.get(`[data-cy="eucastOrder"]`)
       .type('Plains encompassing green', { force: true })
       .invoke('val')
       .should('match', new RegExp('Plains encompassing green'));
 
-    cy.get(`[data-cy="veterinary"]`).type('Market', { force: true }).invoke('val').should('match', new RegExp('Market'));
+    cy.get(`[data-cy="human"]`).type('Market', { force: true }).invoke('val').should('match', new RegExp('Market'));
 
-    cy.get(`[data-cy="animalGp"]`).type('Toys', { force: true }).invoke('val').should('match', new RegExp('Toys'));
+    cy.get(`[data-cy="veterinary"]`).type('Toys', { force: true }).invoke('val').should('match', new RegExp('Toys'));
 
-    cy.get(`[data-cy="loinccomp"]`).type('generate', { force: true }).invoke('val').should('match', new RegExp('generate'));
+    cy.get(`[data-cy="animalGp"]`).type('generate', { force: true }).invoke('val').should('match', new RegExp('generate'));
 
-    cy.get(`[data-cy="loincgen"]`).type('Estonia', { force: true }).invoke('val').should('match', new RegExp('Estonia'));
+    cy.get(`[data-cy="loinccomp"]`).type('Estonia', { force: true }).invoke('val').should('match', new RegExp('Estonia'));
 
-    cy.get(`[data-cy="loincdisk"]`).type('database', { force: true }).invoke('val').should('match', new RegExp('database'));
+    cy.get(`[data-cy="loincgen"]`).type('database', { force: true }).invoke('val').should('match', new RegExp('database'));
 
-    cy.get(`[data-cy="loincmic"]`).type('synthesizing', { force: true }).invoke('val').should('match', new RegExp('synthesizing'));
+    cy.get(`[data-cy="loincdisk"]`).type('synthesizing', { force: true }).invoke('val').should('match', new RegExp('synthesizing'));
 
-    cy.get(`[data-cy="loincetest"]`)
+    cy.get(`[data-cy="loincmic"]`)
       .type('Fantastic American Loan', { force: true })
       .invoke('val')
       .should('match', new RegExp('Fantastic American Loan'));
 
-    cy.get(`[data-cy="loincslow"]`)
+    cy.get(`[data-cy="loincetest"]`)
       .type('Pants Kingdom Bacon', { force: true })
       .invoke('val')
       .should('match', new RegExp('Pants Kingdom Bacon'));
 
-    cy.get(`[data-cy="loincafb"]`)
+    cy.get(`[data-cy="loincslow"]`)
       .type('Fantastic Research hack', { force: true })
       .invoke('val')
       .should('match', new RegExp('Fantastic Research hack'));
 
-    cy.get(`[data-cy="loincsbt"]`).type('cohesive', { force: true }).invoke('val').should('match', new RegExp('cohesive'));
+    cy.get(`[data-cy="loincafb"]`).type('cohesive', { force: true }).invoke('val').should('match', new RegExp('cohesive'));
 
-    cy.get(`[data-cy="loincmlc"]`).type('Unbranded', { force: true }).invoke('val').should('match', new RegExp('Unbranded'));
+    cy.get(`[data-cy="loincsbt"]`).type('Unbranded', { force: true }).invoke('val').should('match', new RegExp('Unbranded'));
 
-    cy.get(`[data-cy="dateEntered"]`).type('partnerships', { force: true }).invoke('val').should('match', new RegExp('partnerships'));
+    cy.get(`[data-cy="loincmlc"]`).type('partnerships', { force: true }).invoke('val').should('match', new RegExp('partnerships'));
 
-    cy.get(`[data-cy="dateModified"]`)
+    cy.get(`[data-cy="dateEntered"]`)
       .type('up Connecticut Korean', { force: true })
       .invoke('val')
       .should('match', new RegExp('up Connecticut Korean'));
 
-    cy.get(`[data-cy="comments"]`).type('Lead', { force: true }).invoke('val').should('match', new RegExp('Lead'));
+    cy.get(`[data-cy="dateModified"]`).type('Lead', { force: true }).invoke('val').should('match', new RegExp('Lead'));
+
+    cy.get(`[data-cy="comments"]`).type('Saint Intranet', { force: true }).invoke('val').should('match', new RegExp('Saint Intranet'));
 
     cy.get(entityCreateSaveButtonSelector).click({ force: true });
     cy.scrollTo('top', { ensureScrollable: false });

@@ -79,6 +79,12 @@ export const AntibioticDetail = (props: IAntibioticDetailProps) => {
           </dt>
           <dd>{antibioticEntity.guidelines}</dd>
           <dt>
+            <span id="antiboticClass">
+              <Translate contentKey="amrInterpreationApp.antibiotic.antiboticClass">Antibotic Class</Translate>
+            </span>
+          </dt>
+          <dd>{antibioticEntity.antiboticClass}</dd>
+          <dt>
             <span id="clsi">
               <Translate contentKey="amrInterpreationApp.antibiotic.clsi">Clsi</Translate>
             </span>

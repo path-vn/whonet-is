@@ -42,6 +42,8 @@ public class AntibioticCriteria implements Serializable, Criteria {
 
     private StringFilter guidelines;
 
+    private StringFilter antiboticClass;
+
     private StringFilter clsi;
 
     private StringFilter eucast;
@@ -114,6 +116,7 @@ public class AntibioticCriteria implements Serializable, Criteria {
         this.userCode = other.userCode == null ? null : other.userCode.copy();
         this.antibiotic = other.antibiotic == null ? null : other.antibiotic.copy();
         this.guidelines = other.guidelines == null ? null : other.guidelines.copy();
+        this.antiboticClass = other.antiboticClass == null ? null : other.antiboticClass.copy();
         this.clsi = other.clsi == null ? null : other.clsi.copy();
         this.eucast = other.eucast == null ? null : other.eucast.copy();
         this.sfm = other.sfm == null ? null : other.sfm.copy();
@@ -284,6 +287,21 @@ public class AntibioticCriteria implements Serializable, Criteria {
 
     public void setGuidelines(StringFilter guidelines) {
         this.guidelines = guidelines;
+    }
+
+    public StringFilter getAntiboticClass() {
+        return antiboticClass;
+    }
+
+    public StringFilter antiboticClass() {
+        if (antiboticClass == null) {
+            antiboticClass = new StringFilter();
+        }
+        return antiboticClass;
+    }
+
+    public void setAntiboticClass(StringFilter antiboticClass) {
+        this.antiboticClass = antiboticClass;
     }
 
     public StringFilter getClsi() {
@@ -755,6 +773,7 @@ public class AntibioticCriteria implements Serializable, Criteria {
             Objects.equals(userCode, that.userCode) &&
             Objects.equals(antibiotic, that.antibiotic) &&
             Objects.equals(guidelines, that.guidelines) &&
+            Objects.equals(antiboticClass, that.antiboticClass) &&
             Objects.equals(clsi, that.clsi) &&
             Objects.equals(eucast, that.eucast) &&
             Objects.equals(sfm, that.sfm) &&
@@ -800,6 +819,7 @@ public class AntibioticCriteria implements Serializable, Criteria {
             userCode,
             antibiotic,
             guidelines,
+            antiboticClass,
             clsi,
             eucast,
             sfm,
@@ -846,6 +866,7 @@ public class AntibioticCriteria implements Serializable, Criteria {
             (userCode != null ? "userCode=" + userCode + ", " : "") +
             (antibiotic != null ? "antibiotic=" + antibiotic + ", " : "") +
             (guidelines != null ? "guidelines=" + guidelines + ", " : "") +
+            (antiboticClass != null ? "antiboticClass=" + antiboticClass + ", " : "") +
             (clsi != null ? "clsi=" + clsi + ", " : "") +
             (eucast != null ? "eucast=" + eucast + ", " : "") +
             (sfm != null ? "sfm=" + sfm + ", " : "") +

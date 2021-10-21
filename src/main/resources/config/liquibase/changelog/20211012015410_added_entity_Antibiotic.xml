@@ -38,6 +38,9 @@
             <column name="guidelines" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="antibotic_class" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <column name="clsi" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
@@ -156,6 +159,7 @@
             <column name="user_code" type="string"/>
             <column name="antibiotic" type="string"/>
             <column name="guidelines" type="string"/>
+            <column name="antibotic_class" type="string"/>
             <column name="clsi" type="string"/>
             <column name="eucast" type="string"/>
             <column name="sfm" type="string"/>

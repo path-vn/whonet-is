@@ -8,6 +8,7 @@ export interface IAntibiotic {
   userCode?: string | null;
   antibiotic?: string | null;
   guidelines?: string | null;
+  antiboticClass?: string | null;
   clsi?: string | null;
   eucast?: string | null;
   sfm?: string | null;
