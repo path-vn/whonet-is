@@ -29,6 +29,7 @@ public class InterpretationService {
     public static final String GENUS_CODE = "GENUS_CODE";
     public static final String FAMILY_CODE = "FAMILY_CODE";
     public static final String SEROVAR_GROUP = "SEROVAR_GROUP";
+    public static final String DEFAULT_BREAKPOINT_TYPE = "Human";
 
     public static final short LESS_THAN = 1;
     public static final short LESS_THAN_OR_EQUAL = 2;
@@ -165,6 +166,8 @@ public class InterpretationService {
      * B. Interpretation algorithm – complete isolate
      */
     public void execute(IsolateDTO isolate) {
+        isolate.setBreakpointType(isolate.getBreakpointType() == null ? DEFAULT_BREAKPOINT_TYPE : isolate.getBreakpointType());
+
         for (int i = 0; i < isolate.getTest().size(); i++) {
             TestDTO test = isolate.getTest().get(i);
             String tmpStringValue = test.getRawValue();
@@ -250,17 +253,26 @@ public class InterpretationService {
 
             switch (expertInterpretationRules.getOrganismCodeType()) {
                 case GENUS_CODE:
-                    if (isolate.getOrganism().getGenusCode().equals(expertInterpretationRules.getOrganismCode())) {
+                    if (
+                        isolate.getOrganism().getGenusCode() != null &&
+                        isolate.getOrganism().getGenusCode().equals(expertInterpretationRules.getOrganismCode())
+                    ) {
                         applyExpertRule(expertInterpretationRules, isolate);
                     }
                     break;
                 case FAMILY_CODE:
-                    if (isolate.getOrganism().getFamilyCode().equals(expertInterpretationRules.getOrganismCode())) {
+                    if (
+                        isolate.getOrganism().getFamilyCode() != null &&
+                        isolate.getOrganism().getFamilyCode().equals(expertInterpretationRules.getOrganismCode())
+                    ) {
                         applyExpertRule(expertInterpretationRules, isolate);
                     }
                     break;
                 case SEROVAR_GROUP:
-                    if (isolate.getOrganism().getSerovarGroup().equals(expertInterpretationRules.getOrganismCode())) {
+                    if (
+                        isolate.getOrganism().getSerovarGroup() != null &&
+                        isolate.getOrganism().getSerovarGroup().equals(expertInterpretationRules.getOrganismCode())
+                    ) {
                         applyExpertRule(expertInterpretationRules, isolate);
                     }
                     break;
