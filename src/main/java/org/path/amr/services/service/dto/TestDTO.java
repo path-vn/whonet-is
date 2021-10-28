@@ -83,6 +83,14 @@ public class TestDTO {
         if (this.result == null) {
             this.result = new ArrayList<>();
         }
+        for (int i = 0; i < result.size(); i++) {
+            if (
+                result.get(i).getResult().equals(interpretationResult.getResult()) &&
+                result.get(i).getBreaking().equals(interpretationResult.getBreaking())
+            ) {
+                return;
+            }
+        }
         this.result.add(interpretationResult);
     }
 

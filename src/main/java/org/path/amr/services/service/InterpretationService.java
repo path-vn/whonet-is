@@ -167,7 +167,7 @@ public class InterpretationService {
      */
     public void execute(IsolateDTO isolate) {
         isolate.setBreakpointType(isolate.getBreakpointType() == null ? DEFAULT_BREAKPOINT_TYPE : isolate.getBreakpointType());
-
+        boolean haveBreakPoint = false;
         for (int i = 0; i < isolate.getTest().size(); i++) {
             TestDTO test = isolate.getTest().get(i);
             String tmpStringValue = test.getRawValue();
@@ -232,6 +232,10 @@ public class InterpretationService {
                     test.getWhonet5Code(),
                     isolate.getBreakpointType()
                 );
+
+                if (organismBreakPointDTOList.size() > 0) {
+                    haveBreakPoint = true;
+                }
                 organismBreakPointDTOList.forEach(
                     o -> {
                         InterpretationResult interpretationResult = interpretation(test, o);
@@ -243,7 +247,9 @@ public class InterpretationService {
         }
 
         // B. Apply expert rules
-        applyExpertRules(isolate);
+        if (haveBreakPoint) {
+            applyExpertRules(isolate);
+        }
     }
 
     private void applyExpertRules(IsolateDTO isolate) {
@@ -319,11 +325,17 @@ public class InterpretationService {
                 continue;
             }
             // antibiotic in the exception list => not set
-            if (exceptionAntibiotic.contains(isolate.getTest().get(i).getAntibiotic().getWhonetAbxCode() + ",")) {
+            if (
+                exceptionAntibiotic.contains(isolate.getTest().get(i).getAntibiotic().getWhonetAbxCode() + ",") ||
+                exceptionAntibiotic.contains(isolate.getTest().get(i).getAntibiotic().getAntiboticClass() + ",")
+            ) {
                 continue;
             }
             isolate.getTest().get(i).setExpertRuleCode(expertInterpretationRules.getRuleCode());
-            if (affectAntibiotic.contains(isolate.getTest().get(i).getAntibiotic().getWhonetAbxCode() + ",")) {
+            if (
+                affectAntibiotic.contains(isolate.getTest().get(i).getAntibiotic().getWhonetAbxCode() + ",") ||
+                affectAntibiotic.contains(isolate.getTest().get(i).getAntibiotic().getAntiboticClass() + ",")
+            ) {
                 for (int j = 0; j < isolate.getTest().get(i).getResult().size(); j++) {
                     isolate.getTest().get(i).getResult().get(j).setResult("R");
                 }
@@ -353,6 +365,7 @@ public class InterpretationService {
         // case 2
         if (isolate.getDataFields().containsKey(r.getName())) {
             r.setResult(isolate.getDataFields().get(r.getName()).contains(r.getValue()));
+            return;
         }
 
         // case 1
@@ -423,12 +436,12 @@ public class InterpretationService {
         String method = g.getTestMethod();
         short oper = testResult.getOper();
         boolean hasBreakpoint = notEmpty(g.getI()) || notEmpty(g.getR()) || notEmpty(g.getS());
-
+        result.setSpecType(g.getSiteOfInfection());
         if (hasBreakpoint) {
             Double R = notEmpty(g.getR()) ? Double.valueOf(g.getR()) : null;
             Double S = notEmpty(g.getS()) ? Double.valueOf(g.getS()) : null;
             String[] Ix = notEmpty(g.getI()) ? g.getI().split("-") : null;
-            Double IMin = Ix != null && notEmpty(Ix[0]) ? Double.valueOf(Ix[0]) : null;
+            Double IMin = Ix != null && Ix.length > 0 && notEmpty(Ix[0]) ? Double.valueOf(Ix[0]) : null;
             Double IMax = null;
             if (Ix != null && Ix.length > 1) {
                 IMax = notEmpty(Ix[Ix.length - 1]) ? Double.valueOf(Ix[Ix.length - 1]) : null;

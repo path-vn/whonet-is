@@ -29,6 +29,17 @@ public class WhonetResource {
     /**
      * {@code GET /antibiotics/getAntibiotics} : get all antibiotics.
      */
+    @PostMapping("/whonet/interpretation-bulk")
+    public List<IsolateDTO> getInterpretations(@RequestBody List<IsolateDTO> isolateDTO) {
+        for (int i = 0; i < isolateDTO.size(); i++) {
+            this.interpretationService.execute(isolateDTO.get(i));
+        }
+        return isolateDTO;
+    }
+
+    /**
+     * {@code GET /antibiotics/getAntibiotics} : get all antibiotics.
+     */
     @GetMapping("/whonet/intrinsic_resistance")
     public List<OrganismIntrinsicResistanceAntibioticDTO> getIntrinsicResistance(
         @RequestParam String abxCode,
