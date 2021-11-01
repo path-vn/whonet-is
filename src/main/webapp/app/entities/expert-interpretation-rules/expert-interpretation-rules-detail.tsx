@@ -72,6 +72,12 @@ export const ExpertInterpretationRulesDetail = (props: IExpertInterpretationRule
             </span>
           </dt>
           <dd>{expertInterpretationRulesEntity.antibioticExceptions}</dd>
+          <dt>
+            <span id="result">
+              <Translate contentKey="amrInterpreationApp.expertInterpretationRules.result">Result</Translate>
+            </span>
+          </dt>
+          <dd>{expertInterpretationRulesEntity.result}</dd>
         </dl>
         <Button tag={Link} to="/expert-interpretation-rules" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

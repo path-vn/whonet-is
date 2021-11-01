@@ -134,6 +134,12 @@ export const ExpertInterpretationRulesUpdate = (props: IExpertInterpretationRule
                   name="antibioticExceptions"
                 />
               </AvGroup>
+              <AvGroup>
+                <Label id="resultLabel" for="expert-interpretation-rules-result">
+                  <Translate contentKey="amrInterpreationApp.expertInterpretationRules.result">Result</Translate>
+                </Label>
+                <AvField id="expert-interpretation-rules-result" data-cy="result" type="text" name="result" />
+              </AvGroup>
               <Button tag={Link} id="cancel-save" to="/expert-interpretation-rules" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

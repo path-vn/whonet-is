@@ -24,6 +24,8 @@ public class ExpertInterpretationRulesDTO implements Serializable {
 
     private String antibioticExceptions;
 
+    private String result;
+
     public Long getId() {
         return id;
     }
@@ -88,6 +90,14 @@ public class ExpertInterpretationRulesDTO implements Serializable {
         this.antibioticExceptions = antibioticExceptions;
     }
 
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -121,6 +131,7 @@ public class ExpertInterpretationRulesDTO implements Serializable {
             ", ruleCriteria='" + getRuleCriteria() + "'" +
             ", affectedAntibiotics='" + getAffectedAntibiotics() + "'" +
             ", antibioticExceptions='" + getAntibioticExceptions() + "'" +
+            ", result='" + getResult() + "'" +
             "}";
     }
 }

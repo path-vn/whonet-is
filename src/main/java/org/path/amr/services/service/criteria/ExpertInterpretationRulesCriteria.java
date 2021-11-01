@@ -40,6 +40,8 @@ public class ExpertInterpretationRulesCriteria implements Serializable, Criteria
 
     private StringFilter antibioticExceptions;
 
+    private StringFilter result;
+
     public ExpertInterpretationRulesCriteria() {}
 
     public ExpertInterpretationRulesCriteria(ExpertInterpretationRulesCriteria other) {
@@ -51,6 +53,7 @@ public class ExpertInterpretationRulesCriteria implements Serializable, Criteria
         this.ruleCriteria = other.ruleCriteria == null ? null : other.ruleCriteria.copy();
         this.affectedAntibiotics = other.affectedAntibiotics == null ? null : other.affectedAntibiotics.copy();
         this.antibioticExceptions = other.antibioticExceptions == null ? null : other.antibioticExceptions.copy();
+        this.result = other.result == null ? null : other.result.copy();
     }
 
     @Override
@@ -178,6 +181,21 @@ public class ExpertInterpretationRulesCriteria implements Serializable, Criteria
         this.antibioticExceptions = antibioticExceptions;
     }
 
+    public StringFilter getResult() {
+        return result;
+    }
+
+    public StringFilter result() {
+        if (result == null) {
+            result = new StringFilter();
+        }
+        return result;
+    }
+
+    public void setResult(StringFilter result) {
+        this.result = result;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -195,7 +213,8 @@ public class ExpertInterpretationRulesCriteria implements Serializable, Criteria
             Objects.equals(organismCodeType, that.organismCodeType) &&
             Objects.equals(ruleCriteria, that.ruleCriteria) &&
             Objects.equals(affectedAntibiotics, that.affectedAntibiotics) &&
-            Objects.equals(antibioticExceptions, that.antibioticExceptions)
+            Objects.equals(antibioticExceptions, that.antibioticExceptions) &&
+            Objects.equals(result, that.result)
         );
     }
 
@@ -209,7 +228,8 @@ public class ExpertInterpretationRulesCriteria implements Serializable, Criteria
             organismCodeType,
             ruleCriteria,
             affectedAntibiotics,
-            antibioticExceptions
+            antibioticExceptions,
+            result
         );
     }
 
@@ -225,6 +245,7 @@ public class ExpertInterpretationRulesCriteria implements Serializable, Criteria
             (ruleCriteria != null ? "ruleCriteria=" + ruleCriteria + ", " : "") +
             (affectedAntibiotics != null ? "affectedAntibiotics=" + affectedAntibiotics + ", " : "") +
             (antibioticExceptions != null ? "antibioticExceptions=" + antibioticExceptions + ", " : "") +
+            (result != null ? "result=" + result + ", " : "") +
             "}";
     }
 }

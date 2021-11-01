@@ -335,13 +335,21 @@ public class InterpretationService {
                 affectAntibiotic.contains(isolate.getTest().get(i).getAntibiotic().getWhonetAbxCode() + ",") ||
                 affectAntibiotic.contains(isolate.getTest().get(i).getAntibiotic().getAntiboticClass() + ",")
             ) {
-                // no result => not set
+                // no result => add
                 if (isolate.getTest().get(i).getResult() == null) {
-                    isolate.getTest().get(i).addResult("R");
+                    isolate
+                        .getTest()
+                        .get(i)
+                        .addResult(expertInterpretationRules.getResult() == null ? "R" : expertInterpretationRules.getResult());
                     continue;
                 }
                 for (int j = 0; j < isolate.getTest().get(i).getResult().size(); j++) {
-                    isolate.getTest().get(i).getResult().get(j).setResult("R");
+                    isolate
+                        .getTest()
+                        .get(i)
+                        .getResult()
+                        .get(j)
+                        .setResult(expertInterpretationRules.getResult() == null ? "R" : expertInterpretationRules.getResult());
                 }
             }
         }

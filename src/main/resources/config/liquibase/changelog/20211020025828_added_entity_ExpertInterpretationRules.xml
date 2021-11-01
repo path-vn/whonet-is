@@ -35,6 +35,9 @@
             <column name="antibiotic_exceptions" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="result" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
     </changeSet>
@@ -62,6 +65,7 @@
             <column name="rule_criteria" type="string"/>
             <column name="affected_antibiotics" type="string"/>
             <column name="antibiotic_exceptions" type="string"/>
+            <column name="result" type="string"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

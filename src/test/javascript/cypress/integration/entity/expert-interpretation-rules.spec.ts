@@ -111,6 +111,11 @@ describe('ExpertInterpretationRules e2e test', () => {
       .invoke('val')
       .should('match', new RegExp('Jewelery Metal bandwidth'));
 
+    cy.get(`[data-cy="result"]`)
+      .type('Nicaragua synthesize', { force: true })
+      .invoke('val')
+      .should('match', new RegExp('Nicaragua synthesize'));
+
     cy.get(entityCreateSaveButtonSelector).click({ force: true });
     cy.scrollTo('top', { ensureScrollable: false });
     cy.get(entityCreateSaveButtonSelector).should('not.exist');

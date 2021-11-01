@@ -40,6 +40,9 @@ public class ExpertInterpretationRules implements Serializable {
     @Column(name = "antibiotic_exceptions", columnDefinition = "TEXT")
     private String antibioticExceptions;
 
+    @Column(name = "result")
+    private String result;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
@@ -145,6 +148,19 @@ public class ExpertInterpretationRules implements Serializable {
         this.antibioticExceptions = antibioticExceptions;
     }
 
+    public String getResult() {
+        return this.result;
+    }
+
+    public ExpertInterpretationRules result(String result) {
+        this.result = result;
+        return this;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -176,6 +192,7 @@ public class ExpertInterpretationRules implements Serializable {
             ", ruleCriteria='" + getRuleCriteria() + "'" +
             ", affectedAntibiotics='" + getAffectedAntibiotics() + "'" +
             ", antibioticExceptions='" + getAntibioticExceptions() + "'" +
+            ", result='" + getResult() + "'" +
             "}";
     }
 }
