@@ -12,6 +12,15 @@ public class TestDTO {
     AntibioticDTO antibiotic;
     String whonet5Code;
     String expertRuleCode;
+    String testID;
+
+    public String getTestID() {
+        return testID;
+    }
+
+    public void setTestID(String testID) {
+        this.testID = testID;
+    }
 
     List<InterpretationResult> result;
     List<OrganismIntrinsicResistanceAntibioticDTO> intrinsicResistance;

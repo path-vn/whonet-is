@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class IsolateDTO {
 
+    String requestID;
     String method;
     String orgCode;
     String breakpointType; // Human or Animal
@@ -14,6 +15,14 @@ public class IsolateDTO {
     OrganismDTO organism;
     List<TestDTO> test;
     Map<String, String> dataFields;
+
+    public String getRequestID() {
+        return requestID;
+    }
+
+    public void setRequestID(String requestID) {
+        this.requestID = requestID;
+    }
 
     public String getMethod() {
         return method;

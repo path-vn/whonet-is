@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.path.amr.services.domain.Antibiotic;
 import org.path.amr.services.domain.ExpertInterpretationRules;
+import org.path.amr.services.domain.Organism;
 import org.path.amr.services.repository.*;
 import org.path.amr.services.service.dto.*;
 import org.path.amr.services.service.mapper.*;
@@ -167,7 +168,8 @@ public class InterpretationService {
      */
     public void execute(IsolateDTO isolate) {
         isolate.setBreakpointType(isolate.getBreakpointType() == null ? DEFAULT_BREAKPOINT_TYPE : isolate.getBreakpointType());
-        boolean haveBreakPoint = false;
+        Optional<Organism> organism = organismRepository.findFirstByWhonetOrgCode(isolate.getOrgCode());
+        organism.ifPresent(value -> isolate.setOrganism(organismMapper.toDto(value)));
         for (int i = 0; i < isolate.getTest().size(); i++) {
             TestDTO test = isolate.getTest().get(i);
             String tmpStringValue = test.getRawValue();
@@ -222,6 +224,7 @@ public class InterpretationService {
                     }
                 )
                 .collect(Collectors.toList());
+
             if (organismIntrinsicResistanceAntibioticDTOList.size() > 0) {
                 test.setIntrinsicResistance(organismIntrinsicResistanceAntibioticDTOList);
                 test.addResult("R");
@@ -233,23 +236,22 @@ public class InterpretationService {
                     isolate.getBreakpointType()
                 );
 
-                if (organismBreakPointDTOList.size() > 0) {
-                    haveBreakPoint = true;
-                }
                 organismBreakPointDTOList.forEach(
                     o -> {
                         InterpretationResult interpretationResult = interpretation(test, o);
-                        isolate.setOrganism(o.getOrganism());
-                        test.addResult(interpretationResult);
+                        if (interpretationResult != null) {
+                            isolate.setOrganism(o.getOrganism());
+                            test.addResult(interpretationResult);
+                        }
                     }
                 );
             }
         }
-
-        // B. Apply expert rules
-        if (haveBreakPoint) {
-            applyExpertRules(isolate);
+        if (isolate.getOrganism() == null) {
+            return;
         }
+        // B. Apply expert rules
+        applyExpertRules(isolate);
     }
 
     private void applyExpertRules(IsolateDTO isolate) {
@@ -319,11 +321,8 @@ public class InterpretationService {
         // ANTIBIOTIC
         String affectAntibiotic = expertInterpretationRules.getAffectedAntibiotics() + ",";
         String exceptionAntibiotic = expertInterpretationRules.getAntibioticExceptions() + ",";
+
         for (int i = 0; i < isolate.getTest().size(); i++) {
-            // no result => not set
-            if (isolate.getTest().get(i).getResult() == null) {
-                continue;
-            }
             // antibiotic in the exception list => not set
             if (
                 exceptionAntibiotic.contains(isolate.getTest().get(i).getAntibiotic().getWhonetAbxCode() + ",") ||
@@ -336,6 +335,11 @@ public class InterpretationService {
                 affectAntibiotic.contains(isolate.getTest().get(i).getAntibiotic().getWhonetAbxCode() + ",") ||
                 affectAntibiotic.contains(isolate.getTest().get(i).getAntibiotic().getAntiboticClass() + ",")
             ) {
+                // no result => not set
+                if (isolate.getTest().get(i).getResult() == null) {
+                    isolate.getTest().get(i).addResult("R");
+                    continue;
+                }
                 for (int j = 0; j < isolate.getTest().get(i).getResult().size(); j++) {
                     isolate.getTest().get(i).getResult().get(j).setResult("R");
                 }
@@ -363,7 +367,11 @@ public class InterpretationService {
      */
     public void processRule(RuleDTO r, IsolateDTO isolate) {
         // case 2
-        if (isolate.getDataFields().containsKey(r.getName())) {
+        if (
+            isolate.getDataFields() != null &&
+            isolate.getDataFields().containsKey(r.getName()) &&
+            isolate.getDataFields().get(r.getName()) != null
+        ) {
             r.setResult(isolate.getDataFields().get(r.getName()).contains(r.getValue()));
             return;
         }
@@ -371,7 +379,6 @@ public class InterpretationService {
         // case 1
         r.setResult(false);
         for (int i = 0; i < isolate.getTest().size(); i++) {
-            System.out.println(isolate.getTest().get(i).getAntibiotic() == null ? "null" : "?");
             // case 2
             if (
                 (
@@ -384,6 +391,9 @@ public class InterpretationService {
                     isolate.getTest().get(i).getAntibiotic().getProfClass().equals(r.getName())
                 )
             ) {
+                if (isolate.getTest() == null || isolate.getTest().get(i).getResult() == null) {
+                    continue;
+                }
                 for (int j = 0; j < isolate.getTest().get(i).getResult().size(); j++) {
                     if (isolate.getTest().get(i).getResult().get(j).getResult().equals(r.getValue())) {
                         r.setResult(true);
@@ -432,6 +442,9 @@ public class InterpretationService {
         InterpretationResult result = new InterpretationResult();
 
         Double valueToInterpretation = testResult.getValue();
+        if (valueToInterpretation == null) {
+            return null;
+        }
         BreakpointDTO g = organismBreakPointDTO.getBreakpoint();
         String method = g.getTestMethod();
         short oper = testResult.getOper();
@@ -440,7 +453,7 @@ public class InterpretationService {
         if (hasBreakpoint) {
             Double R = notEmpty(g.getR()) ? Double.valueOf(g.getR()) : null;
             Double S = notEmpty(g.getS()) ? Double.valueOf(g.getS()) : null;
-            String[] Ix = notEmpty(g.getI()) ? g.getI().split("-") : null;
+            String[] Ix = notEmpty(g.getI()) ? g.getI().replace("'", "").split("-") : null;
             Double IMin = Ix != null && Ix.length > 0 && notEmpty(Ix[0]) ? Double.valueOf(Ix[0]) : null;
             Double IMax = null;
             if (Ix != null && Ix.length > 1) {
