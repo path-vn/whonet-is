@@ -24,7 +24,8 @@
       "organismCodeType": "Organism Code Type",
       "ruleCriteria": "Rule Criteria",
       "affectedAntibiotics": "Affected Antibiotics",
-      "antibioticExceptions": "Antibiotic Exceptions"
+      "antibioticExceptions": "Antibiotic Exceptions",
+      "result": "Result"
     }
   }
 }

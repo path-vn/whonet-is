@@ -125,6 +125,10 @@ export const ExpertInterpretationRules = (props: IExpertInterpretationRulesProps
                   </Translate>{' '}
                   <FontAwesomeIcon icon="sort" />
                 </th>
+                <th className="hand" onClick={sort('result')}>
+                  <Translate contentKey="amrInterpreationApp.expertInterpretationRules.result">Result</Translate>{' '}
+                  <FontAwesomeIcon icon="sort" />
+                </th>
                 <th />
               </tr>
             </thead>
@@ -144,6 +148,7 @@ export const ExpertInterpretationRules = (props: IExpertInterpretationRulesProps
                   <td>{expertInterpretationRules.ruleCriteria}</td>
                   <td>{expertInterpretationRules.affectedAntibiotics}</td>
                   <td>{expertInterpretationRules.antibioticExceptions}</td>
+                  <td>{expertInterpretationRules.result}</td>
                   <td className="text-right">
                     <div className="btn-group flex-btn-group-container">
                       <Button

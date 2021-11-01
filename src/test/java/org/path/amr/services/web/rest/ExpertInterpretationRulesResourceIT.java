@@ -53,6 +53,9 @@ class ExpertInterpretationRulesResourceIT {
     private static final String DEFAULT_ANTIBIOTIC_EXCEPTIONS = "AAAAAAAAAA";
     private static final String UPDATED_ANTIBIOTIC_EXCEPTIONS = "BBBBBBBBBB";
 
+    private static final String DEFAULT_RESULT = "AAAAAAAAAA";
+    private static final String UPDATED_RESULT = "BBBBBBBBBB";
+
     private static final String ENTITY_API_URL = "/api/expert-interpretation-rules";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -87,7 +90,8 @@ class ExpertInterpretationRulesResourceIT {
             .organismCodeType(DEFAULT_ORGANISM_CODE_TYPE)
             .ruleCriteria(DEFAULT_RULE_CRITERIA)
             .affectedAntibiotics(DEFAULT_AFFECTED_ANTIBIOTICS)
-            .antibioticExceptions(DEFAULT_ANTIBIOTIC_EXCEPTIONS);
+            .antibioticExceptions(DEFAULT_ANTIBIOTIC_EXCEPTIONS)
+            .result(DEFAULT_RESULT);
         return expertInterpretationRules;
     }
 
@@ -105,7 +109,8 @@ class ExpertInterpretationRulesResourceIT {
             .organismCodeType(UPDATED_ORGANISM_CODE_TYPE)
             .ruleCriteria(UPDATED_RULE_CRITERIA)
             .affectedAntibiotics(UPDATED_AFFECTED_ANTIBIOTICS)
-            .antibioticExceptions(UPDATED_ANTIBIOTIC_EXCEPTIONS);
+            .antibioticExceptions(UPDATED_ANTIBIOTIC_EXCEPTIONS)
+            .result(UPDATED_RESULT);
         return expertInterpretationRules;
     }
 
@@ -141,6 +146,7 @@ class ExpertInterpretationRulesResourceIT {
         assertThat(testExpertInterpretationRules.getRuleCriteria()).isEqualTo(DEFAULT_RULE_CRITERIA);
         assertThat(testExpertInterpretationRules.getAffectedAntibiotics()).isEqualTo(DEFAULT_AFFECTED_ANTIBIOTICS);
         assertThat(testExpertInterpretationRules.getAntibioticExceptions()).isEqualTo(DEFAULT_ANTIBIOTIC_EXCEPTIONS);
+        assertThat(testExpertInterpretationRules.getResult()).isEqualTo(DEFAULT_RESULT);
     }
 
     @Test
@@ -184,7 +190,8 @@ class ExpertInterpretationRulesResourceIT {
             .andExpect(jsonPath("$.[*].organismCodeType").value(hasItem(DEFAULT_ORGANISM_CODE_TYPE)))
             .andExpect(jsonPath("$.[*].ruleCriteria").value(hasItem(DEFAULT_RULE_CRITERIA)))
             .andExpect(jsonPath("$.[*].affectedAntibiotics").value(hasItem(DEFAULT_AFFECTED_ANTIBIOTICS)))
-            .andExpect(jsonPath("$.[*].antibioticExceptions").value(hasItem(DEFAULT_ANTIBIOTIC_EXCEPTIONS)));
+            .andExpect(jsonPath("$.[*].antibioticExceptions").value(hasItem(DEFAULT_ANTIBIOTIC_EXCEPTIONS)))
+            .andExpect(jsonPath("$.[*].result").value(hasItem(DEFAULT_RESULT)));
     }
 
     @Test
@@ -205,7 +212,8 @@ class ExpertInterpretationRulesResourceIT {
             .andExpect(jsonPath("$.organismCodeType").value(DEFAULT_ORGANISM_CODE_TYPE))
             .andExpect(jsonPath("$.ruleCriteria").value(DEFAULT_RULE_CRITERIA))
             .andExpect(jsonPath("$.affectedAntibiotics").value(DEFAULT_AFFECTED_ANTIBIOTICS))
-            .andExpect(jsonPath("$.antibioticExceptions").value(DEFAULT_ANTIBIOTIC_EXCEPTIONS));
+            .andExpect(jsonPath("$.antibioticExceptions").value(DEFAULT_ANTIBIOTIC_EXCEPTIONS))
+            .andExpect(jsonPath("$.result").value(DEFAULT_RESULT));
     }
 
     @Test
@@ -778,6 +786,84 @@ class ExpertInterpretationRulesResourceIT {
         defaultExpertInterpretationRulesShouldBeFound("antibioticExceptions.doesNotContain=" + UPDATED_ANTIBIOTIC_EXCEPTIONS);
     }
 
+    @Test
+    @Transactional
+    void getAllExpertInterpretationRulesByResultIsEqualToSomething() throws Exception {
+        // Initialize the database
+        expertInterpretationRulesRepository.saveAndFlush(expertInterpretationRules);
+
+        // Get all the expertInterpretationRulesList where result equals to DEFAULT_RESULT
+        defaultExpertInterpretationRulesShouldBeFound("result.equals=" + DEFAULT_RESULT);
+
+        // Get all the expertInterpretationRulesList where result equals to UPDATED_RESULT
+        defaultExpertInterpretationRulesShouldNotBeFound("result.equals=" + UPDATED_RESULT);
+    }
+
+    @Test
+    @Transactional
+    void getAllExpertInterpretationRulesByResultIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        expertInterpretationRulesRepository.saveAndFlush(expertInterpretationRules);
+
+        // Get all the expertInterpretationRulesList where result not equals to DEFAULT_RESULT
+        defaultExpertInterpretationRulesShouldNotBeFound("result.notEquals=" + DEFAULT_RESULT);
+
+        // Get all the expertInterpretationRulesList where result not equals to UPDATED_RESULT
+        defaultExpertInterpretationRulesShouldBeFound("result.notEquals=" + UPDATED_RESULT);
+    }
+
+    @Test
+    @Transactional
+    void getAllExpertInterpretationRulesByResultIsInShouldWork() throws Exception {
+        // Initialize the database
+        expertInterpretationRulesRepository.saveAndFlush(expertInterpretationRules);
+
+        // Get all the expertInterpretationRulesList where result in DEFAULT_RESULT or UPDATED_RESULT
+        defaultExpertInterpretationRulesShouldBeFound("result.in=" + DEFAULT_RESULT + "," + UPDATED_RESULT);
+
+        // Get all the expertInterpretationRulesList where result equals to UPDATED_RESULT
+        defaultExpertInterpretationRulesShouldNotBeFound("result.in=" + UPDATED_RESULT);
+    }
+
+    @Test
+    @Transactional
+    void getAllExpertInterpretationRulesByResultIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        expertInterpretationRulesRepository.saveAndFlush(expertInterpretationRules);
+
+        // Get all the expertInterpretationRulesList where result is not null
+        defaultExpertInterpretationRulesShouldBeFound("result.specified=true");
+
+        // Get all the expertInterpretationRulesList where result is null
+        defaultExpertInterpretationRulesShouldNotBeFound("result.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllExpertInterpretationRulesByResultContainsSomething() throws Exception {
+        // Initialize the database
+        expertInterpretationRulesRepository.saveAndFlush(expertInterpretationRules);
+
+        // Get all the expertInterpretationRulesList where result contains DEFAULT_RESULT
+        defaultExpertInterpretationRulesShouldBeFound("result.contains=" + DEFAULT_RESULT);
+
+        // Get all the expertInterpretationRulesList where result contains UPDATED_RESULT
+        defaultExpertInterpretationRulesShouldNotBeFound("result.contains=" + UPDATED_RESULT);
+    }
+
+    @Test
+    @Transactional
+    void getAllExpertInterpretationRulesByResultNotContainsSomething() throws Exception {
+        // Initialize the database
+        expertInterpretationRulesRepository.saveAndFlush(expertInterpretationRules);
+
+        // Get all the expertInterpretationRulesList where result does not contain DEFAULT_RESULT
+        defaultExpertInterpretationRulesShouldNotBeFound("result.doesNotContain=" + DEFAULT_RESULT);
+
+        // Get all the expertInterpretationRulesList where result does not contain UPDATED_RESULT
+        defaultExpertInterpretationRulesShouldBeFound("result.doesNotContain=" + UPDATED_RESULT);
+    }
+
     /**
      * Executes the search, and checks that the default entity is returned.
      */
@@ -793,7 +879,8 @@ class ExpertInterpretationRulesResourceIT {
             .andExpect(jsonPath("$.[*].organismCodeType").value(hasItem(DEFAULT_ORGANISM_CODE_TYPE)))
             .andExpect(jsonPath("$.[*].ruleCriteria").value(hasItem(DEFAULT_RULE_CRITERIA)))
             .andExpect(jsonPath("$.[*].affectedAntibiotics").value(hasItem(DEFAULT_AFFECTED_ANTIBIOTICS)))
-            .andExpect(jsonPath("$.[*].antibioticExceptions").value(hasItem(DEFAULT_ANTIBIOTIC_EXCEPTIONS)));
+            .andExpect(jsonPath("$.[*].antibioticExceptions").value(hasItem(DEFAULT_ANTIBIOTIC_EXCEPTIONS)))
+            .andExpect(jsonPath("$.[*].result").value(hasItem(DEFAULT_RESULT)));
 
         // Check, that the count call also returns 1
         restExpertInterpretationRulesMockMvc
@@ -850,7 +937,8 @@ class ExpertInterpretationRulesResourceIT {
             .organismCodeType(UPDATED_ORGANISM_CODE_TYPE)
             .ruleCriteria(UPDATED_RULE_CRITERIA)
             .affectedAntibiotics(UPDATED_AFFECTED_ANTIBIOTICS)
-            .antibioticExceptions(UPDATED_ANTIBIOTIC_EXCEPTIONS);
+            .antibioticExceptions(UPDATED_ANTIBIOTIC_EXCEPTIONS)
+            .result(UPDATED_RESULT);
         ExpertInterpretationRulesDTO expertInterpretationRulesDTO = expertInterpretationRulesMapper.toDto(updatedExpertInterpretationRules);
 
         restExpertInterpretationRulesMockMvc
@@ -874,6 +962,7 @@ class ExpertInterpretationRulesResourceIT {
         assertThat(testExpertInterpretationRules.getRuleCriteria()).isEqualTo(UPDATED_RULE_CRITERIA);
         assertThat(testExpertInterpretationRules.getAffectedAntibiotics()).isEqualTo(UPDATED_AFFECTED_ANTIBIOTICS);
         assertThat(testExpertInterpretationRules.getAntibioticExceptions()).isEqualTo(UPDATED_ANTIBIOTIC_EXCEPTIONS);
+        assertThat(testExpertInterpretationRules.getResult()).isEqualTo(UPDATED_RESULT);
     }
 
     @Test
@@ -963,7 +1052,8 @@ class ExpertInterpretationRulesResourceIT {
             .organismCodeType(UPDATED_ORGANISM_CODE_TYPE)
             .ruleCriteria(UPDATED_RULE_CRITERIA)
             .affectedAntibiotics(UPDATED_AFFECTED_ANTIBIOTICS)
-            .antibioticExceptions(UPDATED_ANTIBIOTIC_EXCEPTIONS);
+            .antibioticExceptions(UPDATED_ANTIBIOTIC_EXCEPTIONS)
+            .result(UPDATED_RESULT);
 
         restExpertInterpretationRulesMockMvc
             .perform(
@@ -986,6 +1076,7 @@ class ExpertInterpretationRulesResourceIT {
         assertThat(testExpertInterpretationRules.getRuleCriteria()).isEqualTo(UPDATED_RULE_CRITERIA);
         assertThat(testExpertInterpretationRules.getAffectedAntibiotics()).isEqualTo(UPDATED_AFFECTED_ANTIBIOTICS);
         assertThat(testExpertInterpretationRules.getAntibioticExceptions()).isEqualTo(UPDATED_ANTIBIOTIC_EXCEPTIONS);
+        assertThat(testExpertInterpretationRules.getResult()).isEqualTo(UPDATED_RESULT);
     }
 
     @Test
@@ -1007,7 +1098,8 @@ class ExpertInterpretationRulesResourceIT {
             .organismCodeType(UPDATED_ORGANISM_CODE_TYPE)
             .ruleCriteria(UPDATED_RULE_CRITERIA)
             .affectedAntibiotics(UPDATED_AFFECTED_ANTIBIOTICS)
-            .antibioticExceptions(UPDATED_ANTIBIOTIC_EXCEPTIONS);
+            .antibioticExceptions(UPDATED_ANTIBIOTIC_EXCEPTIONS)
+            .result(UPDATED_RESULT);
 
         restExpertInterpretationRulesMockMvc
             .perform(
@@ -1030,6 +1122,7 @@ class ExpertInterpretationRulesResourceIT {
         assertThat(testExpertInterpretationRules.getRuleCriteria()).isEqualTo(UPDATED_RULE_CRITERIA);
         assertThat(testExpertInterpretationRules.getAffectedAntibiotics()).isEqualTo(UPDATED_AFFECTED_ANTIBIOTICS);
         assertThat(testExpertInterpretationRules.getAntibioticExceptions()).isEqualTo(UPDATED_ANTIBIOTIC_EXCEPTIONS);
+        assertThat(testExpertInterpretationRules.getResult()).isEqualTo(UPDATED_RESULT);
     }
 
     @Test

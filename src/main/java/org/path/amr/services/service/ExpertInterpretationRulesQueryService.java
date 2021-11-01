@@ -122,6 +122,9 @@ public class ExpertInterpretationRulesQueryService extends QueryService<ExpertIn
                         buildStringSpecification(criteria.getAntibioticExceptions(), ExpertInterpretationRules_.antibioticExceptions)
                     );
             }
+            if (criteria.getResult() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getResult(), ExpertInterpretationRules_.result));
+            }
         }
         return specification;
     }

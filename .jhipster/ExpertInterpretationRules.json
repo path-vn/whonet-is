@@ -27,6 +27,10 @@
     {
       "fieldName": "antibioticExceptions",
       "fieldType": "String"
+    },
+    {
+      "fieldName": "result",
+      "fieldType": "String"
     }
   ],
   "relationships": [],
