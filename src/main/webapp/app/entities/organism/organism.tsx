@@ -195,7 +195,6 @@ export const Organism = (props: IOrganismProps) => {
                       {organism.id}
                     </Button>
                   </td>
-                  <td>{organism.id}</td>
                   <td>{organism.whonetOrgCode}</td>
                   <td>{organism.organism}</td>
                   <td>{organism.taxonomicStatus}</td>

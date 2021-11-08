@@ -1,7 +1,9 @@
 package org.path.amr.services.service.dto;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import org.path.amr.services.service.InterpretationResult;
 
 public class TestDTO {
@@ -92,6 +94,10 @@ public class TestDTO {
         if (this.result == null) {
             this.result = new ArrayList<>();
         }
+        if (interpretationResult == null || interpretationResult.getResult() == null) {
+            return;
+        }
+
         for (int i = 0; i < result.size(); i++) {
             if (
                 result.get(i).getResult().equals(interpretationResult.getResult()) &&
@@ -109,5 +115,27 @@ public class TestDTO {
 
     public void setExpertRuleCode(String expertRuleCode) {
         this.expertRuleCode = expertRuleCode;
+    }
+
+    public void sort(Map<String, Integer> priority) {
+        if (this.result != null && this.result.size() > 1 && priority != null) {
+            this.result.sort(
+                    new Comparator<InterpretationResult>() {
+                        @Override
+                        public int compare(InterpretationResult o1, InterpretationResult o2) {
+                            if (!priority.containsKey(o1.getSpecType()) || !priority.containsKey(o2.getSpecType())) {
+                                return 0;
+                            }
+                            if (priority.get(o1.getSpecType()).equals(priority.get(o2.getSpecType()))) {
+                                return (
+                                    (o1.getBreaking() == null || o1.getBreaking().equals("") ? 0 : 1) -
+                                    (o2.getBreaking() == null || o2.getBreaking().equals("") ? 0 : 1)
+                                );
+                            }
+                            return priority.get(o1.getSpecType()) < priority.get(o2.getSpecType()) ? -1 : 1;
+                        }
+                    }
+                );
+        }
     }
 }

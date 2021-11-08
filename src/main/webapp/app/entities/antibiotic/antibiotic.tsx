@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { Button, Col, Row, Table } from 'reactstrap';
-import { Translate, getSortState, IPaginationBaseState, JhiPagination, JhiItemCount } from 'react-jhipster';
+import { Button, Row, Table } from 'reactstrap';
+import { getSortState, JhiItemCount, JhiPagination, Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
 import { getEntities } from './antibiotic.reducer';
-import { IAntibiotic } from 'app/shared/model/antibiotic.model';
-import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 
@@ -58,6 +56,10 @@ export const Antibiotic = (props: IAntibioticProps) => {
     });
   };
 
+  const filter = p => () => {
+    alert('Filter ' + p);
+  };
+
   const handlePagination = currentPage =>
     setPaginationState({
       ...paginationState,
@@ -90,7 +92,7 @@ export const Antibiotic = (props: IAntibioticProps) => {
           <Table responsive>
             <thead>
               <tr>
-                <th className="hand" onClick={sort('id')}>
+                <th className="hand" onClick={sort('id')} onDoubleClick={filter('id')}>
                   <Translate contentKey="amrInterpreationApp.antibiotic.id">ID</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th className="hand" onClick={sort('whonetAbxCode')}>
@@ -107,16 +109,19 @@ export const Antibiotic = (props: IAntibioticProps) => {
                   <Translate contentKey="amrInterpreationApp.antibiotic.jacCode">Jac Code</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th className="hand" onClick={sort('eucastCode')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.eucastCode">Eucast Code</Translate> <FontAwesomeIcon icon="sort" />
+                  <Translate contentKey="amrInterpreationApp.antibiotic.eucastCode">Eucast Code</Translate>
+                  <FontAwesomeIcon icon="sort" />
                 </th>
                 <th className="hand" onClick={sort('userCode')}>
                   <Translate contentKey="amrInterpreationApp.antibiotic.userCode">User Code</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th className="hand" onClick={sort('antibiotic')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.antibiotic">Antibiotic</Translate> <FontAwesomeIcon icon="sort" />
+                  <Translate contentKey="amrInterpreationApp.antibiotic.antibiotic">Antibiotic</Translate>
+                  <FontAwesomeIcon icon="sort" />
                 </th>
                 <th className="hand" onClick={sort('guidelines')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.guidelines">Guidelines</Translate> <FontAwesomeIcon icon="sort" />
+                  <Translate contentKey="amrInterpreationApp.antibiotic.guidelines">Guidelines</Translate>
+                  <FontAwesomeIcon icon="sort" />
                 </th>
                 <th className="hand" onClick={sort('antiboticClass')}>
                   <Translate contentKey="amrInterpreationApp.antibiotic.antiboticClass">Antibotic Class</Translate>{' '}
@@ -173,7 +178,8 @@ export const Antibiotic = (props: IAntibioticProps) => {
                   <Translate contentKey="amrInterpreationApp.antibiotic.human">Human</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th className="hand" onClick={sort('veterinary')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.veterinary">Veterinary</Translate> <FontAwesomeIcon icon="sort" />
+                  <Translate contentKey="amrInterpreationApp.antibiotic.veterinary">Veterinary</Translate>
+                  <FontAwesomeIcon icon="sort" />
                 </th>
                 <th className="hand" onClick={sort('animalGp')}>
                   <Translate contentKey="amrInterpreationApp.antibiotic.animalGp">Animal Gp</Translate> <FontAwesomeIcon icon="sort" />
@@ -191,7 +197,8 @@ export const Antibiotic = (props: IAntibioticProps) => {
                   <Translate contentKey="amrInterpreationApp.antibiotic.loincmic">Loincmic</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th className="hand" onClick={sort('loincetest')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.loincetest">Loincetest</Translate> <FontAwesomeIcon icon="sort" />
+                  <Translate contentKey="amrInterpreationApp.antibiotic.loincetest">Loincetest</Translate>
+                  <FontAwesomeIcon icon="sort" />
                 </th>
                 <th className="hand" onClick={sort('loincslow')}>
                   <Translate contentKey="amrInterpreationApp.antibiotic.loincslow">Loincslow</Translate> <FontAwesomeIcon icon="sort" />
@@ -227,7 +234,6 @@ export const Antibiotic = (props: IAntibioticProps) => {
                       {antibiotic.id}
                     </Button>
                   </td>
-                  <td>{antibiotic.id}</td>
                   <td>{antibiotic.whonetAbxCode}</td>
                   <td>{antibiotic.whoCode}</td>
                   <td>{antibiotic.dinCode}</td>

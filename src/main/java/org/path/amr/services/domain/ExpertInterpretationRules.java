@@ -10,7 +10,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  */
 @Entity
 @Table(name = "expert_interpretation_rules")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ExpertInterpretationRules implements Serializable {
 
     private static final long serialVersionUID = 1L;

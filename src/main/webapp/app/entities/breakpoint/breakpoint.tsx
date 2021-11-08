@@ -176,7 +176,6 @@ export const Breakpoint = (props: IBreakpointProps) => {
                       {breakpoint.id}
                     </Button>
                   </td>
-                  <td>{breakpoint.id}</td>
                   <td>{breakpoint.guidelines}</td>
                   <td>{breakpoint.year}</td>
                   <td>{breakpoint.testMethod}</td>

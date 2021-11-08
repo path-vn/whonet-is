@@ -140,7 +140,6 @@ export const ExpertInterpretationRules = (props: IExpertInterpretationRulesProps
                       {expertInterpretationRules.id}
                     </Button>
                   </td>
-                  <td>{expertInterpretationRules.id}</td>
                   <td>{expertInterpretationRules.ruleCode}</td>
                   <td>{expertInterpretationRules.description}</td>
                   <td>{expertInterpretationRules.organismCode}</td>

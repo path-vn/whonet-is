@@ -1,17 +1,19 @@
 package org.path.amr.services.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.path.amr.services.config.WhonetConfiguration;
 import org.path.amr.services.domain.Antibiotic;
 import org.path.amr.services.domain.ExpertInterpretationRules;
 import org.path.amr.services.domain.Organism;
 import org.path.amr.services.repository.*;
 import org.path.amr.services.service.dto.*;
 import org.path.amr.services.service.mapper.*;
+import org.path.amr.services.web.rest.WhonetResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class InterpretationService {
+
+    private final Logger log = LoggerFactory.getLogger(WhonetResource.class);
 
     public static final String PATTERN_0 = "[^0-9.RSI<=>]";
     public static final String PATTERN_1 = "[^0-9.]";
@@ -52,6 +56,8 @@ public class InterpretationService {
     IntrinsicResistanceMapper intrinsicResistanceMapper;
     ExpertInterpretationRulesRepository expertInterpretationRulesRepository;
     ExpertInterpretationRulesMapper expertInterpretationRulesMapper;
+    WhonetConfiguration whonetConfiguration;
+    Map<String, Integer> specTypeSort = new HashMap<>();
 
     public InterpretationService(
         CustomRepository customRepository,
@@ -64,7 +70,8 @@ public class InterpretationService {
         IntrinsicResistanceRepository intrinsicResistanceRepository,
         IntrinsicResistanceMapper intrinsicResistanceMapper,
         ExpertInterpretationRulesRepository expertInterpretationRulesRepository,
-        ExpertInterpretationRulesMapper expertInterpretationRulesMapper
+        ExpertInterpretationRulesMapper expertInterpretationRulesMapper,
+        WhonetConfiguration whonetConfiguration
     ) {
         this.customRepository = customRepository;
         this.organismRepository = organismRepository;
@@ -77,6 +84,15 @@ public class InterpretationService {
         this.intrinsicResistanceRepository = intrinsicResistanceRepository;
         this.expertInterpretationRulesMapper = expertInterpretationRulesMapper;
         this.expertInterpretationRulesRepository = expertInterpretationRulesRepository;
+        this.whonetConfiguration = whonetConfiguration;
+
+        if (this.whonetConfiguration.getPriority() != null) {
+            List<String> spec = Arrays.asList(this.whonetConfiguration.getPriority().split(","));
+            for (int i = 0; i < spec.size(); i++) {
+                specTypeSort.put(spec.get(i), i + 1);
+            }
+        }
+        log.info(this.whonetConfiguration.getPriority(), this.specTypeSort.size());
     }
 
     public List<OrganismBreakPointDTO> getBreakpoints(String orgCode, String whonet5Test, String breakpointType) {
@@ -239,13 +255,15 @@ public class InterpretationService {
                 organismBreakPointDTOList.forEach(
                     o -> {
                         InterpretationResult interpretationResult = interpretation(test, o);
-                        if (interpretationResult != null) {
+                        if (interpretationResult != null && interpretationResult.getResult() != null) {
                             isolate.setOrganism(o.getOrganism());
                             test.addResult(interpretationResult);
                         }
                     }
                 );
             }
+
+            test.sort(this.specTypeSort);
         }
         if (isolate.getOrganism() == null) {
             return;
@@ -254,7 +272,8 @@ public class InterpretationService {
         applyExpertRules(isolate);
     }
 
-    private void applyExpertRules(IsolateDTO isolate) {
+    @Transactional(readOnly = true)
+    public void applyExpertRules(IsolateDTO isolate) {
         List<ExpertInterpretationRules> expertInterpretationRulesList = expertInterpretationRulesRepository.findAll();
         for (int i = 0; i < expertInterpretationRulesList.size(); i++) {
             ExpertInterpretationRules expertInterpretationRules = expertInterpretationRulesList.get(i);
@@ -448,7 +467,6 @@ public class InterpretationService {
 
     public InterpretationResult interpretation(TestDTO testResult, OrganismBreakPointDTO organismBreakPointDTO) {
         InterpretationResult result = new InterpretationResult();
-
         Double valueToInterpretation = testResult.getValue();
         if (valueToInterpretation == null) {
             return null;

@@ -150,7 +150,6 @@ export const IntrinsicResistance = (props: IIntrinsicResistanceProps) => {
                       {intrinsicResistance.id}
                     </Button>
                   </td>
-                  <td>{intrinsicResistance.id}</td>
                   <td>{intrinsicResistance.guideline}</td>
                   <td>{intrinsicResistance.referenceTable}</td>
                   <td>{intrinsicResistance.organismCode}</td>

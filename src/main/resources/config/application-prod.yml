@@ -128,3 +128,6 @@ jhipster:
 # ===================================================================
 
 # application:
+whonet:
+  priority: 'Meningitis,Non-meningitis,Oral,,Urine,Parenteral,Intravenous,Extraintestinal'
+  thread: 5
