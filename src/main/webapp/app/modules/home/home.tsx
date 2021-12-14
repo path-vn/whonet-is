@@ -1,6 +1,6 @@
 import './home.scss';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Translate } from 'react-jhipster';
 import { connect } from 'react-redux';
@@ -18,13 +18,23 @@ export const Home = (props: IHomeProp) => {
   const { account } = props;
   const [json, setJson] = useState([
     {
-      orgCode: 'ppm',
+      orgCode: 'eco',
       dataFields: { BETA_LACT: '-' },
-      test: [{ rawValue: '4', whonet5Code: 'AMC_NE', result: null }],
+      test: [{ rawValue: '4', whonet5Code: 'AMK_ND30' }],
     },
   ]);
   const [jsonResult, setJsonResult] = useState({});
   const [key, setKey] = useState(0);
+  const ref = useRef();
+  const expand = val => {
+    val.expandAll();
+  };
+
+  useEffect(() => {
+    if (ref.current !== null && typeof ref.current !== 'undefined') {
+      expand(ref.current);
+    }
+  }, []);
   const interpretationHandle = () => {
     props.interpretationEntity(json);
   };
@@ -36,16 +46,16 @@ export const Home = (props: IHomeProp) => {
   return (
     <Row>
       <Col md="5" className="pad">
-        <Editor value={json} onChange={setJson} ace={ace} theme="ace/theme/github" />
+        <Editor ref={ref} value={json} onChange={setJson} ace={ace} theme="ace/theme/github" />
         <br />
-        <button className={'btn btn-primary'} onClick={interpretationHandle}>
+        <button style={{ float: 'right' }} className={'btn btn-primary'} onClick={interpretationHandle}>
           Interpretation
         </button>
       </Col>
       <Col md="7">
         {account && account.login ? (
           <div>
-            <Editor key={`k-${key}`} value={jsonResult} ace={ace} theme="ace/theme/gob" />
+            <Editor readOnly={true} key={`k-${key}`} value={jsonResult} ace={ace} theme="ace/theme/gob" />
           </div>
         ) : (
           <div>
