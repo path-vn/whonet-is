@@ -42,7 +42,7 @@
     "jwtSecretKey": "YTkwN2E3MzY1MzZkMWU3Njk2YmE2MjZjMjgyMjNkYWE3OTk2MDg0NjBmYTYxMWQxN2I1YmE2NTgwNTcxMWZiZWFjYjcyZTQ2Y2RkNzA5ZWI5NmM0MzVkMDljMDNhMjc2YjE2N2JkNTc2OGM0MjM5Y2FjMDZhODQ5ODMzNmNkNmE=",
     "clientPackageManager": "npm",
     "languages": ["en", "vi"],
-    "lastLiquibaseTimestamp": 1634698708000,
-    "entities": ["Breakpoint", "Antibiotic", "IntrinsicResistance", "Organism", "ExpertInterpretationRules"]
+    "lastLiquibaseTimestamp": 1639449378000,
+    "entities": ["Breakpoint", "Antibiotic", "IntrinsicResistance", "Organism", "ExpertInterpretationRules", "Execute"]
   }
 }

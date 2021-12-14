@@ -80,7 +80,7 @@
     "ajv": "^8.8.2",
     "availity-reactstrap-validation": "2.7.0",
     "axios": "0.21.1",
-    "bootstrap": "4.6.0",
+    "bootstrap": "^4.6.0",
     "bootswatch": "4.6.0",
     "brace": "^0.11.1",
     "dayjs": "1.10.4",

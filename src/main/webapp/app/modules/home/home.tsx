@@ -1,34 +1,57 @@
 import './home.scss';
 
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { Translate } from 'react-jhipster';
 import { connect } from 'react-redux';
-import { Row, Col, Alert } from 'reactstrap';
+import { Alert, Col, Row } from 'reactstrap';
 import { JsonEditor as Editor } from 'jsoneditor-react';
 import ace from 'brace';
+import { interpretationEntity } from '../../entities/execute/execute.reducer';
+import { IRootState } from 'app/shared/reducers';
 
-export type IHomeProp = StateProps;
+// export type IHomeProp = StateProps;
+
+export interface IHomeProp extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
 
 export const Home = (props: IHomeProp) => {
   const { account } = props;
-  const [json, setJson] = useState([{ orgCode: 'ppm', dataFields: null, test: [{ rawValue: '4', whonet5Code: 'AMC_NE', result: null }] }]);
+  const [json, setJson] = useState([
+    {
+      orgCode: 'ppm',
+      dataFields: { BETA_LACT: '-' },
+      test: [{ rawValue: '4', whonet5Code: 'AMC_NE', result: null }],
+    },
+  ]);
+  const [jsonResult, setJsonResult] = useState({});
+  const [key, setKey] = useState(0);
+  const interpretationHandle = () => {
+    props.interpretationEntity(json);
+  };
+  useEffect(() => {
+    setJsonResult(props.result == null ? {} : props.result);
+    setKey(Math.random());
+  }, [props.result]);
 
   return (
     <Row>
       <Col md="5" className="pad">
         <Editor value={json} onChange={setJson} ace={ace} theme="ace/theme/github" />
-        <button>Interpretation</button>
+        <br />
+        <button className={'btn btn-primary'} onClick={interpretationHandle}>
+          Interpretation
+        </button>
       </Col>
       <Col md="7">
-        <h2>
-          <Translate contentKey="home.title">Welcome to WHONET interpretation service!</Translate>
-        </h2>
-
         {account && account.login ? (
-          <div></div>
+          <div>
+            <Editor key={`k-${key}`} value={jsonResult} ace={ace} theme="ace/theme/gob" />
+          </div>
         ) : (
           <div>
+            <h2>
+              <Translate contentKey="home.title">Welcome to WHONET interpretation service!</Translate>
+            </h2>
             <Alert color="warning">
               <Translate contentKey="global.messages.info.authenticated.prefix">If you want to </Translate>
 
@@ -55,11 +78,17 @@ export const Home = (props: IHomeProp) => {
   );
 };
 
-const mapStateToProps = storeState => ({
-  account: storeState.authentication.account,
-  isAuthenticated: storeState.authentication.isAuthenticated,
+const mapStateToProps = ({ execute, authentication }: IRootState) => ({
+  account: authentication.account,
+  isAuthenticated: authentication.isAuthenticated,
+  result: execute.result,
 });
 
-type StateProps = ReturnType<typeof mapStateToProps>;
+const mapDispatchToProps = {
+  interpretationEntity,
+};
 
-export default connect(mapStateToProps)(Home);
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = typeof mapDispatchToProps;
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -32,6 +32,10 @@ import organism, {
 import expertInterpretationRules, {
   ExpertInterpretationRulesState
 } from 'app/entities/expert-interpretation-rules/expert-interpretation-rules.reducer';
+// prettier-ignore
+import execute, {
+  ExecuteState
+} from 'app/entities/execute/execute.reducer';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 export interface IRootState {
@@ -50,6 +54,7 @@ export interface IRootState {
   readonly intrinsicResistance: IntrinsicResistanceState;
   readonly organism: OrganismState;
   readonly expertInterpretationRules: ExpertInterpretationRulesState;
+  readonly execute: ExecuteState;
   /* jhipster-needle-add-reducer-type - JHipster will add reducer type here */
   readonly loadingBar: any;
 }
@@ -70,6 +75,7 @@ const rootReducer = combineReducers<IRootState>({
   intrinsicResistance,
   organism,
   expertInterpretationRules,
+  execute,
   /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
   loadingBar,
 });
