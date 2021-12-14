@@ -1,15 +1,17 @@
 import axios from 'axios';
 import { ICrudGetAction, ICrudGetAllAction, ICrudPutAction, ICrudDeleteAction } from 'react-jhipster';
 
-import { cleanEntity } from 'app/shared/util/entity-utils';
+import { cleanEntity, empty, merge } from 'app/shared/util/entity-utils';
 import { REQUEST, SUCCESS, FAILURE } from 'app/shared/reducers/action-type.util';
 
 import { IAntibiotic, defaultValue } from 'app/shared/model/antibiotic.model';
+import { ICrudGetAllActionWithFilter } from 'app/shared/util/filter';
 
 export const ACTION_TYPES = {
   FETCH_ANTIBIOTIC_LIST: 'antibiotic/FETCH_ANTIBIOTIC_LIST',
   FETCH_ANTIBIOTIC: 'antibiotic/FETCH_ANTIBIOTIC',
   CREATE_ANTIBIOTIC: 'antibiotic/CREATE_ANTIBIOTIC',
+  FILTER_BREAKPOINT: 'antibiotic/FILTER_ANTIBIOTIC',
   UPDATE_ANTIBIOTIC: 'antibiotic/UPDATE_ANTIBIOTIC',
   PARTIAL_UPDATE_ANTIBIOTIC: 'antibiotic/PARTIAL_UPDATE_ANTIBIOTIC',
   DELETE_ANTIBIOTIC: 'antibiotic/DELETE_ANTIBIOTIC',
@@ -24,6 +26,7 @@ const initialState = {
   updating: false,
   totalItems: 0,
   updateSuccess: false,
+  filter: {},
 };
 
 export type AntibioticState = Readonly<typeof initialState>;
@@ -32,6 +35,19 @@ export type AntibioticState = Readonly<typeof initialState>;
 
 export default (state: AntibioticState = initialState, action): AntibioticState => {
   switch (action.type) {
+    case REQUEST(ACTION_TYPES.FILTER_BREAKPOINT):
+      return {
+        ...state,
+      };
+    case FAILURE(ACTION_TYPES.FILTER_BREAKPOINT):
+      return {
+        ...state,
+      };
+    case SUCCESS(ACTION_TYPES.FILTER_BREAKPOINT):
+      return {
+        ...state,
+        filter: merge(action.payload.data, state.filter),
+      };
     case REQUEST(ACTION_TYPES.FETCH_ANTIBIOTIC_LIST):
     case REQUEST(ACTION_TYPES.FETCH_ANTIBIOTIC):
       return {
@@ -105,11 +121,16 @@ const apiUrl = 'api/antibiotics';
 
 // Actions
 
-export const getEntities: ICrudGetAllAction<IAntibiotic> = (page, size, sort) => {
+export const getEntities: ICrudGetAllActionWithFilter<IAntibiotic> = (page, size, sort, filter) => {
   const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
+  const filters = empty(filter)
+    ? []
+    : Object.keys(filter).map(key => {
+        return empty(filter[key]) || filter[key].length === 0 ? '' : `&${key}.in=${filter[key].map(k => k.value).join(',')}`;
+      });
   return {
     type: ACTION_TYPES.FETCH_ANTIBIOTIC_LIST,
-    payload: axios.get<IAntibiotic>(`${requestUrl}${sort ? '&' : '?'}cacheBuster=${new Date().getTime()}`),
+    payload: axios.get<IAntibiotic>(`${requestUrl}${sort ? '&' : '?'}cacheBuster=${new Date().getTime()}${filters.join('')}`),
   };
 };
 
@@ -159,3 +180,11 @@ export const deleteEntity: ICrudDeleteAction<IAntibiotic> = id => async dispatch
 export const reset = () => ({
   type: ACTION_TYPES.RESET,
 });
+
+export const getFilerGroup: ICrudGetAction<any> = key => {
+  const requestUrl = `${apiUrl}/groups/${key}`;
+  return {
+    type: ACTION_TYPES.FILTER_BREAKPOINT,
+    payload: axios.get<any>(requestUrl),
+  };
+};

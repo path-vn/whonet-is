@@ -6,11 +6,12 @@ import { Translate, getSortState, IPaginationBaseState, JhiPagination, JhiItemCo
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
-import { getEntities } from './organism.reducer';
+import { getEntities, getFilerGroup } from './organism.reducer';
 import { IOrganism } from 'app/shared/model/organism.model';
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
+import { FilterTableHeader } from 'app/shared/util/filter';
 
 export interface IOrganismProps extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
 
@@ -18,9 +19,15 @@ export const Organism = (props: IOrganismProps) => {
   const [paginationState, setPaginationState] = useState(
     overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'id'), props.location.search)
   );
+  const [selected, setSelected] = useState({});
 
   const getAllEntities = () => {
-    props.getEntities(paginationState.activePage - 1, paginationState.itemsPerPage, `${paginationState.sort},${paginationState.order}`);
+    props.getEntities(
+      paginationState.activePage - 1,
+      paginationState.itemsPerPage,
+      `${paginationState.sort},${paginationState.order}`,
+      selected
+    );
   };
 
   const sortEntities = () => {
@@ -68,6 +75,17 @@ export const Organism = (props: IOrganismProps) => {
     sortEntities();
   };
 
+  const innerSort = p => {
+    setPaginationState({
+      ...paginationState,
+      order: paginationState.order === 'asc' ? 'desc' : 'asc',
+      sort: p,
+    });
+  };
+  const clearFilter = () => {
+    setSelected({});
+  };
+
   const { organismList, match, loading, totalItems } = props;
   return (
     <div>
@@ -85,104 +103,305 @@ export const Organism = (props: IOrganismProps) => {
           </Link>
         </div>
       </h2>
+      {selected &&
+        Object.keys(selected).map((k, i) => {
+          return (
+            <div key={`master-div-${i}`} style={{ display: 'inline' }}>
+              <span key={`master-${i}`} id={`id-master-${i}`} className="badge badge-secondary">
+                {' '}
+                {k}:{' '}
+              </span>
+              {selected[k]
+                .map(s => s.value)
+                .map((s, index) => {
+                  return (
+                    <span key={`selected-${i}-${index}`} id={`id-selected-${i}-${index}`} className="badge badge-info">
+                      {s}
+                    </span>
+                  );
+                })}
+            </div>
+          );
+        })}
+      {selected && Object.keys(selected).length > 0 && (
+        <span onClick={clearFilter} className="badge badge-danger">
+          X
+        </span>
+      )}
       <div className="table-responsive">
         {organismList && organismList.length > 0 ? (
           <Table responsive>
             <thead>
               <tr>
-                <th className="hand" onClick={sort('id')}>
-                  <Translate contentKey="amrInterpreationApp.organism.id">ID</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
                 <th className="hand" onClick={sort('whonetOrgCode')}>
-                  <Translate contentKey="amrInterpreationApp.organism.whonetOrgCode">Whonet Org Code</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'whonet_org_code'}
+                    contentKey="amrInterpreationApp.organism.whonetOrgCode"
+                    filterHandle={values => setSelected({ ...selected, whonetOrgCode: values })}
+                    sortHandle={() => innerSort('whonetOrgCode')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('organism')}>
-                  <Translate contentKey="amrInterpreationApp.organism.organism">Organism</Translate> <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'organism'}
+                    contentKey="amrInterpreationApp.organism.organism"
+                    filterHandle={values => setSelected({ ...selected, organism: values })}
+                    sortHandle={() => innerSort('organism')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('taxonomicStatus')}>
-                  <Translate contentKey="amrInterpreationApp.organism.taxonomicStatus">Taxonomic Status</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'taxonomic_status'}
+                    contentKey="amrInterpreationApp.organism.taxonomicStatus"
+                    filterHandle={values => setSelected({ ...selected, taxonomicStatus: values })}
+                    sortHandle={() => innerSort('taxonomicStatus')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('common')}>
-                  <Translate contentKey="amrInterpreationApp.organism.common">Common</Translate> <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'common'}
+                    contentKey="amrInterpreationApp.organism.common"
+                    filterHandle={values => setSelected({ ...selected, common: values })}
+                    sortHandle={() => innerSort('common')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('organismType')}>
-                  <Translate contentKey="amrInterpreationApp.organism.organismType">Organism Type</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'organism_type'}
+                    contentKey="amrInterpreationApp.organism.organismType"
+                    filterHandle={values => setSelected({ ...selected, organismType: values })}
+                    sortHandle={() => innerSort('organismType')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('anaerobe')}>
-                  <Translate contentKey="amrInterpreationApp.organism.anaerobe">Anaerobe</Translate> <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'anaerobe'}
+                    contentKey="amrInterpreationApp.organism.anaerobe"
+                    filterHandle={values => setSelected({ ...selected, anaerobe: values })}
+                    sortHandle={() => innerSort('anaerobe')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('morphology')}>
-                  <Translate contentKey="amrInterpreationApp.organism.morphology">Morphology</Translate> <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'morphology'}
+                    contentKey="amrInterpreationApp.organism.morphology"
+                    filterHandle={values => setSelected({ ...selected, morphology: values })}
+                    sortHandle={() => innerSort('morphology')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('subkingdomCode')}>
-                  <Translate contentKey="amrInterpreationApp.organism.subkingdomCode">Subkingdom Code</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'subkingdom_code'}
+                    contentKey="amrInterpreationApp.organism.subkingdomCode"
+                    filterHandle={values => setSelected({ ...selected, subkingdomCode: values })}
+                    sortHandle={() => innerSort('subkingdomCode')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('familyCode')}>
-                  <Translate contentKey="amrInterpreationApp.organism.familyCode">Family Code</Translate> <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'family_code'}
+                    contentKey="amrInterpreationApp.organism.familyCode"
+                    filterHandle={values => setSelected({ ...selected, familyCode: values })}
+                    sortHandle={() => innerSort('familyCode')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('genusGroup')}>
-                  <Translate contentKey="amrInterpreationApp.organism.genusGroup">Genus Group</Translate> <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'genus_group'}
+                    contentKey="amrInterpreationApp.organism.genusGroup"
+                    filterHandle={values => setSelected({ ...selected, genusGroup: values })}
+                    sortHandle={() => innerSort('genusGroup')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('genusCode')}>
-                  <Translate contentKey="amrInterpreationApp.organism.genusCode">Genus Code</Translate> <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'genus_code'}
+                    contentKey="amrInterpreationApp.organism.genusCode"
+                    filterHandle={values => setSelected({ ...selected, genusCode: values })}
+                    sortHandle={() => innerSort('genusCode')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('speciesGroup')}>
-                  <Translate contentKey="amrInterpreationApp.organism.speciesGroup">Species Group</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'species_group'}
+                    contentKey="amrInterpreationApp.organism.speciesGroup"
+                    filterHandle={values => setSelected({ ...selected, speciesGroup: values })}
+                    sortHandle={() => innerSort('speciesGroup')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('serovarGroup')}>
-                  <Translate contentKey="amrInterpreationApp.organism.serovarGroup">Serovar Group</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'serovar_group'}
+                    contentKey="amrInterpreationApp.organism.serovarGroup"
+                    filterHandle={values => setSelected({ ...selected, serovarGroup: values })}
+                    sortHandle={() => innerSort('serovarGroup')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('msfGrpClin')}>
-                  <Translate contentKey="amrInterpreationApp.organism.msfGrpClin">Msf Grp Clin</Translate> <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'msf_grp_clin'}
+                    contentKey="amrInterpreationApp.organism.msfGrpClin"
+                    filterHandle={values => setSelected({ ...selected, msfGrpClin: values })}
+                    sortHandle={() => innerSort('msfGrpClin')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('sctCode')}>
-                  <Translate contentKey="amrInterpreationApp.organism.sctCode">Sct Code</Translate> <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'sct_code'}
+                    contentKey="amrInterpreationApp.organism.sctCode"
+                    filterHandle={values => setSelected({ ...selected, sctCode: values })}
+                    sortHandle={() => innerSort('sctCode')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('sctText')}>
-                  <Translate contentKey="amrInterpreationApp.organism.sctText">Sct Text</Translate> <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'sct_text'}
+                    contentKey="amrInterpreationApp.organism.sctText"
+                    filterHandle={values => setSelected({ ...selected, sctText: values })}
+                    sortHandle={() => innerSort('sctText')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('dwcTaxonId')}>
-                  <Translate contentKey="amrInterpreationApp.organism.dwcTaxonId">Dwc Taxon Id</Translate> <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'dwc_taxon_id'}
+                    contentKey="amrInterpreationApp.organism.dwcTaxonId"
+                    filterHandle={values => setSelected({ ...selected, dwcTaxonId: values })}
+                    sortHandle={() => innerSort('dwcTaxonId')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('dwcTaxonomicStatus')}>
-                  <Translate contentKey="amrInterpreationApp.organism.dwcTaxonomicStatus">Dwc Taxonomic Status</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'dwc_taxonomic_status'}
+                    contentKey="amrInterpreationApp.organism.dwcTaxonomicStatus"
+                    filterHandle={values => setSelected({ ...selected, dwcTaxonomicStatus: values })}
+                    sortHandle={() => innerSort('dwcTaxonomicStatus')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('gbifTaxonId')}>
-                  <Translate contentKey="amrInterpreationApp.organism.gbifTaxonId">Gbif Taxon Id</Translate> <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'gbif_taxon_id'}
+                    contentKey="amrInterpreationApp.organism.gbifTaxonId"
+                    filterHandle={values => setSelected({ ...selected, gbifTaxonId: values })}
+                    sortHandle={() => innerSort('gbifTaxonId')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('gbifDatasetId')}>
-                  <Translate contentKey="amrInterpreationApp.organism.gbifDatasetId">Gbif Dataset Id</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'gbif_dataset_id'}
+                    contentKey="amrInterpreationApp.organism.gbifDatasetId"
+                    filterHandle={values => setSelected({ ...selected, gbifDatasetId: values })}
+                    sortHandle={() => innerSort('gbifDatasetId')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('gbifTaxonomicStatus')}>
-                  <Translate contentKey="amrInterpreationApp.organism.gbifTaxonomicStatus">Gbif Taxonomic Status</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'gbif_taxonomic_status'}
+                    contentKey="amrInterpreationApp.organism.gbifTaxonomicStatus"
+                    filterHandle={values => setSelected({ ...selected, gbifTaxonomicStatus: values })}
+                    sortHandle={() => innerSort('gbifTaxonomicStatus')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('kingdom')}>
-                  <Translate contentKey="amrInterpreationApp.organism.kingdom">Kingdom</Translate> <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'kingdom'}
+                    contentKey="amrInterpreationApp.organism.kingdom"
+                    filterHandle={values => setSelected({ ...selected, kingdom: values })}
+                    sortHandle={() => innerSort('kingdom')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('phylum')}>
-                  <Translate contentKey="amrInterpreationApp.organism.phylum">Phylum</Translate> <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'phylum'}
+                    contentKey="amrInterpreationApp.organism.phylum"
+                    filterHandle={values => setSelected({ ...selected, phylum: values })}
+                    sortHandle={() => innerSort('phylum')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('organismClass')}>
-                  <Translate contentKey="amrInterpreationApp.organism.organismClass">Organism Class</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'class'}
+                    contentKey="amrInterpreationApp.organism.organismClass"
+                    filterHandle={values => setSelected({ ...selected, organismClass: values })}
+                    sortHandle={() => innerSort('organismClass')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('order')}>
-                  <Translate contentKey="amrInterpreationApp.organism.order">Order</Translate> <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'order'}
+                    contentKey="amrInterpreationApp.organism.order"
+                    filterHandle={values => setSelected({ ...selected, order: values })}
+                    sortHandle={() => innerSort('order')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('family')}>
-                  <Translate contentKey="amrInterpreationApp.organism.family">Family</Translate> <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'family'}
+                    contentKey="amrInterpreationApp.organism.family"
+                    filterHandle={values => setSelected({ ...selected, family: values })}
+                    sortHandle={() => innerSort('family')}
+                  />
                 </th>
                 <th className="hand" onClick={sort('genus')}>
-                  <Translate contentKey="amrInterpreationApp.organism.genus">Genus</Translate> <FontAwesomeIcon icon="sort" />
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'genus'}
+                    contentKey="amrInterpreationApp.organism.genus"
+                    filterHandle={values => setSelected({ ...selected, genus: values })}
+                    sortHandle={() => innerSort('genus')}
+                  />
                 </th>
                 <th />
               </tr>
@@ -294,10 +513,12 @@ const mapStateToProps = ({ organism }: IRootState) => ({
   organismList: organism.entities,
   loading: organism.loading,
   totalItems: organism.totalItems,
+  filter: organism.filter,
 });
 
 const mapDispatchToProps = {
   getEntities,
+  getFilerGroup,
 };
 
 type StateProps = ReturnType<typeof mapStateToProps>;

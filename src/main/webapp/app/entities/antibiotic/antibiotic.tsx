@@ -6,10 +6,10 @@ import { getSortState, JhiItemCount, JhiPagination, Translate } from 'react-jhip
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
-import { getEntities } from './antibiotic.reducer';
+import { getEntities, getFilerGroup } from './antibiotic.reducer';
 import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
-import { empty, overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
-import FilterPopup from 'app/shared/layout/filter/filter';
+import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
+import { FilterTableHeader } from 'app/shared/util/filter';
 
 export interface IAntibioticProps extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
 
@@ -17,10 +17,15 @@ export const Antibiotic = (props: IAntibioticProps) => {
   const [paginationState, setPaginationState] = useState(
     overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'id'), props.location.search)
   );
-  const filterRef = useRef();
+  const [selected, setSelected] = useState({});
 
   const getAllEntities = () => {
-    props.getEntities(paginationState.activePage - 1, paginationState.itemsPerPage, `${paginationState.sort},${paginationState.order}`);
+    props.getEntities(
+      paginationState.activePage - 1,
+      paginationState.itemsPerPage,
+      `${paginationState.sort},${paginationState.order}`,
+      selected
+    );
   };
 
   const sortEntities = () => {
@@ -33,7 +38,7 @@ export const Antibiotic = (props: IAntibioticProps) => {
 
   useEffect(() => {
     sortEntities();
-  }, [paginationState.activePage, paginationState.order, paginationState.sort]);
+  }, [paginationState.activePage, paginationState.order, paginationState.sort, selected]);
 
   useEffect(() => {
     const params = new URLSearchParams(props.location.search);
@@ -67,21 +72,21 @@ export const Antibiotic = (props: IAntibioticProps) => {
   const handleSyncList = () => {
     sortEntities();
   };
-  // const openTooltip = () => {
-  //   console.log(filterRef, filterRef.current)
-  //   if (!empty(filterRef) && !empty(filterRef.current)) {
-  //     filterRef.current.open();
-  //   }
-  // };
 
-  const filter = p => () => {
-    // openTooltip();
+  const innerSort = p => {
+    setPaginationState({
+      ...paginationState,
+      order: paginationState.order === 'asc' ? 'desc' : 'asc',
+      sort: p,
+    });
+  };
+  const clearFilter = () => {
+    setSelected({});
   };
 
   const { antibioticList, match, loading, totalItems } = props;
   return (
     <div>
-      <FilterPopup ref={filterRef} />
       <h2 id="antibiotic-heading" data-cy="AntibioticHeading">
         <Translate contentKey="amrInterpreationApp.antibiotic.home.title">Antibiotics</Translate>
         <div className="d-flex justify-content-end">
@@ -96,144 +101,424 @@ export const Antibiotic = (props: IAntibioticProps) => {
           </Link>
         </div>
       </h2>
+      {selected &&
+        Object.keys(selected).map((k, i) => {
+          return (
+            <div key={`master-div-${i}`} style={{ display: 'inline' }}>
+              <span key={`master-${i}`} id={`id-master-${i}`} className="badge badge-secondary">
+                {' '}
+                {k}:{' '}
+              </span>
+              {selected[k]
+                .map(s => s.value)
+                .map((s, index) => {
+                  return (
+                    <span key={`selected-${i}-${index}`} id={`id-selected-${i}-${index}`} className="badge badge-info">
+                      {s}
+                    </span>
+                  );
+                })}
+            </div>
+          );
+        })}
+      {selected && Object.keys(selected).length > 0 && (
+        <span onClick={clearFilter} className="badge badge-danger">
+          X
+        </span>
+      )}
       <div className="table-responsive">
         {antibioticList && antibioticList.length > 0 ? (
           <Table responsive>
             <thead>
               <tr>
                 <th className="hand">
-                  <span onClick={filter('id')}>
+                  <span onClick={sort('id')}>
                     <Translate contentKey="amrInterpreationApp.antibiotic.id">ID</Translate>
                   </span>
                   <FontAwesomeIcon icon="sort" onClick={sort('id')} />
                 </th>
-                <th className="hand" onClick={sort('whonetAbxCode')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.whonetAbxCode">Whonet Abx Code</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'whonet_abx_code'}
+                    contentKey="amrInterpreationApp.antibiotic.whonetAbxCode"
+                    filterHandle={values => setSelected({ ...selected, whonetAbxCode: values })}
+                    sortHandle={() => innerSort('whonetAbxCode')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('whoCode')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.whoCode">Who Code</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'who_code'}
+                    contentKey="amrInterpreationApp.antibiotic.whoCode"
+                    filterHandle={values => setSelected({ ...selected, whoCode: values })}
+                    sortHandle={() => innerSort('whoCode')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('dinCode')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.dinCode">Din Code</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'din_code'}
+                    contentKey="amrInterpreationApp.antibiotic.dinCode"
+                    filterHandle={values => setSelected({ ...selected, dinCode: values })}
+                    sortHandle={() => innerSort('dinCode')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('jacCode')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.jacCode">Jac Code</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'jac_code'}
+                    contentKey="amrInterpreationApp.antibiotic.jacCode"
+                    filterHandle={values => setSelected({ ...selected, jacCode: values })}
+                    sortHandle={() => innerSort('jacCode')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('eucastCode')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.eucastCode">Eucast Code</Translate>
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'eucast_code'}
+                    contentKey="amrInterpreationApp.antibiotic.eucastCode"
+                    filterHandle={values => setSelected({ ...selected, eucastCode: values })}
+                    sortHandle={() => innerSort('eucastCode')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('userCode')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.userCode">User Code</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'user_code'}
+                    contentKey="amrInterpreationApp.antibiotic.userCode"
+                    filterHandle={values => setSelected({ ...selected, userCode: values })}
+                    sortHandle={() => innerSort('userCode')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('antibiotic')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.antibiotic">Antibiotic</Translate>
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'antibiotic'}
+                    contentKey="amrInterpreationApp.antibiotic.antibiotic"
+                    filterHandle={values => setSelected({ ...selected, antibiotic: values })}
+                    sortHandle={() => innerSort('antibiotic')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('guidelines')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.guidelines">Guidelines</Translate>
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'guidelines'}
+                    contentKey="amrInterpreationApp.antibiotic.guidelines"
+                    filterHandle={values => setSelected({ ...selected, guidelines: values })}
+                    sortHandle={() => innerSort('guidelines')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('antiboticClass')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.antiboticClass">Antibotic Class</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'class'}
+                    contentKey="amrInterpreationApp.antibiotic.antiboticClass"
+                    filterHandle={values => setSelected({ ...selected, antiboticClass: values })}
+                    sortHandle={() => innerSort('antiboticClass')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('clsi')}>
+                <th className="hand">
                   <Translate contentKey="amrInterpreationApp.antibiotic.clsi">Clsi</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th className="hand" onClick={sort('eucast')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.eucast">Eucast</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'eucast'}
+                    contentKey="amrInterpreationApp.antibiotic.eucast"
+                    filterHandle={values => setSelected({ ...selected, eucast: values })}
+                    sortHandle={() => innerSort('eucast')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('sfm')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.sfm">Sfm</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'sfm'}
+                    contentKey="amrInterpreationApp.antibiotic.sfm"
+                    filterHandle={values => setSelected({ ...selected, sfm: values })}
+                    sortHandle={() => innerSort('sfm')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('srga')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.srga">Srga</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'srga'}
+                    contentKey="amrInterpreationApp.antibiotic.srga"
+                    filterHandle={values => setSelected({ ...selected, srga: values })}
+                    sortHandle={() => innerSort('srga')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('bsac')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.bsac">Bsac</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'bsac'}
+                    contentKey="amrInterpreationApp.antibiotic.bsac"
+                    filterHandle={values => setSelected({ ...selected, bsac: values })}
+                    sortHandle={() => innerSort('bsac')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('din')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.din">Din</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'din'}
+                    contentKey="amrInterpreationApp.antibiotic.din"
+                    filterHandle={values => setSelected({ ...selected, din: values })}
+                    sortHandle={() => innerSort('din')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('neo')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.neo">Neo</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'neo'}
+                    contentKey="amrInterpreationApp.antibiotic.neo"
+                    filterHandle={values => setSelected({ ...selected, neo: values })}
+                    sortHandle={() => innerSort('neo')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('afa')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.afa">Afa</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'afa'}
+                    contentKey="amrInterpreationApp.antibiotic.afa"
+                    filterHandle={values => setSelected({ ...selected, afa: values })}
+                    sortHandle={() => innerSort('afa')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('abxNumber')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.abxNumber">Abx Number</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'abx_number'}
+                    contentKey="amrInterpreationApp.antibiotic.abxNumber"
+                    filterHandle={values => setSelected({ ...selected, abxNumber: values })}
+                    sortHandle={() => innerSort('abxNumber')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('potency')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.potency">Potency</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'potency'}
+                    contentKey="amrInterpreationApp.antibiotic.potency"
+                    filterHandle={values => setSelected({ ...selected, potency: values })}
+                    sortHandle={() => innerSort('potency')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('atcCode')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.atcCode">Atc Code</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'atc_code'}
+                    contentKey="amrInterpreationApp.antibiotic.atcCode"
+                    filterHandle={values => setSelected({ ...selected, atcCode: values })}
+                    sortHandle={() => innerSort('atcCode')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('profClass')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.profClass">Prof Class</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'prof_class'}
+                    contentKey="amrInterpreationApp.antibiotic.profClass"
+                    filterHandle={values => setSelected({ ...selected, profClass: values })}
+                    sortHandle={() => innerSort('profClass')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('ciaCategory')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.ciaCategory">Cia Category</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'cia_category'}
+                    contentKey="amrInterpreationApp.antibiotic.ciaCategory"
+                    filterHandle={values => setSelected({ ...selected, ciaCategory: values })}
+                    sortHandle={() => innerSort('ciaCategory')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('clsiOrder')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.clsiOrder">Clsi Order</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'clsi_order'}
+                    contentKey="amrInterpreationApp.antibiotic.clsiOrder"
+                    filterHandle={values => setSelected({ ...selected, clsiOrder: values })}
+                    sortHandle={() => innerSort('clsiOrder')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('eucastOrder')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.eucastOrder">Eucast Order</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'eucast_order'}
+                    contentKey="amrInterpreationApp.antibiotic.eucastOrder"
+                    filterHandle={values => setSelected({ ...selected, eucastOrder: values })}
+                    sortHandle={() => innerSort('eucastOrder')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('human')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.human">Human</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'human'}
+                    contentKey="amrInterpreationApp.antibiotic.human"
+                    filterHandle={values => setSelected({ ...selected, human: values })}
+                    sortHandle={() => innerSort('human')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('veterinary')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.veterinary">Veterinary</Translate>
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'veterinary'}
+                    contentKey="amrInterpreationApp.antibiotic.veterinary"
+                    filterHandle={values => setSelected({ ...selected, veterinary: values })}
+                    sortHandle={() => innerSort('veterinary')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('animalGp')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.animalGp">Animal Gp</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'animal_gp'}
+                    contentKey="amrInterpreationApp.antibiotic.animalGp"
+                    filterHandle={values => setSelected({ ...selected, animalGp: values })}
+                    sortHandle={() => innerSort('animalGp')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('loinccomp')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.loinccomp">Loinccomp</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'loinccomp'}
+                    contentKey="amrInterpreationApp.antibiotic.loinccomp"
+                    filterHandle={values => setSelected({ ...selected, loinccomp: values })}
+                    sortHandle={() => innerSort('loinccomp')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('loincgen')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.loincgen">Loincgen</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'loincgen'}
+                    contentKey="amrInterpreationApp.antibiotic.loincgen"
+                    filterHandle={values => setSelected({ ...selected, loincgen: values })}
+                    sortHandle={() => innerSort('loincgen')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('loincdisk')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.loincdisk">Loincdisk</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'loincdisk'}
+                    contentKey="amrInterpreationApp.antibiotic.loincdisk"
+                    filterHandle={values => setSelected({ ...selected, loincdisk: values })}
+                    sortHandle={() => innerSort('loincdisk')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('loincmic')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.loincmic">Loincmic</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'loincmic'}
+                    contentKey="amrInterpreationApp.antibiotic.loincmic"
+                    filterHandle={values => setSelected({ ...selected, loincmic: values })}
+                    sortHandle={() => innerSort('loincmic')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('loincetest')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.loincetest">Loincetest</Translate>
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'loincetest'}
+                    contentKey="amrInterpreationApp.antibiotic.loincetest"
+                    filterHandle={values => setSelected({ ...selected, loincetest: values })}
+                    sortHandle={() => innerSort('loincetest')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('loincslow')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.loincslow">Loincslow</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'loincslow'}
+                    contentKey="amrInterpreationApp.antibiotic.loincslow"
+                    filterHandle={values => setSelected({ ...selected, loincslow: values })}
+                    sortHandle={() => innerSort('loincslow')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('loincafb')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.loincafb">Loincafb</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'loincafb'}
+                    contentKey="amrInterpreationApp.antibiotic.loincafb"
+                    filterHandle={values => setSelected({ ...selected, loincafb: values })}
+                    sortHandle={() => innerSort('loincafb')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('loincsbt')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.loincsbt">Loincsbt</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'loincsbt'}
+                    contentKey="amrInterpreationApp.antibiotic.loincsbt"
+                    filterHandle={values => setSelected({ ...selected, loincsbt: values })}
+                    sortHandle={() => innerSort('loincsbt')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('loincmlc')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.loincmlc">Loincmlc</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'loincmlc'}
+                    contentKey="amrInterpreationApp.antibiotic.loincmlc"
+                    filterHandle={values => setSelected({ ...selected, loincmlc: values })}
+                    sortHandle={() => innerSort('loincmlc')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('dateEntered')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.dateEntered">Date Entered</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'date_entered'}
+                    contentKey="amrInterpreationApp.antibiotic.dateEntered"
+                    filterHandle={values => setSelected({ ...selected, dateEntered: values })}
+                    sortHandle={() => innerSort('dateEntered')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('dateModified')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.dateModified">Date Modified</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'date_modified'}
+                    contentKey="amrInterpreationApp.antibiotic.dateModified"
+                    filterHandle={values => setSelected({ ...selected, dateModified: values })}
+                    sortHandle={() => innerSort('dateModified')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('comments')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.comments">Comments</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'comments'}
+                    contentKey="amrInterpreationApp.antibiotic.comments"
+                    filterHandle={values => setSelected({ ...selected, comments: values })}
+                    sortHandle={() => innerSort('comments')}
+                  />
                 </th>
                 <th />
               </tr>
@@ -357,10 +642,12 @@ const mapStateToProps = ({ antibiotic }: IRootState) => ({
   antibioticList: antibiotic.entities,
   loading: antibiotic.loading,
   totalItems: antibiotic.totalItems,
+  filter: antibiotic.filter,
 });
 
 const mapDispatchToProps = {
   getEntities,
+  getFilerGroup,
 };
 
 type StateProps = ReturnType<typeof mapStateToProps>;

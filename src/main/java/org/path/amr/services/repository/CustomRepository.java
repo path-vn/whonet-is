@@ -37,6 +37,17 @@ public class CustomRepository {
         return this.getBreakPoints(orgCode, whonetTest, breakpointType, "C", 2021);
     }
 
+    public List<String> findBreakpointGroupByField(String field) {
+        String sql = String.format("select %s , 'ab' as c from breakpoints group by %s order by %s desc", field, field, field);
+        NativeQuery qry = getCurrentSession().createNativeQuery(sql);
+        List<String> result = new ArrayList<>();
+        List<Object[]> rows = qry.getResultList();
+        for (int i = 0; i < rows.size(); i++) {
+            result.add(rows.get(i)[0].toString());
+        }
+        return result;
+    }
+
     public List<OrganismIntrinsicResistanceAntibioticDTO> getIntrinsicResistance(String orgCode, String abxCode) {
         abxCode = abxCode.split("_")[0];
         String sql =
@@ -323,6 +334,28 @@ public class CustomRepository {
             breakPoint.setOrganismID(Long.valueOf(rows.get(i)[0].toString()));
             breakPoint.setBreakPointID(Long.valueOf(rows.get(i)[1].toString()));
             result.add(breakPoint);
+        }
+        return result;
+    }
+
+    public List<String> findAntibioticGroupByField(String field) {
+        String sql = String.format("select %s , 'ab' as c from antibiotics group by %s order by %s desc", field, field, field);
+        NativeQuery qry = getCurrentSession().createNativeQuery(sql);
+        List<String> result = new ArrayList<>();
+        List<Object[]> rows = qry.getResultList();
+        for (int i = 0; i < rows.size(); i++) {
+            result.add(rows.get(i)[0].toString());
+        }
+        return result;
+    }
+
+    public List<String> findOrganismGroupByField(String field) {
+        String sql = String.format("select %s , 'ab' as c from organisms group by %s order by %s desc", field, field, field);
+        NativeQuery qry = getCurrentSession().createNativeQuery(sql);
+        List<String> result = new ArrayList<>();
+        List<Object[]> rows = qry.getResultList();
+        for (int i = 0; i < rows.size(); i++) {
+            result.add(rows.get(i)[0].toString());
         }
         return result;
     }
