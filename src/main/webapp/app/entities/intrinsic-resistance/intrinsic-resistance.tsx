@@ -6,11 +6,12 @@ import { Translate, getSortState, IPaginationBaseState, JhiPagination, JhiItemCo
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
-import { getEntities } from './intrinsic-resistance.reducer';
+import { getEntities, getFilerGroup } from './intrinsic-resistance.reducer';
 import { IIntrinsicResistance } from 'app/shared/model/intrinsic-resistance.model';
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
+import { FilterTableHeader } from 'app/shared/util/filter';
 
 export interface IIntrinsicResistanceProps extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
 
@@ -18,9 +19,15 @@ export const IntrinsicResistance = (props: IIntrinsicResistanceProps) => {
   const [paginationState, setPaginationState] = useState(
     overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'id'), props.location.search)
   );
+  const [selected, setSelected] = useState({});
 
   const getAllEntities = () => {
-    props.getEntities(paginationState.activePage - 1, paginationState.itemsPerPage, `${paginationState.sort},${paginationState.order}`);
+    props.getEntities(
+      paginationState.activePage - 1,
+      paginationState.itemsPerPage,
+      `${paginationState.sort},${paginationState.order}`,
+      selected
+    );
   };
 
   const sortEntities = () => {
@@ -33,7 +40,7 @@ export const IntrinsicResistance = (props: IIntrinsicResistanceProps) => {
 
   useEffect(() => {
     sortEntities();
-  }, [paginationState.activePage, paginationState.order, paginationState.sort]);
+  }, [paginationState.activePage, paginationState.order, paginationState.sort, selected]);
 
   useEffect(() => {
     const params = new URLSearchParams(props.location.search);
@@ -68,6 +75,17 @@ export const IntrinsicResistance = (props: IIntrinsicResistanceProps) => {
     sortEntities();
   };
 
+  const innerSort = p => {
+    setPaginationState({
+      ...paginationState,
+      order: paginationState.order === 'asc' ? 'desc' : 'asc',
+      sort: p,
+    });
+  };
+  const clearFilter = () => {
+    setSelected({});
+  };
+
   const { intrinsicResistanceList, match, loading, totalItems } = props;
   return (
     <div>
@@ -78,13 +96,38 @@ export const IntrinsicResistance = (props: IIntrinsicResistanceProps) => {
             <FontAwesomeIcon icon="sync" spin={loading} />{' '}
             <Translate contentKey="amrInterpreationApp.intrinsicResistance.home.refreshListLabel">Refresh List</Translate>
           </Button>
-          <Link to={`${match.url}/new`} className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
-            <FontAwesomeIcon icon="plus" />
-            &nbsp;
-            <Translate contentKey="amrInterpreationApp.intrinsicResistance.home.createLabel">Create new Intrinsic Resistance</Translate>
-          </Link>
+          {/*<Link to={`${match.url}/new`} className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">*/}
+          {/*  <FontAwesomeIcon icon="plus" />*/}
+          {/*  &nbsp;*/}
+          {/*  <Translate contentKey="amrInterpreationApp.intrinsicResistance.home.createLabel">Create new Intrinsic Resistance</Translate>*/}
+          {/*</Link>*/}
         </div>
       </h2>
+      {selected &&
+        Object.keys(selected).map((k, i) => {
+          return (
+            <div key={`master-div-${i}`} style={{ display: 'inline' }}>
+              <span key={`master-${i}`} id={`id-master-${i}`} className="badge badge-secondary">
+                {' '}
+                {k}:{' '}
+              </span>
+              {selected[k]
+                .map(s => s.value)
+                .map((s, index) => {
+                  return (
+                    <span key={`selected-${i}-${index}`} id={`id-selected-${i}-${index}`} className="badge badge-info">
+                      {s}
+                    </span>
+                  );
+                })}
+            </div>
+          );
+        })}
+      {selected && Object.keys(selected).length > 0 && (
+        <span onClick={clearFilter} className="badge badge-danger">
+          X
+        </span>
+      )}
       <div className="table-responsive">
         {intrinsicResistanceList && intrinsicResistanceList.length > 0 ? (
           <Table responsive>
@@ -93,51 +136,95 @@ export const IntrinsicResistance = (props: IIntrinsicResistanceProps) => {
                 <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="amrInterpreationApp.intrinsicResistance.id">ID</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th className="hand" onClick={sort('guideline')}>
-                  <Translate contentKey="amrInterpreationApp.intrinsicResistance.guideline">Guideline</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'reference_table'}
+                    contentKey="amrInterpreationApp.intrinsicResistance.referenceTable"
+                    filterHandle={values => setSelected({ ...selected, referenceTable: values })}
+                    sortHandle={() => innerSort('referenceTable')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('referenceTable')}>
-                  <Translate contentKey="amrInterpreationApp.intrinsicResistance.referenceTable">Reference Table</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'organism_code'}
+                    contentKey="amrInterpreationApp.intrinsicResistance.organismCode"
+                    filterHandle={values => setSelected({ ...selected, organismCode: values })}
+                    sortHandle={() => innerSort('organismCode')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('organismCode')}>
-                  <Translate contentKey="amrInterpreationApp.intrinsicResistance.organismCode">Organism Code</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'organism_code_type'}
+                    contentKey="amrInterpreationApp.intrinsicResistance.organismCodeType"
+                    filterHandle={values => setSelected({ ...selected, organismCodeType: values })}
+                    sortHandle={() => innerSort('organismCodeType')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('organismCodeType')}>
-                  <Translate contentKey="amrInterpreationApp.intrinsicResistance.organismCodeType">Organism Code Type</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'exception_organism_code'}
+                    contentKey="amrInterpreationApp.intrinsicResistance.exceptionOrganismCode"
+                    filterHandle={values => setSelected({ ...selected, exceptionOrganismCode: values })}
+                    sortHandle={() => innerSort('exceptionOrganismCode')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('exceptionOrganismCode')}>
-                  <Translate contentKey="amrInterpreationApp.intrinsicResistance.exceptionOrganismCode">Exception Organism Code</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'exception_organism_code_type'}
+                    contentKey="amrInterpreationApp.intrinsicResistance.exceptionOrganismCodeType"
+                    filterHandle={values => setSelected({ ...selected, exceptionOrganismCodeType: values })}
+                    sortHandle={() => innerSort('exceptionOrganismCodeType')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('exceptionOrganismCodeType')}>
-                  <Translate contentKey="amrInterpreationApp.intrinsicResistance.exceptionOrganismCodeType">
-                    Exception Organism Code Type
-                  </Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'abx_code'}
+                    contentKey="amrInterpreationApp.intrinsicResistance.abxCode"
+                    filterHandle={values => setSelected({ ...selected, abxCode: values })}
+                    sortHandle={() => innerSort('abxCode')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('abxCode')}>
-                  <Translate contentKey="amrInterpreationApp.intrinsicResistance.abxCode">Abx Code</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'abx_code_type'}
+                    contentKey="amrInterpreationApp.intrinsicResistance.abxCodeType"
+                    filterHandle={values => setSelected({ ...selected, abxCodeType: values })}
+                    sortHandle={() => innerSort('abxCodeType')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('abxCodeType')}>
-                  <Translate contentKey="amrInterpreationApp.intrinsicResistance.abxCodeType">Abx Code Type</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'date_entered'}
+                    contentKey="amrInterpreationApp.intrinsicResistance.dateEntered"
+                    filterHandle={values => setSelected({ ...selected, dateEntered: values })}
+                    sortHandle={() => innerSort('dateEntered')}
+                  />
                 </th>
-                <th className="hand" onClick={sort('dateEntered')}>
-                  <Translate contentKey="amrInterpreationApp.intrinsicResistance.dateEntered">Date Entered</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('dateModified')}>
-                  <Translate contentKey="amrInterpreationApp.intrinsicResistance.dateModified">Date Modified</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
-                </th>
-                <th className="hand" onClick={sort('comments')}>
-                  <Translate contentKey="amrInterpreationApp.intrinsicResistance.comments">Comments</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'date_modified'}
+                    contentKey="amrInterpreationApp.intrinsicResistance.dateModified"
+                    filterHandle={values => setSelected({ ...selected, dateModified: values })}
+                    sortHandle={() => innerSort('dateModified')}
+                  />
                 </th>
                 <th />
               </tr>
@@ -150,7 +237,6 @@ export const IntrinsicResistance = (props: IIntrinsicResistanceProps) => {
                       {intrinsicResistance.id}
                     </Button>
                   </td>
-                  <td>{intrinsicResistance.guideline}</td>
                   <td>{intrinsicResistance.referenceTable}</td>
                   <td>{intrinsicResistance.organismCode}</td>
                   <td>{intrinsicResistance.organismCodeType}</td>
@@ -160,7 +246,6 @@ export const IntrinsicResistance = (props: IIntrinsicResistanceProps) => {
                   <td>{intrinsicResistance.abxCodeType}</td>
                   <td>{intrinsicResistance.dateEntered}</td>
                   <td>{intrinsicResistance.dateModified}</td>
-                  <td>{intrinsicResistance.comments}</td>
                   <td className="text-right">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`${match.url}/${intrinsicResistance.id}`} color="info" size="sm" data-cy="entityDetailsButton">
@@ -169,30 +254,30 @@ export const IntrinsicResistance = (props: IIntrinsicResistanceProps) => {
                           <Translate contentKey="entity.action.view">View</Translate>
                         </span>
                       </Button>
-                      <Button
-                        tag={Link}
-                        to={`${match.url}/${intrinsicResistance.id}/edit?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
-                        color="primary"
-                        size="sm"
-                        data-cy="entityEditButton"
-                      >
-                        <FontAwesomeIcon icon="pencil-alt" />{' '}
-                        <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.edit">Edit</Translate>
-                        </span>
-                      </Button>
-                      <Button
-                        tag={Link}
-                        to={`${match.url}/${intrinsicResistance.id}/delete?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
-                        color="danger"
-                        size="sm"
-                        data-cy="entityDeleteButton"
-                      >
-                        <FontAwesomeIcon icon="trash" />{' '}
-                        <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.delete">Delete</Translate>
-                        </span>
-                      </Button>
+                      {/*<Button*/}
+                      {/*  tag={Link}*/}
+                      {/*  to={`${match.url}/${intrinsicResistance.id}/edit?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}*/}
+                      {/*  color="primary"*/}
+                      {/*  size="sm"*/}
+                      {/*  data-cy="entityEditButton"*/}
+                      {/*>*/}
+                      {/*  <FontAwesomeIcon icon="pencil-alt" />{' '}*/}
+                      {/*  <span className="d-none d-md-inline">*/}
+                      {/*    <Translate contentKey="entity.action.edit">Edit</Translate>*/}
+                      {/*  </span>*/}
+                      {/*</Button>*/}
+                      {/*<Button*/}
+                      {/*  tag={Link}*/}
+                      {/*  to={`${match.url}/${intrinsicResistance.id}/delete?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}*/}
+                      {/*  color="danger"*/}
+                      {/*  size="sm"*/}
+                      {/*  data-cy="entityDeleteButton"*/}
+                      {/*>*/}
+                      {/*  <FontAwesomeIcon icon="trash" />{' '}*/}
+                      {/*  <span className="d-none d-md-inline">*/}
+                      {/*    <Translate contentKey="entity.action.delete">Delete</Translate>*/}
+                      {/*  </span>*/}
+                      {/*</Button>*/}
                     </div>
                   </td>
                 </tr>
@@ -233,10 +318,12 @@ const mapStateToProps = ({ intrinsicResistance }: IRootState) => ({
   intrinsicResistanceList: intrinsicResistance.entities,
   loading: intrinsicResistance.loading,
   totalItems: intrinsicResistance.totalItems,
+  filter: intrinsicResistance.filter,
 });
 
 const mapDispatchToProps = {
   getEntities,
+  getFilerGroup,
 };
 
 type StateProps = ReturnType<typeof mapStateToProps>;

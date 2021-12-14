@@ -10,7 +10,7 @@ import { getEntities, getFilerGroup } from './organism.reducer';
 import { IOrganism } from 'app/shared/model/organism.model';
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
-import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
+import { empty, overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { FilterTableHeader } from 'app/shared/util/filter';
 
 export interface IOrganismProps extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
@@ -40,7 +40,7 @@ export const Organism = (props: IOrganismProps) => {
 
   useEffect(() => {
     sortEntities();
-  }, [paginationState.activePage, paginationState.order, paginationState.sort]);
+  }, [paginationState.activePage, paginationState.order, paginationState.sort, selected]);
 
   useEffect(() => {
     const params = new URLSearchParams(props.location.search);
@@ -92,7 +92,7 @@ export const Organism = (props: IOrganismProps) => {
       <h2 id="organism-heading" data-cy="OrganismHeading">
         <Translate contentKey="amrInterpreationApp.organism.home.title">Organisms</Translate>
         <div className="d-flex justify-content-end">
-          <Button className="mr-2" color="info" onClick={handleSyncList} disabled={loading}>
+          <Button className="mr-2" color="info">
             <FontAwesomeIcon icon="sync" spin={loading} />{' '}
             <Translate contentKey="amrInterpreationApp.organism.home.refreshListLabel">Refresh List</Translate>
           </Button>
@@ -103,6 +103,7 @@ export const Organism = (props: IOrganismProps) => {
           </Link>
         </div>
       </h2>
+      {empty(selected) || (Object.keys(selected).length === 0 && <span>Click on column name to filter</span>)}
       {selected &&
         Object.keys(selected).map((k, i) => {
           return (
@@ -133,7 +134,13 @@ export const Organism = (props: IOrganismProps) => {
           <Table responsive>
             <thead>
               <tr>
-                <th className="hand" onClick={sort('whonetOrgCode')}>
+                <th className="hand">
+                  <span onClick={sort('id')}>
+                    <Translate contentKey="amrInterpreationApp.organism.id">ID</Translate>
+                  </span>
+                  <FontAwesomeIcon icon="sort" onClick={sort('id')} />
+                </th>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -143,7 +150,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('whonetOrgCode')}
                   />
                 </th>
-                <th className="hand" onClick={sort('organism')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -153,7 +160,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('organism')}
                   />
                 </th>
-                <th className="hand" onClick={sort('taxonomicStatus')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -163,7 +170,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('taxonomicStatus')}
                   />
                 </th>
-                <th className="hand" onClick={sort('common')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -173,7 +180,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('common')}
                   />
                 </th>
-                <th className="hand" onClick={sort('organismType')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -183,7 +190,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('organismType')}
                   />
                 </th>
-                <th className="hand" onClick={sort('anaerobe')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -193,7 +200,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('anaerobe')}
                   />
                 </th>
-                <th className="hand" onClick={sort('morphology')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -203,7 +210,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('morphology')}
                   />
                 </th>
-                <th className="hand" onClick={sort('subkingdomCode')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -213,7 +220,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('subkingdomCode')}
                   />
                 </th>
-                <th className="hand" onClick={sort('familyCode')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -223,7 +230,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('familyCode')}
                   />
                 </th>
-                <th className="hand" onClick={sort('genusGroup')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -233,7 +240,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('genusGroup')}
                   />
                 </th>
-                <th className="hand" onClick={sort('genusCode')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -243,7 +250,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('genusCode')}
                   />
                 </th>
-                <th className="hand" onClick={sort('speciesGroup')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -253,7 +260,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('speciesGroup')}
                   />
                 </th>
-                <th className="hand" onClick={sort('serovarGroup')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -263,7 +270,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('serovarGroup')}
                   />
                 </th>
-                <th className="hand" onClick={sort('msfGrpClin')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -273,7 +280,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('msfGrpClin')}
                   />
                 </th>
-                <th className="hand" onClick={sort('sctCode')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -283,7 +290,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('sctCode')}
                   />
                 </th>
-                <th className="hand" onClick={sort('sctText')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -293,7 +300,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('sctText')}
                   />
                 </th>
-                <th className="hand" onClick={sort('dwcTaxonId')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -303,7 +310,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('dwcTaxonId')}
                   />
                 </th>
-                <th className="hand" onClick={sort('dwcTaxonomicStatus')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -313,7 +320,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('dwcTaxonomicStatus')}
                   />
                 </th>
-                <th className="hand" onClick={sort('gbifTaxonId')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -323,7 +330,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('gbifTaxonId')}
                   />
                 </th>
-                <th className="hand" onClick={sort('gbifDatasetId')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -333,7 +340,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('gbifDatasetId')}
                   />
                 </th>
-                <th className="hand" onClick={sort('gbifTaxonomicStatus')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -343,7 +350,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('gbifTaxonomicStatus')}
                   />
                 </th>
-                <th className="hand" onClick={sort('kingdom')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -353,7 +360,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('kingdom')}
                   />
                 </th>
-                <th className="hand" onClick={sort('phylum')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -363,7 +370,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('phylum')}
                   />
                 </th>
-                <th className="hand" onClick={sort('organismClass')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -373,17 +380,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('organismClass')}
                   />
                 </th>
-                <th className="hand" onClick={sort('order')}>
-                  <FilterTableHeader
-                    filter={props.filter}
-                    handle={props.getFilerGroup}
-                    name={'order'}
-                    contentKey="amrInterpreationApp.organism.order"
-                    filterHandle={values => setSelected({ ...selected, order: values })}
-                    sortHandle={() => innerSort('order')}
-                  />
-                </th>
-                <th className="hand" onClick={sort('family')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -393,7 +390,7 @@ export const Organism = (props: IOrganismProps) => {
                     sortHandle={() => innerSort('family')}
                   />
                 </th>
-                <th className="hand" onClick={sort('genus')}>
+                <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
                     handle={props.getFilerGroup}
@@ -438,7 +435,6 @@ export const Organism = (props: IOrganismProps) => {
                   <td>{organism.kingdom}</td>
                   <td>{organism.phylum}</td>
                   <td>{organism.organismClass}</td>
-                  <td>{organism.order}</td>
                   <td>{organism.family}</td>
                   <td>{organism.genus}</td>
                   <td className="text-right">

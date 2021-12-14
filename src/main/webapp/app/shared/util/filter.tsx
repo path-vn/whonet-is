@@ -23,10 +23,10 @@ export declare type ICrudGetAllActionWithFilter<T> = (
 export const FilterTableHeader = (props: IAsyncSelectProps) => {
   const [tooltipSync, setTooltipSync] = useState(false);
   useEffect(() => {
-    if (!empty(props.handle)) {
+    if (tooltipSync && !empty(props.handle)) {
       props.handle(props.name);
     }
-  }, []);
+  }, [tooltipSync]);
   return (
     <>
       <ToolTips

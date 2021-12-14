@@ -94,11 +94,11 @@ export const Antibiotic = (props: IAntibioticProps) => {
             <FontAwesomeIcon icon="sync" spin={loading} />{' '}
             <Translate contentKey="amrInterpreationApp.antibiotic.home.refreshListLabel">Refresh List</Translate>
           </Button>
-          <Link to={`${match.url}/new`} className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
-            <FontAwesomeIcon icon="plus" />
-            &nbsp;
-            <Translate contentKey="amrInterpreationApp.antibiotic.home.createLabel">Create new Antibiotic</Translate>
-          </Link>
+          {/*<Link to={`${match.url}/new`} className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">*/}
+          {/*  <FontAwesomeIcon icon="plus" />*/}
+          {/*  &nbsp;*/}
+          {/*  <Translate contentKey="amrInterpreationApp.antibiotic.home.createLabel">Create new Antibiotic</Translate>*/}
+          {/*</Link>*/}
         </div>
       </h2>
       {selected &&
@@ -578,30 +578,30 @@ export const Antibiotic = (props: IAntibioticProps) => {
                           <Translate contentKey="entity.action.view">View</Translate>
                         </span>
                       </Button>
-                      <Button
-                        tag={Link}
-                        to={`${match.url}/${antibiotic.id}/edit?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
-                        color="primary"
-                        size="sm"
-                        data-cy="entityEditButton"
-                      >
-                        <FontAwesomeIcon icon="pencil-alt" />{' '}
-                        <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.edit">Edit</Translate>
-                        </span>
-                      </Button>
-                      <Button
-                        tag={Link}
-                        to={`${match.url}/${antibiotic.id}/delete?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
-                        color="danger"
-                        size="sm"
-                        data-cy="entityDeleteButton"
-                      >
-                        <FontAwesomeIcon icon="trash" />{' '}
-                        <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.delete">Delete</Translate>
-                        </span>
-                      </Button>
+                      {/*<Button*/}
+                      {/*  tag={Link}*/}
+                      {/*  to={`${match.url}/${antibiotic.id}/edit?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}*/}
+                      {/*  color="primary"*/}
+                      {/*  size="sm"*/}
+                      {/*  data-cy="entityEditButton"*/}
+                      {/*>*/}
+                      {/*  <FontAwesomeIcon icon="pencil-alt" />{' '}*/}
+                      {/*  <span className="d-none d-md-inline">*/}
+                      {/*    <Translate contentKey="entity.action.edit">Edit</Translate>*/}
+                      {/*  </span>*/}
+                      {/*</Button>*/}
+                      {/*<Button*/}
+                      {/*  tag={Link}*/}
+                      {/*  to={`${match.url}/${antibiotic.id}/delete?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}*/}
+                      {/*  color="danger"*/}
+                      {/*  size="sm"*/}
+                      {/*  data-cy="entityDeleteButton"*/}
+                      {/*>*/}
+                      {/*  <FontAwesomeIcon icon="trash" />{' '}*/}
+                      {/*  <span className="d-none d-md-inline">*/}
+                      {/*    <Translate contentKey="entity.action.delete">Delete</Translate>*/}
+                      {/*  </span>*/}
+                      {/*</Button>*/}
                     </div>
                   </td>
                 </tr>

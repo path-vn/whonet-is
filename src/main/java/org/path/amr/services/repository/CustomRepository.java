@@ -359,4 +359,15 @@ public class CustomRepository {
         }
         return result;
     }
+
+    public List<String> findIntrinsicResistanceGroupByField(String field) {
+        String sql = String.format("select %s , 'ab' as c from intrinsic_resistance group by %s order by %s desc", field, field, field);
+        NativeQuery qry = getCurrentSession().createNativeQuery(sql);
+        List<String> result = new ArrayList<>();
+        List<Object[]> rows = qry.getResultList();
+        for (int i = 0; i < rows.size(); i++) {
+            result.add(rows.get(i)[0].toString());
+        }
+        return result;
+    }
 }
