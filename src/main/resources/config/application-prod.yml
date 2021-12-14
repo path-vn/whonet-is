@@ -129,5 +129,5 @@ jhipster:
 
 # application:
 whonet:
-  priority: 'Meningitis,Non-meningitis,Oral,,Urine,Parenteral,Intravenous,Extraintestinal'
+  priority: 'Meningitis,Non-meningitis,Parenteral,Oral,Urine,,Intravenous,Extraintestinal'
   thread: 5

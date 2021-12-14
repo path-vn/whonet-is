@@ -35,3 +35,7 @@ export const overridePaginationStateWithQueryParams = (paginationBaseState: IPag
   }
   return paginationBaseState;
 };
+
+export const empty = obj => {
+  return typeof obj === 'undefined' || obj === null;
+};

@@ -1,33 +1,32 @@
 import './home.scss';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Translate } from 'react-jhipster';
 import { connect } from 'react-redux';
 import { Row, Col, Alert } from 'reactstrap';
+import { JsonEditor as Editor } from 'jsoneditor-react';
+import ace from 'brace';
 
 export type IHomeProp = StateProps;
 
 export const Home = (props: IHomeProp) => {
   const { account } = props;
+  const [json, setJson] = useState([{ orgCode: 'ppm', dataFields: null, test: [{ rawValue: '4', whonet5Code: 'AMC_NE', result: null }] }]);
 
   return (
     <Row>
-      <Col md="3" className="pad">
-        <span className="hipster rounded" />
+      <Col md="5" className="pad">
+        <Editor value={json} onChange={setJson} ace={ace} theme="ace/theme/github" />
+        <button>Interpretation</button>
       </Col>
-      <Col md="9">
+      <Col md="7">
         <h2>
           <Translate contentKey="home.title">Welcome to WHONET interpretation service!</Translate>
         </h2>
+
         {account && account.login ? (
-          <div>
-            <Alert color="success">
-              <Translate contentKey="home.logged.message" interpolate={{ username: account.login }}>
-                You are logged in as user {account.login}.
-              </Translate>
-            </Alert>
-          </div>
+          <div></div>
         ) : (
           <div>
             <Alert color="warning">

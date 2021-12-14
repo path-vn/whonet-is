@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Row, Table } from 'reactstrap';
@@ -8,7 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IRootState } from 'app/shared/reducers';
 import { getEntities } from './antibiotic.reducer';
 import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
-import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
+import { empty, overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
+import FilterPopup from 'app/shared/layout/filter/filter';
 
 export interface IAntibioticProps extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
 
@@ -16,6 +17,7 @@ export const Antibiotic = (props: IAntibioticProps) => {
   const [paginationState, setPaginationState] = useState(
     overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'id'), props.location.search)
   );
+  const filterRef = useRef();
 
   const getAllEntities = () => {
     props.getEntities(paginationState.activePage - 1, paginationState.itemsPerPage, `${paginationState.sort},${paginationState.order}`);
@@ -56,10 +58,6 @@ export const Antibiotic = (props: IAntibioticProps) => {
     });
   };
 
-  const filter = p => () => {
-    alert('Filter ' + p);
-  };
-
   const handlePagination = currentPage =>
     setPaginationState({
       ...paginationState,
@@ -69,10 +67,21 @@ export const Antibiotic = (props: IAntibioticProps) => {
   const handleSyncList = () => {
     sortEntities();
   };
+  // const openTooltip = () => {
+  //   console.log(filterRef, filterRef.current)
+  //   if (!empty(filterRef) && !empty(filterRef.current)) {
+  //     filterRef.current.open();
+  //   }
+  // };
+
+  const filter = p => () => {
+    // openTooltip();
+  };
 
   const { antibioticList, match, loading, totalItems } = props;
   return (
     <div>
+      <FilterPopup ref={filterRef} />
       <h2 id="antibiotic-heading" data-cy="AntibioticHeading">
         <Translate contentKey="amrInterpreationApp.antibiotic.home.title">Antibiotics</Translate>
         <div className="d-flex justify-content-end">
@@ -92,8 +101,11 @@ export const Antibiotic = (props: IAntibioticProps) => {
           <Table responsive>
             <thead>
               <tr>
-                <th className="hand" onClick={sort('id')} onDoubleClick={filter('id')}>
-                  <Translate contentKey="amrInterpreationApp.antibiotic.id">ID</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="hand">
+                  <span onClick={filter('id')}>
+                    <Translate contentKey="amrInterpreationApp.antibiotic.id">ID</Translate>
+                  </span>
+                  <FontAwesomeIcon icon="sort" onClick={sort('id')} />
                 </th>
                 <th className="hand" onClick={sort('whonetAbxCode')}>
                   <Translate contentKey="amrInterpreationApp.antibiotic.whonetAbxCode">Whonet Abx Code</Translate>{' '}
