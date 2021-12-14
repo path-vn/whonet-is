@@ -12,6 +12,7 @@
         "intrinsicResistance": "Intrinsic Resistance",
         "organism": "Organism",
         "expertInterpretationRules": "Expert Interpretation Rules",
+        "execute": "Execute",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

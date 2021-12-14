@@ -1,0 +1,27 @@
+{
+  "amrInterpreationApp": {
+    "execute": {
+      "home": {
+        "title": "Executes",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Execute",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Execute",
+        "notFound": "No Executes found"
+      },
+      "created": "Một Execute mới được tạo với định danh {{ param }}",
+      "updated": "Một Execute cập nhật với định danh {{ param }}",
+      "deleted": "Một Execute đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Execute {{ id }}?"
+      },
+      "detail": {
+        "title": "Execute"
+      },
+      "id": "ID",
+      "request": "Request",
+      "response": "Response",
+      "startedAt": "Started At",
+      "time": "Time"
+    }
+  }
+}

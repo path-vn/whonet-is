@@ -1,0 +1,27 @@
+{
+  "amrInterpreationApp": {
+    "execute": {
+      "home": {
+        "title": "Executes",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Execute",
+        "createOrEditLabel": "Create or edit a Execute",
+        "notFound": "No Executes found"
+      },
+      "created": "A new Execute is created with identifier {{ param }}",
+      "updated": "A Execute is updated with identifier {{ param }}",
+      "deleted": "A Execute is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Execute {{ id }}?"
+      },
+      "detail": {
+        "title": "Execute"
+      },
+      "id": "ID",
+      "request": "Request",
+      "response": "Response",
+      "startedAt": "Started At",
+      "time": "Time"
+    }
+  }
+}
