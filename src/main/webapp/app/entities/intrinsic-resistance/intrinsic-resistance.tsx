@@ -10,7 +10,7 @@ import { getEntities, getFilerGroup } from './intrinsic-resistance.reducer';
 import { IIntrinsicResistance } from 'app/shared/model/intrinsic-resistance.model';
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
-import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
+import { empty, overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { FilterTableHeader } from 'app/shared/util/filter';
 
 export interface IIntrinsicResistanceProps extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
@@ -103,6 +103,7 @@ export const IntrinsicResistance = (props: IIntrinsicResistanceProps) => {
           {/*</Link>*/}
         </div>
       </h2>
+      {empty(selected) || (Object.keys(selected).length === 0 && <span>Click on column name to filter</span>)}
       {selected &&
         Object.keys(selected).map((k, i) => {
           return (

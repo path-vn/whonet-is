@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IRootState } from 'app/shared/reducers';
 import { getEntities, getFilerGroup } from './antibiotic.reducer';
 import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
-import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
+import { empty, overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { FilterTableHeader } from 'app/shared/util/filter';
 
 export interface IAntibioticProps extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
@@ -101,6 +101,7 @@ export const Antibiotic = (props: IAntibioticProps) => {
           {/*</Link>*/}
         </div>
       </h2>
+      {empty(selected) || (Object.keys(selected).length === 0 && <span>Click on column name to filter</span>)}
       {selected &&
         Object.keys(selected).map((k, i) => {
           return (
