@@ -248,7 +248,7 @@ public class InterpretationService {
                 // A.2, 3 Apply breakpoints
                 List<OrganismBreakPointDTO> organismBreakPointDTOList = getBreakpoints(
                     isolate.getOrgCode(),
-                    test.getWhonet5Code(),
+                    test.getWhonet5Code().replace("_NE", "_NM"),
                     isolate.getBreakpointType()
                 );
 

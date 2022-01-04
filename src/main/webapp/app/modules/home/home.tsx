@@ -50,14 +50,28 @@ export const Home = (props: IHomeProp) => {
     }
   }, [history]);
 
+  const jsonEditorGetvalue = refE => {
+    if (empty(refE) || empty(refE.current)) {
+      alert('Unknown error');
+    }
+    return refE.current.jsonEditor.get();
+  };
+
   const interpretationHandle = () => {
-    if (!history.includes(json)) {
-      const newHistory = [json];
+    const value = jsonEditorGetvalue(ref);
+    if (!history.map(j => JSON.stringify(j)).includes(JSON.stringify(value))) {
+      const newHistory = [value];
       newHistory.push(...(history.length > 50 ? history.slice(0, 50) : history));
       setHistory(newHistory);
     }
-    props.interpretationEntity(json);
+    setJson(value);
+    props.interpretationEntity(value);
   };
+
+  const clearHistoryHandle = () => {
+    setHistory([]);
+  };
+
   useEffect(() => {
     setJsonResult(props.result == null ? {} : props.result);
     setKey(Math.random());
@@ -71,9 +85,9 @@ export const Home = (props: IHomeProp) => {
     <>
       <Row>
         <Col md="5" className="pad">
-          <Editor ref={ref} value={json} key={`i-${key}`} onChange={setJson} ace={ace} theme="ace/theme/github" />
+          <Editor ref={ref} value={json} key={`i-${key}`} ace={ace} theme="ace/theme/github" />
           <br />
-          <button style={{ float: 'right' }} className={'btn btn-primary'} onClick={interpretationHandle}>
+          <button style={{ float: 'right' }} className={'btn btn-info'} onClick={interpretationHandle}>
             Interpretation
           </button>
         </Col>
@@ -112,34 +126,39 @@ export const Home = (props: IHomeProp) => {
       </Row>
       <Row>
         {account && account.login && (
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">OrgCode</th>
-                <th scope="col">Test</th>
-                <th scope="col">RawValue</th>
-              </tr>
-            </thead>
-            <tbody>
-              {history.map((h, i) => {
-                return (
-                  <tr
-                    key={`key-${i}`}
-                    onClick={() => {
-                      setJson(h);
-                      setJsonResult({});
-                    }}
-                  >
-                    <th scope="row">{i + 1}</th>
-                    <td>{h.map(x => x.orgCode).join(',')}</td>
-                    <td>{h.map(x => x.test.map(xi => xi.whonet5Code)).join(',')}</td>
-                    <td>{h.map(x => x.test.map(xi => xi.rawValue)).join(',')}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">OrgCode</th>
+                  <th scope="col">Test</th>
+                  <th scope="col">RawValue</th>
+                </tr>
+              </thead>
+              <tbody>
+                {history.map((h, i) => {
+                  return (
+                    <tr
+                      key={`key-${i}`}
+                      onClick={() => {
+                        setJson(h);
+                        setJsonResult({});
+                      }}
+                    >
+                      <th scope="row">{i + 1}</th>
+                      <td>{h.map(x => x.orgCode).join(',')}</td>
+                      <td>{h.map(x => x.test.map(xi => xi.whonet5Code)).join(',')}</td>
+                      <td>{h.map(x => x.test.map(xi => xi.rawValue)).join(',')}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            <button style={{ float: 'right' }} className={'btn btn-primary'} onClick={clearHistoryHandle}>
+              Clear
+            </button>
+          </>
         )}
       </Row>
     </>
