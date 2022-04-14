@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ICrudGetAction, ICrudGetAllAction, ICrudPutAction, ICrudDeleteAction } from 'react-jhipster';
 
-import { cleanEntity } from 'app/shared/util/entity-utils';
+import { cleanEntity, empty } from 'app/shared/util/entity-utils';
 import { REQUEST, SUCCESS, FAILURE } from 'app/shared/reducers/action-type.util';
 
 import { IExecute, defaultValue } from 'app/shared/model/execute.model';
@@ -11,6 +11,7 @@ export const ACTION_TYPES = {
   FETCH_EXECUTE: 'execute/FETCH_EXECUTE',
   CREATE_EXECUTE: 'execute/CREATE_EXECUTE',
   INTERPRETATION_EXECUTE: 'execute/INTERPRETATION_EXECUTE',
+  INTERPRETATION_EXECUTE_FILE: 'execute/INTERPRETATION_EXECUTE_FILE',
   UPDATE_EXECUTE: 'execute/UPDATE_EXECUTE',
   PARTIAL_UPDATE_EXECUTE: 'execute/PARTIAL_UPDATE_EXECUTE',
   DELETE_EXECUTE: 'execute/DELETE_EXECUTE',
@@ -26,6 +27,8 @@ const initialState = {
   totalItems: 0,
   updateSuccess: false,
   result: null,
+  fileDownload: null,
+  fileDownloadName: '',
 };
 
 export type ExecuteState = Readonly<typeof initialState>;
@@ -43,9 +46,11 @@ export default (state: ExecuteState = initialState, action): ExecuteState => {
         loading: true,
       };
     case REQUEST(ACTION_TYPES.INTERPRETATION_EXECUTE):
+    case REQUEST(ACTION_TYPES.INTERPRETATION_EXECUTE_FILE):
       return {
         ...state,
         loading: true,
+        fileDownload: null,
       };
     case REQUEST(ACTION_TYPES.CREATE_EXECUTE):
     case REQUEST(ACTION_TYPES.UPDATE_EXECUTE):
@@ -94,6 +99,13 @@ export default (state: ExecuteState = initialState, action): ExecuteState => {
         ...state,
         loading: false,
         result: action.payload.data,
+      };
+    case SUCCESS(ACTION_TYPES.INTERPRETATION_EXECUTE_FILE):
+      return {
+        ...state,
+        loading: false,
+        fileDownload: action.payload.data,
+        fileDownloadName: empty(action.payload.headers['x-filename']) ? 'output' : action.payload.headers['x-filename'],
       };
     case SUCCESS(ACTION_TYPES.CREATE_EXECUTE):
     case SUCCESS(ACTION_TYPES.UPDATE_EXECUTE):
@@ -144,6 +156,19 @@ export const interpretationEntity: ICrudPutAction<any> = entity => async dispatc
   return await dispatch({
     type: ACTION_TYPES.INTERPRETATION_EXECUTE,
     payload: axios.post('api/whonet/interpretation-bulk', entity),
+  });
+};
+
+export const interpretationFile: ICrudPutAction<any> = entity => async dispatch => {
+  if (empty(entity.target.files) || entity.target.files.length !== 1) {
+    return;
+  }
+  const formData = new FormData();
+  const file = entity.target.files[0];
+  formData.append('file', file, file.name);
+  return await dispatch({
+    type: ACTION_TYPES.INTERPRETATION_EXECUTE_FILE,
+    payload: axios.post('api/whonet/interpretation-file', formData, { responseType: 'blob' }),
   });
 };
 

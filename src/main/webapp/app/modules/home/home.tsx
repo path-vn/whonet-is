@@ -7,9 +7,10 @@ import { connect } from 'react-redux';
 import { Alert, Col, Row } from 'reactstrap';
 import { JsonEditor as Editor } from 'jsoneditor-react';
 import ace from 'brace';
-import { interpretationEntity } from '../../entities/execute/execute.reducer';
+import { interpretationEntity, interpretationFile } from '../../entities/execute/execute.reducer';
 import { IRootState } from 'app/shared/reducers';
 import { empty } from 'app/shared/util/entity-utils';
+import { saveAs } from 'file-saver';
 
 // export type IHomeProp = StateProps;
 
@@ -38,6 +39,13 @@ export const Home = (props: IHomeProp) => {
   const expand = val => {
     val.expandAll();
   };
+
+  useEffect(() => {
+    if (empty(props.fileDownload)) {
+      return;
+    }
+    saveAs(props.fileDownload, props.fileDownloadName);
+  }, props.fileDownload);
 
   useEffect(() => {
     if (ref.current !== null && typeof ref.current !== 'undefined') {
@@ -81,6 +89,10 @@ export const Home = (props: IHomeProp) => {
     setKey(Math.random());
   }, [json, jsonResult]);
 
+  const fileUpload = evt => {
+    props.interpretationFile(evt);
+  };
+
   return (
     <>
       <Row>
@@ -90,6 +102,11 @@ export const Home = (props: IHomeProp) => {
           <button style={{ float: 'right' }} className={'btn btn-info'} onClick={interpretationHandle}>
             Interpretation
           </button>
+
+          <div>
+            <label htmlFor="file">Choose a file</label>
+            <input className="inputfile" type="file" id="file" onChange={fileUpload} style={{ float: 'right' }} />
+          </div>
         </Col>
         <Col md="7" className="pad">
           {account && account.login ? (
@@ -169,10 +186,13 @@ const mapStateToProps = ({ execute, authentication }: IRootState) => ({
   account: authentication.account,
   isAuthenticated: authentication.isAuthenticated,
   result: execute.result,
+  fileDownload: execute.fileDownload,
+  fileDownloadName: execute.fileDownloadName,
 });
 
 const mapDispatchToProps = {
   interpretationEntity,
+  interpretationFile,
 };
 
 type StateProps = ReturnType<typeof mapStateToProps>;

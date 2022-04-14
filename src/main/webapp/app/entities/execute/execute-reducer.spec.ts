@@ -36,6 +36,8 @@ describe('Entities reducer tests', () => {
     updating: false,
     updateSuccess: false,
     result: null,
+    fileDownload: null,
+    fileDownloadName: '',
   };
 
   function testInitialState(state) {

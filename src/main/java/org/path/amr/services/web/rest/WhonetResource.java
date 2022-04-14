@@ -1,8 +1,10 @@
 package org.path.amr.services.web.rest;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.*;
+import javax.validation.Valid;
 import org.path.amr.services.config.WhonetConfiguration;
 import org.path.amr.services.service.InterpretationService;
 import org.path.amr.services.service.IntrinsicResistanceQueryService;
@@ -11,7 +13,11 @@ import org.path.amr.services.service.dto.OrganismIntrinsicResistanceAntibioticDT
 import org.path.amr.services.service.impl.InterpretationWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api")
@@ -37,6 +43,28 @@ public class WhonetResource {
     public IsolateDTO getInterpretation(@RequestBody IsolateDTO isolateDTO) {
         this.interpretationService.execute(isolateDTO);
         return isolateDTO;
+    }
+
+    /**
+     * {@code GET /antibiotics/getAntibiotics} : get all antibiotics.
+     */
+    @PostMapping("/whonet/interpretation-file")
+    public ResponseEntity<Resource> getInterpretation_file(@RequestParam(value = "file") MultipartFile file) throws IOException {
+        Resource resource = new InputStreamResource(file.getInputStream());
+
+        MediaType mediaType = MediaTypeFactory.getMediaType(resource).orElse(MediaType.APPLICATION_OCTET_STREAM);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(mediaType);
+        headers.set("x-filename", "path-" + file.getOriginalFilename());
+        // 3
+        ContentDisposition disposition = ContentDisposition
+            // 3.2
+            .inline() // or .attachment()
+            // 3.1
+            .filename(file.getOriginalFilename() == null ? "output" : file.getOriginalFilename())
+            .build();
+        headers.setContentDisposition(disposition);
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
     /**
