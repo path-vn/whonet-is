@@ -11,6 +11,7 @@ import { interpretationEntity, interpretationFile } from '../../entities/execute
 import { IRootState } from 'app/shared/reducers';
 import { empty } from 'app/shared/util/entity-utils';
 import { saveAs } from 'file-saver';
+import { TargetUpdate } from 'app/modules/home/file';
 
 // export type IHomeProp = StateProps;
 
@@ -39,13 +40,6 @@ export const Home = (props: IHomeProp) => {
   const expand = val => {
     val.expandAll();
   };
-
-  useEffect(() => {
-    if (empty(props.fileDownload)) {
-      return;
-    }
-    saveAs(props.fileDownload, props.fileDownloadName);
-  }, props.fileDownload);
 
   useEffect(() => {
     if (ref.current !== null && typeof ref.current !== 'undefined') {
@@ -89,24 +83,51 @@ export const Home = (props: IHomeProp) => {
     setKey(Math.random());
   }, [json, jsonResult]);
 
-  const fileUpload = evt => {
-    props.interpretationFile(evt);
+  const [showUpload, setShowUpload] = useState(false);
+  const [email, setEmail] = useState('');
+  const handleInterpretationFile = data => {
+    props.interpretationFile(data);
+    setEmail(data.email);
+    setShowUpload(false);
   };
 
   return (
     <>
+      <TargetUpdate
+        show={showUpload}
+        handleCancel={() => setShowUpload(false)}
+        title={'Upload and Interpretation'}
+        handleOk={handleInterpretationFile}
+      />
       <Row>
         <Col md="5" className="pad">
           <Editor ref={ref} value={json} key={`i-${key}`} ace={ace} theme="ace/theme/github" />
           <br />
-          <button style={{ float: 'right' }} className={'btn btn-info'} onClick={interpretationHandle}>
-            Interpretation
-          </button>
+          {!props.loading && (
+            <button style={{ float: 'right' }} className={'btn btn-info'} onClick={interpretationHandle}>
+              Interpretation
+            </button>
+          )}
 
-          <div>
-            <label htmlFor="file">Choose a file</label>
-            <input className="inputfile" type="file" id="file" onChange={fileUpload} style={{ float: 'right' }} />
-          </div>
+          {!props.loading && !props.uploadSuccess && (
+            <div>
+              <span className={'textLink'} onClick={() => setShowUpload(true)}>
+                Upload file and interpretation
+              </span>
+            </div>
+          )}
+          {props.uploadSuccess && (
+            <div>
+              <span>Running in background, please check email {email} for more information</span>
+            </div>
+          )}
+          {!empty(props.message) && <label className={'alert'}>ERROR {props.message}</label>}
+          {props.loading && (
+            <div className="lds-ripple">
+              <div></div>
+              <div></div>
+            </div>
+          )}
         </Col>
         <Col md="7" className="pad">
           {account && account.login ? (
@@ -186,8 +207,9 @@ const mapStateToProps = ({ execute, authentication }: IRootState) => ({
   account: authentication.account,
   isAuthenticated: authentication.isAuthenticated,
   result: execute.result,
-  fileDownload: execute.fileDownload,
-  fileDownloadName: execute.fileDownloadName,
+  loading: execute.loading,
+  message: execute.errorMessage,
+  uploadSuccess: execute.uploadSuccess,
 });
 
 const mapDispatchToProps = {

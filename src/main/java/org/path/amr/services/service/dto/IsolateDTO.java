@@ -16,6 +16,10 @@ public class IsolateDTO {
     List<TestDTO> test;
     Map<String, String> dataFields;
 
+    public IsolateDTO() {
+        dataFields = new HashMap<>();
+    }
+
     public String getRequestID() {
         return requestID;
     }
@@ -91,5 +95,32 @@ public class IsolateDTO {
             this.test = new ArrayList<>();
         }
         this.test.add(test);
+    }
+
+    public void setDataFields(Map<String, Integer> headerMap, String[] columns) {
+        dataFields.put("MRSA", getColumnIfExits(headerMap, columns, "MRSA"));
+        dataFields.put("VRE", getColumnIfExits(headerMap, columns, "VRE"));
+        dataFields.put("BETA_LACT", getColumnIfExits(headerMap, columns, "BETA_LACT"));
+        dataFields.put("ESBL", getColumnIfExits(headerMap, columns, "ESBL"));
+        dataFields.put("INDUC_CLI", getColumnIfExits(headerMap, columns, "INDUC_CLI"));
+        dataFields.put("X_BLEE", getColumnIfExits(headerMap, columns, "X_BLEE"));
+        dataFields.put("MECA_PCR", getColumnIfExits(headerMap, columns, "MECA_PCR"));
+        dataFields.put("OXA_SCREEN", getColumnIfExits(headerMap, columns, "OXA_SCREEN"));
+        dataFields.put("MRSA_SCRN", getColumnIfExits(headerMap, columns, "MRSA_SCRN"));
+        dataFields.put("PBP2A_AGGL", getColumnIfExits(headerMap, columns, "PBP2A_AGGL"));
+        dataFields.put("MLS_DTEST", getColumnIfExits(headerMap, columns, "MLS_DTEST"));
+        dataFields.put("X_MLS", getColumnIfExits(headerMap, columns, "X_MLS"));
+        dataFields.put("X_MLS_IND", getColumnIfExits(headerMap, columns, "X_MLS_IND"));
+    }
+
+    private String getColumnIfExits(Map<String, Integer> headerMap, String[] columns, String name) {
+        String result = "";
+        if (headerMap.containsKey(name)) {
+            int index = headerMap.get(name);
+            if (index >= 0 && index < columns.length) {
+                result = columns[index];
+            }
+        }
+        return result;
     }
 }

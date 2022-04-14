@@ -26,9 +26,8 @@ const initialState = {
   updating: false,
   totalItems: 0,
   updateSuccess: false,
+  uploadSuccess: null,
   result: null,
-  fileDownload: null,
-  fileDownloadName: '',
 };
 
 export type ExecuteState = Readonly<typeof initialState>;
@@ -50,7 +49,7 @@ export default (state: ExecuteState = initialState, action): ExecuteState => {
       return {
         ...state,
         loading: true,
-        fileDownload: null,
+        uploadSuccess: null,
       };
     case REQUEST(ACTION_TYPES.CREATE_EXECUTE):
     case REQUEST(ACTION_TYPES.UPDATE_EXECUTE):
@@ -67,6 +66,14 @@ export default (state: ExecuteState = initialState, action): ExecuteState => {
         ...state,
         loading: false,
         result: null,
+      };
+    case FAILURE(ACTION_TYPES.INTERPRETATION_EXECUTE_FILE):
+      return {
+        ...state,
+        loading: true,
+        updating: false,
+        updateSuccess: false,
+        errorMessage: action.payload,
       };
     case FAILURE(ACTION_TYPES.FETCH_EXECUTE_LIST):
     case FAILURE(ACTION_TYPES.FETCH_EXECUTE):
@@ -104,8 +111,7 @@ export default (state: ExecuteState = initialState, action): ExecuteState => {
       return {
         ...state,
         loading: false,
-        fileDownload: action.payload.data,
-        fileDownloadName: empty(action.payload.headers['x-filename']) ? 'output' : action.payload.headers['x-filename'],
+        uploadSuccess: true,
       };
     case SUCCESS(ACTION_TYPES.CREATE_EXECUTE):
     case SUCCESS(ACTION_TYPES.UPDATE_EXECUTE):
@@ -159,16 +165,19 @@ export const interpretationEntity: ICrudPutAction<any> = entity => async dispatc
   });
 };
 
-export const interpretationFile: ICrudPutAction<any> = entity => async dispatch => {
+export const interpretationFile: ICrudPutAction<any> = data => async dispatch => {
+  const entity = data.file;
+  const email = data.email;
   if (empty(entity.target.files) || entity.target.files.length !== 1) {
     return;
   }
   const formData = new FormData();
   const file = entity.target.files[0];
   formData.append('file', file, file.name);
+  formData.append('email', email);
   return await dispatch({
     type: ACTION_TYPES.INTERPRETATION_EXECUTE_FILE,
-    payload: axios.post('api/whonet/interpretation-file', formData, { responseType: 'blob' }),
+    payload: axios.post('api/whonet/interpretation-file', formData),
   });
 };
 

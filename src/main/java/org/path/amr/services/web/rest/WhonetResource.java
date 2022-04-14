@@ -2,20 +2,18 @@ package org.path.amr.services.web.rest;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.*;
-import java.util.concurrent.*;
-import javax.validation.Valid;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 import org.path.amr.services.config.WhonetConfiguration;
 import org.path.amr.services.service.InterpretationService;
-import org.path.amr.services.service.IntrinsicResistanceQueryService;
+import org.path.amr.services.service.MailService;
 import org.path.amr.services.service.dto.IsolateDTO;
 import org.path.amr.services.service.dto.OrganismIntrinsicResistanceAntibioticDTO;
-import org.path.amr.services.service.impl.InterpretationWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,12 +23,18 @@ public class WhonetResource {
 
     InterpretationService interpretationService;
     WhonetConfiguration whonetConfiguration;
+    MailService mailService;
     int thread = 10;
     private final Logger log = LoggerFactory.getLogger(WhonetResource.class);
 
-    public WhonetResource(InterpretationService interpretationService, WhonetConfiguration whonetConfiguration) {
+    public WhonetResource(InterpretationService interpretationService, WhonetConfiguration whonetConfiguration, MailService mailService) {
         this.interpretationService = interpretationService;
         this.whonetConfiguration = whonetConfiguration;
+        this.mailService = mailService;
+        if (this.whonetConfiguration == null) {
+            this.thread = 1;
+            return;
+        }
         if (this.whonetConfiguration.getThread() != null) {
             this.thread = this.whonetConfiguration.getThread();
         }
@@ -49,22 +53,12 @@ public class WhonetResource {
      * {@code GET /antibiotics/getAntibiotics} : get all antibiotics.
      */
     @PostMapping("/whonet/interpretation-file")
-    public ResponseEntity<Resource> getInterpretation_file(@RequestParam(value = "file") MultipartFile file) throws IOException {
-        Resource resource = new InputStreamResource(file.getInputStream());
-
-        MediaType mediaType = MediaTypeFactory.getMediaType(resource).orElse(MediaType.APPLICATION_OCTET_STREAM);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(mediaType);
-        headers.set("x-filename", "path-" + file.getOriginalFilename());
-        // 3
-        ContentDisposition disposition = ContentDisposition
-            // 3.2
-            .inline() // or .attachment()
-            // 3.1
-            .filename(file.getOriginalFilename() == null ? "output" : file.getOriginalFilename())
-            .build();
-        headers.setContentDisposition(disposition);
-        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+    public ResponseEntity<Void> getInterpretation_file(
+        @RequestParam(value = "file") MultipartFile file,
+        @RequestParam(value = "email") String email
+    ) throws IOException, ExecutionException, InterruptedException {
+        interpretationService.processFile(this.mailService, file.getInputStream(), file.getOriginalFilename(), email, this.thread);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
@@ -77,17 +71,7 @@ public class WhonetResource {
 
         log.info("Start getInterpretations " + timestamp2.toString() + " thread:" + this.thread);
 
-        ExecutorService executorService = Executors.newFixedThreadPool(this.thread);
-        Set<Callable<IsolateDTO>> callables = new HashSet<Callable<IsolateDTO>>();
-        for (int i = 0; i < isolateDTO.size(); i++) {
-            callables.add(new InterpretationWorker(interpretationService, isolateDTO.get(i)));
-        }
-        List<Future<IsolateDTO>> futures = executorService.invokeAll(callables);
-        List<IsolateDTO> result = new ArrayList<>();
-        for (Future<IsolateDTO> future : futures) {
-            result.add(future.get());
-        }
-        executorService.shutdown();
+        List<IsolateDTO> result = interpretationService.execIsolateDTOS(isolateDTO, this.thread);
         log.info("End getInterpretations" + timestamp2.toString());
         return result;
     }

@@ -1,6 +1,9 @@
 package org.path.amr.services.service;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -10,12 +13,14 @@ import org.path.amr.services.domain.ExpertInterpretationRules;
 import org.path.amr.services.domain.Organism;
 import org.path.amr.services.repository.*;
 import org.path.amr.services.service.dto.*;
+import org.path.amr.services.service.impl.InterpretationWorker;
 import org.path.amr.services.service.mapper.*;
 import org.path.amr.services.web.rest.WhonetResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -618,5 +623,173 @@ public class InterpretationService {
                 }
             )
             .collect(Collectors.toList());
+    }
+
+    @Async
+    public void processFile(MailService mailService, InputStream inputStream, String filename, String email, int thread)
+        throws IOException, ExecutionException, InterruptedException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        List<String> data = new ArrayList<>();
+        while (reader.ready()) {
+            String line = reader.readLine();
+            data.add(line);
+        }
+
+        List<String> outputLine = processLineData(data, thread);
+
+        InputStream file = new ByteArrayInputStream(outputLine.stream().collect(Collectors.joining("\n")).getBytes(StandardCharsets.UTF_8));
+        log.debug(email);
+        mailService.sendEmail(
+            email,
+            "hkien02@gmail.com",
+            "[Interpretation result] file: " + filename,
+            "Please find the attachment file below for the data",
+            true,
+            true,
+            filename,
+            file
+        );
+    }
+
+    public String getMethodByColumnName(String name) {
+        String result = "";
+        if (name.toUpperCase(Locale.ROOT).contains("_ND")) {
+            result = "DISK";
+        }
+        if (name.toUpperCase(Locale.ROOT).contains("_NE")) {
+            result = "ETEST";
+        }
+        if (name.toUpperCase(Locale.ROOT).contains("_NM")) {
+            result = "MIC";
+        }
+        if (name.toUpperCase(Locale.ROOT).contains("INTERP")) {
+            result = "";
+        }
+        return result;
+    }
+
+    public String getWhonetFileSeparator(String inp) {
+        Matcher m = Pattern.compile("COUNTRY_A(?<sep>.*)LABORATORY").matcher(inp.toUpperCase(Locale.ROOT));
+        String rs = "";
+        while (m.find()) {
+            rs = m.group(1);
+        }
+        return rs;
+    }
+
+    public List<String> processLineData(List<String> data, int thread) throws ExecutionException, InterruptedException {
+        if (data.size() <= 1) {
+            return data;
+        }
+        String header = data.get(0);
+        String sep = getWhonetFileSeparator(header);
+        String[] columnHeaders = header.split(sep, -1);
+        Map<String, Integer> testColumnMaps = new HashMap<>();
+        Map<String, Integer> headerMaps = new HashMap<>();
+        for (int i = 0; i < columnHeaders.length; i++) {
+            String method = getMethodByColumnName(columnHeaders[i]);
+            if (!method.equals("")) {
+                testColumnMaps.put(columnHeaders[i], i);
+            }
+            headerMaps.put(columnHeaders[i].toUpperCase(Locale.ROOT), i);
+        }
+        if (testColumnMaps.size() == 0) {
+            throw new RuntimeException("No test columns found");
+        }
+        int organismIndex = headerMaps.get("ORGANISM");
+        if (organismIndex < 0 || organismIndex > columnHeaders.length) {
+            throw new RuntimeException("ORGANISM index invalid");
+        }
+        List<IsolateDTO> isolateDTOList = new ArrayList<>();
+        for (int i = 1; i < data.size(); i++) {
+            String[] columns = data.get(i).split(sep, -1);
+            if (columns.length != columnHeaders.length) {
+                throw new RuntimeException(
+                    "Data columns not math header columns " + columns.length + " " + columnHeaders.length + " row : " + i
+                );
+            }
+            IsolateDTO isolate = new IsolateDTO();
+            isolate.setOrgCode(columns[organismIndex]);
+            isolate.setDataFields(headerMaps, columns);
+            isolate.setRequestID(i + "");
+            for (Map.Entry<String, Integer> entry : testColumnMaps.entrySet()) {
+                TestDTO test = new TestDTO();
+                if (entry.getValue() < 0 || entry.getValue() > columns.length) {
+                    continue;
+                }
+                if (columns[entry.getValue()].trim().equals("")) {
+                    continue;
+                }
+                test.setRawValue(columns[entry.getValue()]);
+                test.setWhonet5Code(entry.getKey());
+                isolate.addTest(test);
+            }
+            isolateDTOList.add(isolate);
+        }
+
+        List<IsolateDTO> result = execIsolateDTOS(isolateDTOList, thread);
+        Map<String, Integer> isolateResultMap = new HashMap<>();
+        for (int i = 0; i < result.size(); i++) {
+            isolateResultMap.put(result.get(i).getRequestID(), i);
+        }
+        // re-build csv file
+        StringBuilder headerBuilder = new StringBuilder();
+        List<String> dataRebuild = new ArrayList<>();
+        for (int i = 0; i < columnHeaders.length; i++) {
+            String cur = columnHeaders[i];
+            headerBuilder.append(cur);
+            headerBuilder.append(sep);
+            if (testColumnMaps.containsKey(columnHeaders[i])) {
+                String inpCol = columnHeaders[i] + "_INTERP";
+                if (headerMaps.containsKey(inpCol)) {
+                    inpCol = inpCol + "_1";
+                }
+                headerBuilder.append(inpCol);
+                headerBuilder.append(sep);
+            }
+        }
+        String newHeader = headerBuilder.toString();
+        dataRebuild.add(newHeader.substring(0, newHeader.length() - 1));
+        for (int i = 1; i < data.size(); i++) {
+            String[] columns = data.get(i).split(sep);
+
+            IsolateDTO thisIsolate = result.get(isolateResultMap.get("" + i));
+            Map<String, String> testResult = new HashMap<>();
+            for (int k = 0; k < thisIsolate.getTest().size(); k++) {
+                TestDTO test = thisIsolate.getTest().get(k);
+                if (test.getResult() != null && test.getResult().size() > 0) {
+                    testResult.put(test.getWhonet5Code(), test.getResult().get(0).getResult());
+                }
+            }
+
+            StringBuilder columnBuilder = new StringBuilder();
+            for (int j = 0; j < columns.length; j++) {
+                columnBuilder.append(columns[j]);
+                columnBuilder.append(sep);
+                if (testColumnMaps.containsKey(columnHeaders[j])) {
+                    columnBuilder.append(testResult.getOrDefault(columnHeaders[j], ""));
+                    columnBuilder.append(sep);
+                }
+            }
+            String newColumn = columnBuilder.toString();
+            dataRebuild.add(newColumn.substring(0, newColumn.length() - 1));
+        }
+
+        return dataRebuild;
+    }
+
+    public List<IsolateDTO> execIsolateDTOS(List<IsolateDTO> isolateDTO, int thread) throws InterruptedException, ExecutionException {
+        ExecutorService executorService = Executors.newFixedThreadPool(thread);
+        Set<Callable<IsolateDTO>> callables = new HashSet<Callable<IsolateDTO>>();
+        for (int i = 0; i < isolateDTO.size(); i++) {
+            callables.add(new InterpretationWorker(this, isolateDTO.get(i)));
+        }
+        List<Future<IsolateDTO>> futures = executorService.invokeAll(callables);
+        List<IsolateDTO> result = new ArrayList<>();
+        for (Future<IsolateDTO> future : futures) {
+            result.add(future.get());
+        }
+        executorService.shutdown();
+        return result;
     }
 }

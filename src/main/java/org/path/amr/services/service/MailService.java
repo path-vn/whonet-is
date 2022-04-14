@@ -1,9 +1,12 @@
 package org.path.amr.services.service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.mail.util.ByteArrayDataSource;
 import org.path.amr.services.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +76,44 @@ public class MailService {
             javaMailSender.send(mimeMessage);
             log.debug("Sent email to User '{}'", to);
         } catch (MailException | MessagingException e) {
+            log.warn("Email could not be sent to user '{}'", to, e);
+        }
+    }
+
+    @Async
+    public void sendEmail(
+        String to,
+        String bcc,
+        String subject,
+        String content,
+        boolean isMultipart,
+        boolean isHtml,
+        String filename,
+        InputStream inp
+    ) {
+        log.debug(
+            "Send email[multipart '{}' and html '{}'] to '{}' with subject '{}' and content={}",
+            isMultipart,
+            isHtml,
+            to,
+            subject,
+            content
+        );
+
+        // Prepare message using a Spring helper
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        try {
+            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, isMultipart, StandardCharsets.UTF_8.name());
+            message.setTo(to);
+            message.setBcc(bcc);
+            message.setFrom(jHipsterProperties.getMail().getFrom());
+            message.setSubject(subject);
+            message.setText(content, isHtml);
+            ByteArrayDataSource attachment = new ByteArrayDataSource(inp, "application/octet-stream");
+            message.addAttachment("PATH" + filename, attachment);
+            javaMailSender.send(mimeMessage);
+            log.debug("Sent email to User '{}'", to);
+        } catch (MailException | MessagingException | IOException e) {
             log.warn("Email could not be sent to user '{}'", to, e);
         }
     }
