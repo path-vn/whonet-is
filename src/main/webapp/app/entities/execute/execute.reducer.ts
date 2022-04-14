@@ -175,6 +175,7 @@ export const interpretationFile: ICrudPutAction<any> = data => async dispatch =>
   const file = entity.target.files[0];
   formData.append('file', file, file.name);
   formData.append('email', email);
+  formData.append('action', !empty(data.action) ? data.action : '');
   return await dispatch({
     type: ACTION_TYPES.INTERPRETATION_EXECUTE_FILE,
     payload: axios.post('api/whonet/interpretation-file', formData),

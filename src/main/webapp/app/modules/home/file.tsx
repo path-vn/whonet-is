@@ -24,6 +24,10 @@ export const TargetUpdate = (props: ITargetPopup) => {
     setData({ ...data, email: evt.target.value });
   };
 
+  const setPivot = evt => {
+    setData({ ...data, action: evt.target.value });
+  };
+
   const saveEntity = () => {
     handleOk(data);
     setData({});
@@ -37,9 +41,13 @@ export const TargetUpdate = (props: ITargetPopup) => {
       <AvForm onSubmit={saveEntity}>
         <ModalHeader toggle={cancel}>{title}</ModalHeader>
         <ModalBody id="tooltip-custom-body">
-          <AvInput name="email" placeholder={'email'} onChange={setEmail} />
-          <label htmlFor="file">Choose a file</label>
+          <AvInput name="email" type={'email'} placeholder={'Email for result'} onChange={setEmail} />
+          <label htmlFor="file">Choose a file to upload</label>
           <AvInput name="file" className="inputfile" type="file" id="file" onChange={fileUpload} style={{ float: 'right' }} />
+
+          <br />
+          <label htmlFor="unpivot">Unpivot result</label>
+          <AvInput style={{ marginLeft: 10 }} type="checkbox" id="unpivot" name="unpivot" value="unpivot" onChange={setPivot} />
         </ModalBody>
         <ModalFooter>
           <Button color="secondary" onClick={cancel}>

@@ -626,7 +626,7 @@ public class InterpretationService {
     }
 
     @Async
-    public void processFile(MailService mailService, InputStream inputStream, String filename, String email, int thread)
+    public void processFile(MailService mailService, InputStream inputStream, String filename, String email, String action, int thread)
         throws IOException, ExecutionException, InterruptedException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         List<String> data = new ArrayList<>();
@@ -635,7 +635,7 @@ public class InterpretationService {
             data.add(line);
         }
 
-        List<String> outputLine = processLineData(data, thread);
+        List<String> outputLine = processLineData(data, action, thread);
 
         InputStream file = new ByteArrayInputStream(outputLine.stream().collect(Collectors.joining("\n")).getBytes(StandardCharsets.UTF_8));
         log.debug(email);
@@ -677,22 +677,42 @@ public class InterpretationService {
         return rs;
     }
 
-    public List<String> processLineData(List<String> data, int thread) throws ExecutionException, InterruptedException {
+    public List<String> processLineData(List<String> data, String action, int thread) throws ExecutionException, InterruptedException {
         if (data.size() <= 1) {
             return data;
         }
+        boolean unpivod = action.equals("unpivot");
+        int maxPivotSize = 1;
         String header = data.get(0);
         String sep = getWhonetFileSeparator(header);
         String[] columnHeaders = header.split(sep, -1);
         Map<String, Integer> testColumnMaps = new HashMap<>();
         Map<String, Integer> headerMaps = new HashMap<>();
+        Map<String, Integer> baseColumnList = new HashMap<>();
+        Map<String, List<String>> testColumnRefMap = new HashMap<>();
         for (int i = 0; i < columnHeaders.length; i++) {
             String method = getMethodByColumnName(columnHeaders[i]);
             if (!method.equals("")) {
                 testColumnMaps.put(columnHeaders[i], i);
+            } else if (!columnHeaders[i].contains("_INTERP")) {
+                baseColumnList.put(columnHeaders[i], i);
             }
             headerMaps.put(columnHeaders[i].toUpperCase(Locale.ROOT), i);
         }
+
+        for (Map.Entry<String, Integer> entry : testColumnMaps.entrySet()) {
+            List<String> ref = new ArrayList<>();
+            for (String columnHeader : columnHeaders) {
+                if (columnHeader.contains(entry.getKey()) && !columnHeader.equals(entry.getKey())) {
+                    ref.add(columnHeader);
+                }
+            }
+            if (ref.size() > maxPivotSize) {
+                maxPivotSize = ref.size();
+            }
+            testColumnRefMap.put(entry.getKey(), ref);
+        }
+
         if (testColumnMaps.size() == 0) {
             throw new RuntimeException("No test columns found");
         }
@@ -737,6 +757,9 @@ public class InterpretationService {
         List<String> dataRebuild = new ArrayList<>();
         for (int i = 0; i < columnHeaders.length; i++) {
             String cur = columnHeaders[i];
+            if (unpivod && !baseColumnList.containsKey(cur)) {
+                continue;
+            }
             headerBuilder.append(cur);
             headerBuilder.append(sep);
             if (testColumnMaps.containsKey(columnHeaders[i])) {
@@ -748,10 +771,17 @@ public class InterpretationService {
                 headerBuilder.append(sep);
             }
         }
+        if (unpivod) {
+            headerBuilder.append("antibiotic,raw, result,");
+            for (int k = 0; k < maxPivotSize * 2; k++) {
+                headerBuilder.append("OLD_").append(k);
+                headerBuilder.append(sep);
+            }
+        }
         String newHeader = headerBuilder.toString();
         dataRebuild.add(newHeader.substring(0, newHeader.length() - 1));
         for (int i = 1; i < data.size(); i++) {
-            String[] columns = data.get(i).split(sep);
+            String[] columns = data.get(i).split(sep, -1);
 
             IsolateDTO thisIsolate = result.get(isolateResultMap.get("" + i));
             Map<String, String> testResult = new HashMap<>();
@@ -761,18 +791,63 @@ public class InterpretationService {
                     testResult.put(test.getWhonet5Code(), test.getResult().get(0).getResult());
                 }
             }
-
-            StringBuilder columnBuilder = new StringBuilder();
-            for (int j = 0; j < columns.length; j++) {
-                columnBuilder.append(columns[j]);
-                columnBuilder.append(sep);
-                if (testColumnMaps.containsKey(columnHeaders[j])) {
-                    columnBuilder.append(testResult.getOrDefault(columnHeaders[j], ""));
+            if (!unpivod) {
+                StringBuilder columnBuilder = new StringBuilder();
+                for (int j = 0; j < columns.length; j++) {
+                    columnBuilder.append(columns[j]);
+                    columnBuilder.append(sep);
+                    if (testColumnMaps.containsKey(columnHeaders[j])) {
+                        columnBuilder.append(testResult.getOrDefault(columnHeaders[j], ""));
+                        columnBuilder.append(sep);
+                    }
+                }
+                String newColumn = columnBuilder.toString();
+                dataRebuild.add(newColumn.substring(0, newColumn.length() - 1));
+            }
+            if (unpivod) {
+                StringBuilder columnBuilder = new StringBuilder();
+                for (int j = 0; j < columns.length; j++) {
+                    if (!baseColumnList.containsKey(columnHeaders[j])) {
+                        continue;
+                    }
+                    columnBuilder.append(columns[j]);
                     columnBuilder.append(sep);
                 }
+                String baseColumn = columnBuilder.toString();
+                for (Map.Entry<String, Integer> entry : testColumnMaps.entrySet()) {
+                    StringBuilder columnPivotBuilder = new StringBuilder();
+                    columnPivotBuilder.append(baseColumn);
+                    // tên ks
+                    columnPivotBuilder.append(entry.getKey());
+                    columnPivotBuilder.append(sep);
+                    // kết quả
+                    columnPivotBuilder.append(columns[entry.getValue()]);
+                    columnPivotBuilder.append(sep);
+                    // phiên giải
+                    columnPivotBuilder.append(testResult.getOrDefault(entry.getKey(), ""));
+                    columnPivotBuilder.append(sep);
+
+                    List<String> ref = testColumnRefMap.get(entry.getKey());
+                    for (String columnRef : ref) {
+                        // kết quả liên quan
+                        columnPivotBuilder.append(columnRef);
+                        columnPivotBuilder.append(sep);
+
+                        columnPivotBuilder.append(columns[headerMaps.get(columnRef)]);
+                        columnPivotBuilder.append(sep);
+                    }
+
+                    if (ref.size() < maxPivotSize) {
+                        for (int k = 0; k < maxPivotSize - ref.size(); k++) {
+                            columnPivotBuilder.append(sep);
+                            columnPivotBuilder.append(sep);
+                        }
+                    }
+
+                    String newColumn = columnPivotBuilder.toString();
+                    dataRebuild.add(columnPivotBuilder.substring(0, newColumn.length() - 1));
+                }
             }
-            String newColumn = columnBuilder.toString();
-            dataRebuild.add(newColumn.substring(0, newColumn.length() - 1));
         }
 
         return dataRebuild;

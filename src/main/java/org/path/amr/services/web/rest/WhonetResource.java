@@ -55,9 +55,10 @@ public class WhonetResource {
     @PostMapping("/whonet/interpretation-file")
     public ResponseEntity<Void> getInterpretation_file(
         @RequestParam(value = "file") MultipartFile file,
-        @RequestParam(value = "email") String email
+        @RequestParam(value = "email") String email,
+        @RequestParam(value = "action") String action
     ) throws IOException, ExecutionException, InterruptedException {
-        interpretationService.processFile(this.mailService, file.getInputStream(), file.getOriginalFilename(), email, this.thread);
+        interpretationService.processFile(this.mailService, file.getInputStream(), file.getOriginalFilename(), email, action, this.thread);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
