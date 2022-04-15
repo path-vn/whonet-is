@@ -56,9 +56,20 @@ public class WhonetResource {
     public ResponseEntity<Void> getInterpretation_file(
         @RequestParam(value = "file") MultipartFile file,
         @RequestParam(value = "email") String email,
-        @RequestParam(value = "action") String action
+        @RequestParam(value = "action") String action,
+        @RequestParam(value = "breakpoint") String breakpoint,
+        @RequestParam(value = "intrinsic") String intrinsic
     ) throws IOException, ExecutionException, InterruptedException {
-        interpretationService.processFile(this.mailService, file.getInputStream(), file.getOriginalFilename(), email, action, this.thread);
+        interpretationService.processFile(
+            this.mailService,
+            file.getInputStream(),
+            file.getOriginalFilename(),
+            email,
+            action,
+            breakpoint,
+            intrinsic,
+            this.thread
+        );
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

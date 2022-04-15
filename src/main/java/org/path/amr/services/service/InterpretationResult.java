@@ -5,7 +5,7 @@ public class InterpretationResult {
     Short isQuestionMark;
     String result;
     String specType;
-    String breaking;
+    String breaking = "";
 
     public InterpretationResult(String result) {
         this.result = result;

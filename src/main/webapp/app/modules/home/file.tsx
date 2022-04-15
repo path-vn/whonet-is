@@ -16,38 +16,56 @@ export interface ITargetPopup {
 
 export const TargetUpdate = (props: ITargetPopup) => {
   const { show, title, handleOk, handleCancel } = props;
-  const [data, setData] = useState({});
+  const [data, setData] = useState({ file: null, action: '' });
   const fileUpload = evt => {
     setData({ ...data, file: evt });
   };
-  const setEmail = evt => {
-    setData({ ...data, email: evt.target.value });
+
+  const actionHandle = evt => {
+    setData({ ...data, action: evt.target.value === 'false' ? 'unpivot' : '' });
   };
 
-  const setPivot = evt => {
-    setData({ ...data, action: evt.target.value });
+  const saveEntity = (event, errors, values) => {
+    if (errors.length === 0) {
+      handleOk({ ...values, action: values.action ? 'unpivot' : '', file: data.file });
+      setData({ file: null, action: '' });
+    }
   };
 
-  const saveEntity = () => {
-    handleOk(data);
-    setData({});
-  };
   const cancel = () => {
-    setData({});
+    setData({ file: null, action: '' });
     handleCancel();
   };
+
   return (
     <Modal isOpen={show} toggle={cancel}>
-      <AvForm onSubmit={saveEntity}>
+      <AvForm model={{ action: '' }} onSubmit={saveEntity}>
         <ModalHeader toggle={cancel}>{title}</ModalHeader>
         <ModalBody id="tooltip-custom-body">
-          <AvInput name="email" type={'email'} placeholder={'Email for result'} onChange={setEmail} />
-          <label htmlFor="file">Choose a file to upload</label>
-          <AvInput name="file" className="inputfile" type="file" id="file" onChange={fileUpload} style={{ float: 'right' }} />
-
-          <br />
-          <label htmlFor="unpivot">Unpivot result</label>
-          <AvInput style={{ marginLeft: 10 }} type="checkbox" id="unpivot" name="unpivot" value="unpivot" onChange={setPivot} />
+          <AvGroup>
+            <label htmlFor="file">Choose a file to upload</label>
+            <AvInput name="file" required className="inputfile" type="file" id="file" onChange={fileUpload} style={{ float: 'right' }} />
+          </AvGroup>
+          <AvGroup>
+            <label htmlFor="action">Unpivot result</label>
+            <AvInput style={{ marginLeft: 10 }} type="checkbox" id="action" name="action" onChange={actionHandle} />
+          </AvGroup>
+          {data.action === 'unpivot' && (
+            <AvGroup>
+              <label htmlFor="breakpoint">Add break point</label>
+              <AvInput style={{ marginLeft: 10 }} type="checkbox" id="breakpoint" name="breakpoint" />{' '}
+            </AvGroup>
+          )}
+          {data.action === 'unpivot' && (
+            <AvGroup>
+              <label htmlFor="intrinsic">Add Intrinsic resistance</label>
+              <AvInput style={{ marginLeft: 10 }} type="checkbox" id="intrinsic" name="intrinsic" />
+            </AvGroup>
+          )}
+          <AvGroup>
+            <label htmlFor="email">Email</label>
+            <AvInput name="email" required type={'email'} placeholder={'Email for results'} />
+          </AvGroup>
         </ModalBody>
         <ModalFooter>
           <Button color="secondary" onClick={cancel}>

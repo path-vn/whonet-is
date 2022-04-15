@@ -626,29 +626,52 @@ public class InterpretationService {
     }
 
     @Async
-    public void processFile(MailService mailService, InputStream inputStream, String filename, String email, String action, int thread)
-        throws IOException, ExecutionException, InterruptedException {
+    public void processFile(
+        MailService mailService,
+        InputStream inputStream,
+        String filename,
+        String email,
+        String action,
+        String breakpoint,
+        String intrinsic,
+        int thread
+    ) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         List<String> data = new ArrayList<>();
         while (reader.ready()) {
             String line = reader.readLine();
             data.add(line);
         }
+        try {
+            List<String> outputLine = processLineData(data, action, breakpoint, intrinsic, thread);
 
-        List<String> outputLine = processLineData(data, action, thread);
-
-        InputStream file = new ByteArrayInputStream(outputLine.stream().collect(Collectors.joining("\n")).getBytes(StandardCharsets.UTF_8));
-        log.debug(email);
-        mailService.sendEmail(
-            email,
-            "hkien02@gmail.com",
-            "[Interpretation result] file: " + filename,
-            "Please find the attachment file below for the data",
-            true,
-            true,
-            filename,
-            file
-        );
+            InputStream file = new ByteArrayInputStream(
+                outputLine.stream().collect(Collectors.joining("\n")).getBytes(StandardCharsets.UTF_8)
+            );
+            log.debug(email);
+            mailService.sendEmail(
+                email,
+                "hkien02@gmail.com",
+                "[Interpretation result] file: " + filename,
+                "Please find the attachment file below for the data",
+                true,
+                true,
+                filename,
+                file
+            );
+        } catch (Exception e) {
+            InputStream file = new ByteArrayInputStream(data.stream().collect(Collectors.joining("\n")).getBytes(StandardCharsets.UTF_8));
+            mailService.sendEmail(
+                email,
+                "hkien02@gmail.com",
+                "[Interpretation false] file: " + filename,
+                e.getMessage(),
+                true,
+                true,
+                filename,
+                file
+            );
+        }
     }
 
     public String getMethodByColumnName(String name) {
@@ -677,7 +700,8 @@ public class InterpretationService {
         return rs;
     }
 
-    public List<String> processLineData(List<String> data, String action, int thread) throws ExecutionException, InterruptedException {
+    public List<String> processLineData(List<String> data, String action, String breakpoint, String intrinsic, int thread)
+        throws ExecutionException, InterruptedException {
         if (data.size() <= 1) {
             return data;
         }
@@ -772,23 +796,39 @@ public class InterpretationService {
             }
         }
         if (unpivod) {
-            headerBuilder.append("antibiotic,raw, result,");
+            headerBuilder.append("antibiotic");
+            headerBuilder.append(sep);
+            headerBuilder.append("raw");
+            headerBuilder.append(sep);
+            headerBuilder.append("result");
+            headerBuilder.append(sep);
+
+            if (breakpoint.equalsIgnoreCase("yes")) {
+                headerBuilder.append("breakpoint");
+                headerBuilder.append(sep);
+            }
+            if (intrinsic.equalsIgnoreCase("yes")) {
+                headerBuilder.append("intrinsic");
+                headerBuilder.append(sep);
+            }
             for (int k = 0; k < maxPivotSize * 2; k++) {
                 headerBuilder.append("OLD_").append(k);
                 headerBuilder.append(sep);
             }
         }
         String newHeader = headerBuilder.toString();
+        TestDTO defaultDTo = new TestDTO();
+        defaultDTo.addResult("");
         dataRebuild.add(newHeader.substring(0, newHeader.length() - 1));
         for (int i = 1; i < data.size(); i++) {
             String[] columns = data.get(i).split(sep, -1);
 
             IsolateDTO thisIsolate = result.get(isolateResultMap.get("" + i));
-            Map<String, String> testResult = new HashMap<>();
+            Map<String, TestDTO> testResult = new HashMap<>();
             for (int k = 0; k < thisIsolate.getTest().size(); k++) {
                 TestDTO test = thisIsolate.getTest().get(k);
                 if (test.getResult() != null && test.getResult().size() > 0) {
-                    testResult.put(test.getWhonet5Code(), test.getResult().get(0).getResult());
+                    testResult.put(test.getWhonet5Code(), test);
                 }
             }
             if (!unpivod) {
@@ -797,7 +837,7 @@ public class InterpretationService {
                     columnBuilder.append(columns[j]);
                     columnBuilder.append(sep);
                     if (testColumnMaps.containsKey(columnHeaders[j])) {
-                        columnBuilder.append(testResult.getOrDefault(columnHeaders[j], ""));
+                        columnBuilder.append(testResult.getOrDefault(columnHeaders[j], defaultDTo).getResult().get(0).getResult());
                         columnBuilder.append(sep);
                     }
                 }
@@ -824,8 +864,27 @@ public class InterpretationService {
                     columnPivotBuilder.append(columns[entry.getValue()]);
                     columnPivotBuilder.append(sep);
                     // phiên giải
-                    columnPivotBuilder.append(testResult.getOrDefault(entry.getKey(), ""));
+                    columnPivotBuilder.append(testResult.getOrDefault(entry.getKey(), defaultDTo).getResult().get(0).getResult());
                     columnPivotBuilder.append(sep);
+
+                    if (breakpoint.equalsIgnoreCase("yes")) {
+                        String breaking = testResult.getOrDefault(entry.getKey(), defaultDTo).getResult().get(0).getBreaking();
+
+                        columnPivotBuilder.append("\"").append(breaking).append("\"");
+                        columnPivotBuilder.append(sep);
+                    }
+
+                    if (intrinsic.equalsIgnoreCase("yes")) {
+                        String intrinsicValue = "";
+                        if (
+                            testResult.getOrDefault(entry.getKey(), defaultDTo).getIntrinsicResistance() != null &&
+                            testResult.getOrDefault(entry.getKey(), defaultDTo).getIntrinsicResistance().size() > 0
+                        ) {
+                            intrinsicValue = testResult.getOrDefault(entry.getKey(), defaultDTo).getIntrinsicResistance().get(0).toString();
+                        }
+                        columnPivotBuilder.append("\"").append(intrinsicValue).append("\"");
+                        columnPivotBuilder.append(sep);
+                    }
 
                     List<String> ref = testColumnRefMap.get(entry.getKey());
                     for (String columnRef : ref) {

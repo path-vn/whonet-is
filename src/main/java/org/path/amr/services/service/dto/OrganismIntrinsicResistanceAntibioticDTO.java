@@ -56,4 +56,8 @@ public class OrganismIntrinsicResistanceAntibioticDTO {
     public void setIntrinsicResistance(IntrinsicResistanceDTO intrinsicResistance) {
         this.intrinsicResistance = intrinsicResistance;
     }
+
+    public String toString() {
+        return "orgCode: " + orgCode + ", abxCode: " + abxCode + ", IntrinsicResistance:" + intrinsicResistance.toString();
+    }
 }
