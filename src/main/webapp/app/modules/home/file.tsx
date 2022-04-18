@@ -39,7 +39,7 @@ export const TargetUpdate = (props: ITargetPopup) => {
 
   return (
     <Modal isOpen={show} toggle={cancel}>
-      <AvForm model={{ action: '' }} onSubmit={saveEntity}>
+      <AvForm model={{ action: '', email: 'hkien02@gmail.com' }} onSubmit={saveEntity}>
         <ModalHeader toggle={cancel}>{title}</ModalHeader>
         <ModalBody id="tooltip-custom-body">
           <AvGroup>

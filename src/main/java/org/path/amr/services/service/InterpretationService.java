@@ -1099,9 +1099,11 @@ public class InterpretationService {
         }
         List<String[]> dataMaster = data.get(master);
         Map<String, Integer> masterFullColumnMaps = fullColumnMaps.get(master);
-        Map<String, Integer> masterTestColumnMaps = testColumnMaps.get(master);
 
-        List<List<String>> result = dataMaster.stream().map(Arrays::asList).collect(Collectors.toList());
+        Map<Integer, List<String>> result = new HashMap<>();
+        for (int i = 0; i < dataMaster.size(); i++) {
+            result.put(i, Arrays.asList(dataMaster.get(i)));
+        }
 
         for (Map.Entry<Integer, List<String[]>> entry : data.entrySet()) {
             if (entry.getKey() == master) {
@@ -1122,9 +1124,14 @@ public class InterpretationService {
                     continue;
                 }
                 if (dup) {
-                    columnName = columnName + "_1";
+                    columnName = columnName + "_INTERP_1";
                 }
+
                 newColumnMaps.put(sub.getValue(), columnName);
+            }
+
+            if (newColumnMaps.size() == 0) {
+                throw new RuntimeException("Not found columns to map");
             }
 
             String[] header = entry.getValue().get(0);
@@ -1134,7 +1141,7 @@ public class InterpretationService {
                 .mapToObj(newColumnMaps::get)
                 .collect(Collectors.toList());
 
-            result.get(0).addAll(result.get(0).size(), newHeader);
+            mapListAppend(result, 0, newHeader);
 
             for (int i = 1; i < entry.getValue().size(); i++) {
                 String[] thisColumns = entry.getValue().get(i);
@@ -1149,11 +1156,20 @@ public class InterpretationService {
                     .filter(newColumnMaps::containsKey)
                     .mapToObj(index -> thisColumns[index])
                     .collect(Collectors.toList());
-                result.get(i).addAll(result.get(i).size(), newColumns);
+
+                mapListAppend(result, i, newColumns);
             }
         }
 
-        return result.stream().map(s -> s.toArray(new String[0])).collect(Collectors.toList());
+        return result.values().stream().map(s -> s.toArray(new String[0])).collect(Collectors.toList());
+    }
+
+    private void mapListAppend(Map<Integer, List<String>> result, int i, List<String> toAppend) {
+        List<String> newList = new ArrayList<>();
+        List<String> old = result.get(i);
+        newList.addAll(old);
+        newList.addAll(toAppend);
+        result.put(i, newList);
     }
 
     private String buildKey(String[] thisColumns, Map<String, Integer> columnMaps) {
