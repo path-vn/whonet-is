@@ -68,6 +68,12 @@ export const TargetUpdate = (props: ITargetPopup) => {
               <AvInput style={{ marginLeft: 10 }} type="checkbox" id="empty" name="empty" />
             </AvGroup>
           )}
+          {data.action === 'filterEqual' && (
+            <AvGroup>
+              <label htmlFor="equal">Filter empty</label>
+              <AvInput style={{ marginLeft: 10 }} type="checkbox" id="equal" name="equal" />
+            </AvGroup>
+          )}
           <AvGroup>
             <label htmlFor="email">Email</label>
             <AvInput name="email" required type={'email'} placeholder={'Email for results'} />

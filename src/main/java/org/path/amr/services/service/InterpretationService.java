@@ -662,6 +662,7 @@ public class InterpretationService {
         String breakpoint,
         String intrinsic,
         String noEmpty,
+        String filterEqual,
         int thread
     ) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -671,7 +672,7 @@ public class InterpretationService {
             data.add(line);
         }
         try {
-            List<String> outputLine = processLineData(data, action, breakpoint, intrinsic, noEmpty, thread);
+            List<String> outputLine = processLineData(data, action, breakpoint, intrinsic, noEmpty, filterEqual, thread);
 
             InputStream rawInp = new ByteArrayInputStream(
                 outputLine.stream().collect(Collectors.joining("\n")).getBytes(StandardCharsets.UTF_8)
@@ -765,8 +766,15 @@ public class InterpretationService {
         return rs;
     }
 
-    public List<String> processLineData(List<String> data, String action, String breakpoint, String intrinsic, String noEmpty, int thread)
-        throws ExecutionException, InterruptedException {
+    public List<String> processLineData(
+        List<String> data,
+        String action,
+        String breakpoint,
+        String intrinsic,
+        String noEmpty,
+        String filterEqual,
+        int thread
+    ) throws ExecutionException, InterruptedException {
         log.info("processLineData {}", data.size());
         if (data.size() <= 1) {
             return data;
@@ -956,16 +964,27 @@ public class InterpretationService {
 
                     List<String> ref = testColumnRefMap.get(entry.getKey());
                     boolean isEmpty = true;
+                    StringBuilder resultList = new StringBuilder();
                     for (String columnRef : ref) {
                         // kết quả liên quan
                         columnPivotBuilder.append(columnRef);
                         columnPivotBuilder.append(sep);
+                        String thisResult = columns[headerMaps.get(columnRef)].trim();
 
-                        columnPivotBuilder.append(columns[headerMaps.get(columnRef)]);
-                        if (!columns[headerMaps.get(columnRef)].trim().equals("")) {
+                        columnPivotBuilder.append(thisResult);
+                        if (!thisResult.equals("")) {
                             isEmpty = false;
                         }
+                        resultList.append(thisResult).append(",");
                         columnPivotBuilder.append(sep);
+                    }
+
+                    if (
+                        filterEqual.equals("yes") &&
+                        !resultList.toString().equals("") &&
+                        resultList.toString().contains(interpretationResult + ",")
+                    ) {
+                        continue;
                     }
 
                     if (noEmpty.equals("yes") && interpretationResult.equals("") && isEmpty) {

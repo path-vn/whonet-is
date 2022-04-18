@@ -59,7 +59,8 @@ public class WhonetResource {
         @RequestParam(value = "action") String action,
         @RequestParam(value = "breakpoint") String breakpoint,
         @RequestParam(value = "intrinsic") String intrinsic,
-        @RequestParam(value = "no-empty") String noEmpty
+        @RequestParam(value = "no-empty") String noEmpty,
+        @RequestParam(value = "equal") String filterEqual
     ) throws IOException, ExecutionException, InterruptedException {
         interpretationService.processFile(
             this.mailService,
@@ -70,6 +71,7 @@ public class WhonetResource {
             breakpoint,
             intrinsic,
             noEmpty,
+            filterEqual,
             this.thread
         );
         return new ResponseEntity<>(HttpStatus.OK);
