@@ -178,6 +178,7 @@ export const interpretationFile: ICrudPutAction<any> = data => async dispatch =>
   formData.append('action', !empty(data.action) ? data.action : '');
   formData.append('breakpoint', data.breakpoint ? 'yes' : '');
   formData.append('intrinsic', data.intrinsic ? 'yes' : '');
+  formData.append('no-empty', data.empty ? 'yes' : '');
 
   return await dispatch({
     type: ACTION_TYPES.INTERPRETATION_EXECUTE_FILE,

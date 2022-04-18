@@ -661,6 +661,7 @@ public class InterpretationService {
         String action,
         String breakpoint,
         String intrinsic,
+        String noEmpty,
         int thread
     ) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -670,7 +671,7 @@ public class InterpretationService {
             data.add(line);
         }
         try {
-            List<String> outputLine = processLineData(data, action, breakpoint, intrinsic, thread);
+            List<String> outputLine = processLineData(data, action, breakpoint, intrinsic, noEmpty, thread);
 
             InputStream rawInp = new ByteArrayInputStream(
                 outputLine.stream().collect(Collectors.joining("\n")).getBytes(StandardCharsets.UTF_8)
@@ -764,7 +765,7 @@ public class InterpretationService {
         return rs;
     }
 
-    public List<String> processLineData(List<String> data, String action, String breakpoint, String intrinsic, int thread)
+    public List<String> processLineData(List<String> data, String action, String breakpoint, String intrinsic, String noEmpty, int thread)
         throws ExecutionException, InterruptedException {
         log.info("processLineData {}", data.size());
         if (data.size() <= 1) {
@@ -930,7 +931,8 @@ public class InterpretationService {
                     columnPivotBuilder.append(columns[entry.getValue()]);
                     columnPivotBuilder.append(sep);
                     // phiên giải
-                    columnPivotBuilder.append(testResult.getOrDefault(entry.getKey(), defaultDTo).getResult().get(0).getResult());
+                    String interpretationResult = testResult.getOrDefault(entry.getKey(), defaultDTo).getResult().get(0).getResult();
+                    columnPivotBuilder.append(interpretationResult);
                     columnPivotBuilder.append(sep);
 
                     if (breakpoint.equalsIgnoreCase("yes")) {
@@ -953,13 +955,21 @@ public class InterpretationService {
                     }
 
                     List<String> ref = testColumnRefMap.get(entry.getKey());
+                    boolean isEmpty = true;
                     for (String columnRef : ref) {
                         // kết quả liên quan
                         columnPivotBuilder.append(columnRef);
                         columnPivotBuilder.append(sep);
 
                         columnPivotBuilder.append(columns[headerMaps.get(columnRef)]);
+                        if (!columns[headerMaps.get(columnRef)].trim().equals("")) {
+                            isEmpty = false;
+                        }
                         columnPivotBuilder.append(sep);
+                    }
+
+                    if (noEmpty.equals("yes") && interpretationResult.equals("") && isEmpty) {
+                        continue;
                     }
 
                     if (ref.size() < maxPivotSize) {
