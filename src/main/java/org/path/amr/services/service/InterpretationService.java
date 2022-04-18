@@ -964,7 +964,8 @@ public class InterpretationService {
                     String questionMark = testResult.getOrDefault(entry.getKey(), defaultDTo).getResult().get(0).getIsQuestionMark() == 1
                         ? "?"
                         : "";
-                    columnPivotBuilder.add(interpretationResult + questionMark);
+                    interpretationResult = interpretationResult + questionMark;
+                    columnPivotBuilder.add(interpretationResult);
 
                     if (breakpoint.equalsIgnoreCase("yes")) {
                         String breaking = testResult.getOrDefault(entry.getKey(), defaultDTo).getResult().get(0).getBreaking();
@@ -996,6 +997,9 @@ public class InterpretationService {
                             isEmpty = false;
                         }
                         if (thisResult.equals("")) {
+                            thisResult = "_";
+                        }
+                        if (thisResult.equals("?")) {
                             thisResult = "_";
                         }
                         resultList.append(thisResult).append(",");
