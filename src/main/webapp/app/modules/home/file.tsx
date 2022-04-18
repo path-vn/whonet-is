@@ -43,7 +43,7 @@ export const TargetUpdate = (props: ITargetPopup) => {
         <ModalHeader toggle={cancel}>{title}</ModalHeader>
         <ModalBody id="tooltip-custom-body">
           <AvGroup>
-            <label htmlFor="file">Choose a file to upload</label>
+            <label htmlFor="file">Choose files to upload</label>
             <AvInput
               name="file"
               multiple

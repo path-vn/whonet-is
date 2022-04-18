@@ -317,7 +317,6 @@ public class CustomRepository {
             " ) ASC, " +
             " b.WHONET_TEST ASC, " +
             " b.SITE_OF_INFECTION ASC";
-        log.info(sql);
         NativeQuery qry = getCurrentSession().createNativeQuery(sql);
         qry.setParameter("year", year);
         qry.setParameter("orgCode", orgCode);
