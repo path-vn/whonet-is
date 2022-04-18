@@ -697,11 +697,15 @@ public class InterpretationService {
         while (m.find()) {
             rs = m.group(1);
         }
+        if (rs.equals("|")) {
+            return "\\|";
+        }
         return rs;
     }
 
     public List<String> processLineData(List<String> data, String action, String breakpoint, String intrinsic, int thread)
         throws ExecutionException, InterruptedException {
+        log.info("processLineData {}", data.size());
         if (data.size() <= 1) {
             return data;
         }
@@ -723,7 +727,7 @@ public class InterpretationService {
             }
             headerMaps.put(columnHeaders[i].toUpperCase(Locale.ROOT), i);
         }
-
+        log.info("processLineData test size {}", testColumnMaps.size());
         for (Map.Entry<String, Integer> entry : testColumnMaps.entrySet()) {
             List<String> ref = new ArrayList<>();
             for (String columnHeader : columnHeaders) {
@@ -770,8 +774,9 @@ public class InterpretationService {
             }
             isolateDTOList.add(isolate);
         }
-
+        log.info("processLineData isolateDTOList size {}", isolateDTOList.size());
         List<IsolateDTO> result = execIsolateDTOS(isolateDTOList, thread);
+        log.info("processLineData result size {}", result.size());
         Map<String, Integer> isolateResultMap = new HashMap<>();
         for (int i = 0; i < result.size(); i++) {
             isolateResultMap.put(result.get(i).getRequestID(), i);
@@ -908,6 +913,7 @@ public class InterpretationService {
                 }
             }
         }
+        log.info("processLineData dataRebuild size {}", dataRebuild.size());
 
         return dataRebuild;
     }
