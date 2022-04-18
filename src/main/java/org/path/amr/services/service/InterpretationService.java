@@ -975,15 +975,17 @@ public class InterpretationService {
                         if (!thisResult.equals("")) {
                             isEmpty = false;
                         }
+                        if (thisResult.equals("")) {
+                            thisResult = "_";
+                        }
                         resultList.append(thisResult).append(",");
                         columnPivotBuilder.append(sep);
                     }
-
-                    if (
-                        filterEqual.equals("yes") &&
-                        !resultList.toString().equals("") &&
-                        resultList.toString().contains(interpretationResult + ",")
-                    ) {
+                    String checkResult = interpretationResult + ",";
+                    if (interpretationResult.equals("")) {
+                        checkResult = "_,";
+                    }
+                    if (filterEqual.equals("yes") && !resultList.toString().equals("") && resultList.toString().contains(checkResult)) {
                         continue;
                     }
 
