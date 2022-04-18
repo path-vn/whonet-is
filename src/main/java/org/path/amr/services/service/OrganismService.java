@@ -50,4 +50,6 @@ public interface OrganismService {
     void delete(Long id);
 
     List<String> findGroups(String key);
+
+    void flushAllAndSaveAll(List<OrganismDTO> newDTO);
 }

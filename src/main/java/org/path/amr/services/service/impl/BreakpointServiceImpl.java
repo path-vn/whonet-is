@@ -2,6 +2,7 @@ package org.path.amr.services.service.impl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.path.amr.services.domain.Breakpoint;
 import org.path.amr.services.repository.BreakpointRepository;
 import org.path.amr.services.repository.CustomRepository;
@@ -87,5 +88,11 @@ public class BreakpointServiceImpl implements BreakpointService {
     @Override
     public List<String> findGroups(String key) {
         return customRepository.findBreakpointGroupByField(key);
+    }
+
+    @Override
+    public void flushAllAndSaveAll(List<BreakpointDTO> newDTO) {
+        breakpointRepository.deleteAllInBatch();
+        breakpointRepository.saveAll(newDTO.stream().map(breakpointMapper::toEntity).collect(Collectors.toList()));
     }
 }

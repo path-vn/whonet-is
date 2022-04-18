@@ -77,9 +77,9 @@ export const TargetUpdate = (props: ITargetPopup) => {
               <AvInput style={{ marginLeft: 10 }} type="checkbox" id="empty" name="empty" />
             </AvGroup>
           )}
-          {data.action === 'filterEqual' && (
+          {data.action === 'unpivot' && (
             <AvGroup>
-              <label htmlFor="equal">Filter empty</label>
+              <label htmlFor="equal">Filter equal</label>
               <AvInput style={{ marginLeft: 10 }} type="checkbox" id="equal" name="equal" />
             </AvGroup>
           )}

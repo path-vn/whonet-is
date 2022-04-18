@@ -50,4 +50,6 @@ public interface AntibioticService {
     void delete(Long id);
 
     List<String> findGroups(String key);
+
+    void flushAllAndSaveAll(List<AntibioticDTO> newDTO);
 }

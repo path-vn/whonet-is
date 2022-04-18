@@ -3,6 +3,7 @@ package org.path.amr.services.repository;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Cacheable;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.hibernate.Session;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
+@Cacheable
 public class CustomRepository {
 
     private final Logger log = LoggerFactory.getLogger(CustomRepository.class);
@@ -27,10 +29,6 @@ public class CustomRepository {
 
     protected Session getCurrentSession() {
         return em.unwrap(Session.class);
-    }
-
-    public List<OrganismBreakPointDTO> getBreakPoints() {
-        return getBreakPoints("spn", "CRO_NM", "Human");
     }
 
     public List<OrganismBreakPointDTO> getBreakPoints(String orgCode, String whonetTest, String breakpointType) {
@@ -319,7 +317,7 @@ public class CustomRepository {
             " ) ASC, " +
             " b.WHONET_TEST ASC, " +
             " b.SITE_OF_INFECTION ASC";
-
+        log.info(sql);
         NativeQuery qry = getCurrentSession().createNativeQuery(sql);
         qry.setParameter("year", year);
         qry.setParameter("orgCode", orgCode);

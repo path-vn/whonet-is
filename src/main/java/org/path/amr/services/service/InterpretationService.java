@@ -79,6 +79,8 @@ public class InterpretationService {
     ExpertInterpretationRulesMapper expertInterpretationRulesMapper;
     WhonetConfiguration whonetConfiguration;
     Map<String, Integer> specTypeSort = new HashMap<>();
+    Map<String, List<OrganismBreakPointDTO>> cacheBreakpoints = new HashMap<>();
+    Map<String, List<OrganismIntrinsicResistanceAntibioticDTO>> cacheIntrinsics = new HashMap<>();
 
     public InterpretationService(
         CustomRepository customRepository,
@@ -117,7 +119,12 @@ public class InterpretationService {
     }
 
     public List<OrganismBreakPointDTO> getBreakpoints(String orgCode, String whonet5Test, String breakpointType) {
-        return customRepository
+        String key = String.format("%s%s%s", orgCode, whonet5Test, breakpointType);
+        if (cacheBreakpoints.containsKey(key)) {
+            return cacheBreakpoints.get(key);
+        }
+        log.info("getBreakpoints cached");
+        List<OrganismBreakPointDTO> newPoint = customRepository
             .getBreakPoints(orgCode, whonet5Test, breakpointType)
             .stream()
             .peek(
@@ -127,6 +134,8 @@ public class InterpretationService {
                 }
             )
             .collect(Collectors.toList());
+        cacheBreakpoints.put(key, newPoint);
+        return newPoint;
     }
 
     private double mode2(Double value, Double micS, Double micR, Short oper) {
@@ -248,19 +257,10 @@ public class InterpretationService {
             }
 
             // A.1 Check intrinsic resistance
-            List<OrganismIntrinsicResistanceAntibioticDTO> organismIntrinsicResistanceAntibioticDTOList = customRepository
-                .getIntrinsicResistance(isolate.getOrgCode(), test.getWhonet5Code())
-                .stream()
-                .peek(
-                    oir -> {
-                        antibioticRepository.findById(oir.getAntibioticId()).map(antibioticMapper::toDto).ifPresent(oir::setAntibiotic);
-                        intrinsicResistanceRepository
-                            .findById(oir.getIntrinsicResistanceId())
-                            .map(intrinsicResistanceMapper::toDto)
-                            .ifPresent(oir::setIntrinsicResistance);
-                    }
-                )
-                .collect(Collectors.toList());
+            List<OrganismIntrinsicResistanceAntibioticDTO> organismIntrinsicResistanceAntibioticDTOList = getIntrinsicResistance(
+                isolate.getOrgCode(),
+                test.getWhonet5Code()
+            );
 
             if (organismIntrinsicResistanceAntibioticDTOList.size() > 0) {
                 test.setIntrinsicResistance(organismIntrinsicResistanceAntibioticDTOList);
@@ -291,6 +291,28 @@ public class InterpretationService {
         }
         // B. Apply expert rules
         applyExpertRules(isolate);
+    }
+
+    public List<OrganismIntrinsicResistanceAntibioticDTO> getIntrinsicResistance(String orgCode, String whonet5Test) {
+        String key = String.format("%s%s", orgCode, whonet5Test);
+        if (cacheIntrinsics.containsKey(key)) {
+            return cacheIntrinsics.get(key);
+        }
+        List<OrganismIntrinsicResistanceAntibioticDTO> newList = customRepository
+            .getIntrinsicResistance(orgCode, whonet5Test)
+            .stream()
+            .peek(
+                oir -> {
+                    antibioticRepository.findById(oir.getAntibioticId()).map(antibioticMapper::toDto).ifPresent(oir::setAntibiotic);
+                    intrinsicResistanceRepository
+                        .findById(oir.getIntrinsicResistanceId())
+                        .map(intrinsicResistanceMapper::toDto)
+                        .ifPresent(oir::setIntrinsicResistance);
+                }
+            )
+            .collect(Collectors.toList());
+        cacheIntrinsics.put(key, newList);
+        return newList;
     }
 
     @Transactional(readOnly = true)
@@ -622,23 +644,6 @@ public class InterpretationService {
             }
         }
         return result;
-    }
-
-    public List<OrganismIntrinsicResistanceAntibioticDTO> intrinsicResistance(String orgCode, String abxCode) {
-        return customRepository
-            .getIntrinsicResistance(orgCode, abxCode)
-            .stream()
-            .map(
-                oir -> {
-                    antibioticRepository.findById(oir.getAntibioticId()).map(antibioticMapper::toDto).ifPresent(oir::setAntibiotic);
-                    intrinsicResistanceRepository
-                        .findById(oir.getIntrinsicResistanceId())
-                        .map(intrinsicResistanceMapper::toDto)
-                        .ifPresent(oir::setIntrinsicResistance);
-                    return oir;
-                }
-            )
-            .collect(Collectors.toList());
     }
 
     InputStream zip(InputStream inp, String name) throws IOException {

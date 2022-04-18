@@ -107,6 +107,6 @@ public class WhonetResource {
         @RequestParam String abxCode,
         @RequestParam String orgCode
     ) {
-        return this.interpretationService.intrinsicResistance(orgCode, abxCode);
+        return this.interpretationService.getIntrinsicResistance(orgCode, abxCode);
     }
 }

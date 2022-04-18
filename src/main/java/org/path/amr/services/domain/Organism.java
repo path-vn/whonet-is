@@ -92,7 +92,7 @@ public class Organism implements Serializable {
     @Column(name = "class", columnDefinition = "TEXT")
     private String organismClass;
 
-    @Column(name = "order", columnDefinition = "TEXT")
+    @Column(name = "organism_order", columnDefinition = "TEXT")
     private String order;
 
     @Column(name = "family", columnDefinition = "TEXT")

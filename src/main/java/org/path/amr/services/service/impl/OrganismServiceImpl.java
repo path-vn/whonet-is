@@ -2,6 +2,7 @@ package org.path.amr.services.service.impl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.path.amr.services.domain.Organism;
 import org.path.amr.services.repository.CustomRepository;
 import org.path.amr.services.repository.OrganismRepository;
@@ -83,5 +84,11 @@ public class OrganismServiceImpl implements OrganismService {
     @Override
     public List<String> findGroups(String key) {
         return customRepository.findOrganismGroupByField(key);
+    }
+
+    @Override
+    public void flushAllAndSaveAll(List<OrganismDTO> newDTO) {
+        organismRepository.deleteAllInBatch();
+        organismRepository.saveAll(newDTO.stream().map(organismMapper::toEntity).collect(Collectors.toList()));
     }
 }

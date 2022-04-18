@@ -50,4 +50,6 @@ public interface BreakpointService {
     void delete(Long id);
 
     List<String> findGroups(String key);
+
+    void flushAllAndSaveAll(List<BreakpointDTO> newDTO);
 }

@@ -1,5 +1,6 @@
 package org.path.amr.services.service;
 
+import java.util.List;
 import java.util.Optional;
 import org.path.amr.services.service.dto.ExpertInterpretationRulesDTO;
 import org.springframework.data.domain.Page;
@@ -47,4 +48,6 @@ public interface ExpertInterpretationRulesService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    void flushAllAndSaveAll(List<ExpertInterpretationRulesDTO> newDTO);
 }
