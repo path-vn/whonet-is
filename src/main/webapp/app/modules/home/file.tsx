@@ -62,7 +62,7 @@ export const TargetUpdate = (props: ITargetPopup) => {
               <AvInput style={{ marginLeft: 10 }} type="checkbox" id="intrinsic" name="intrinsic" />
             </AvGroup>
           )}
-          {data.action === 'empty' && (
+          {data.action === 'unpivot' && (
             <AvGroup>
               <label htmlFor="empty">Filter empty</label>
               <AvInput style={{ marginLeft: 10 }} type="checkbox" id="empty" name="empty" />
