@@ -123,7 +123,6 @@ public class InterpretationService {
         if (cacheBreakpoints.containsKey(key)) {
             return cacheBreakpoints.get(key);
         }
-        log.info("getBreakpoints cached");
         List<OrganismBreakPointDTO> newPoint = customRepository
             .getBreakPoints(orgCode, whonet5Test, breakpointType)
             .stream()
@@ -962,7 +961,7 @@ public class InterpretationService {
                     columnPivotBuilder.add(columns[entry.getValue()]);
                     // phiên giải
                     String interpretationResult = testResult.getOrDefault(entry.getKey(), defaultDTo).getResult().get(0).getResult();
-                    String questionMark = testResult.getOrDefault(entry.getKey(), defaultDTo).getResult().get(0).isQuestionMark == 1
+                    String questionMark = testResult.getOrDefault(entry.getKey(), defaultDTo).getResult().get(0).getIsQuestionMark() == 1
                         ? "?"
                         : "";
                     columnPivotBuilder.add(interpretationResult + questionMark);

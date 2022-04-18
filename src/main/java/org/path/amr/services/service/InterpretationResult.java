@@ -2,7 +2,7 @@ package org.path.amr.services.service;
 
 public class InterpretationResult {
 
-    Short isQuestionMark;
+    Short isQuestionMark = -1;
     String result;
     String specType;
     String breaking = "";
