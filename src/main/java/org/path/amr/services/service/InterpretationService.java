@@ -962,7 +962,10 @@ public class InterpretationService {
                     columnPivotBuilder.add(columns[entry.getValue()]);
                     // phiên giải
                     String interpretationResult = testResult.getOrDefault(entry.getKey(), defaultDTo).getResult().get(0).getResult();
-                    columnPivotBuilder.add(interpretationResult);
+                    String questionMark = testResult.getOrDefault(entry.getKey(), defaultDTo).getResult().get(0).isQuestionMark == 1
+                        ? "?"
+                        : "";
+                    columnPivotBuilder.add(interpretationResult + questionMark);
 
                     if (breakpoint.equalsIgnoreCase("yes")) {
                         String breaking = testResult.getOrDefault(entry.getKey(), defaultDTo).getResult().get(0).getBreaking();

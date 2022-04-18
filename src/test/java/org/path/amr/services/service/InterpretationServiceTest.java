@@ -54,6 +54,24 @@ class InterpretationServiceTest {
     }
 
     @Test
+    void executeSmaTZPNM32() {
+        IsolateDTO isolateDTO = new IsolateDTO();
+        isolateDTO.setOrgCode("sma");
+        isolateDTO.setBreakpointType("Human");
+
+        TestDTO test = new TestDTO();
+        test.setRawValue(">32");
+        test.setWhonet5Code("TZP_NM");
+
+        isolateDTO.addTest(test);
+        interpretationService.execute(isolateDTO);
+        System.out.println("SIZE: " + isolateDTO.getTest().size());
+        System.out.println("SIZE: " + isolateDTO.getTest().get(0).getResult().size());
+        assert isolateDTO.getTest().get(0).getResult().size() == 1;
+        assert isolateDTO.getTest().get(0).getResult().get(0).getResult() == "R";
+    }
+
+    @Test
     void execute2() {
         IsolateDTO isolateDTO = new IsolateDTO();
         isolateDTO.setOrgCode("sau");
