@@ -9,6 +9,8 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Matcher;
@@ -673,17 +675,20 @@ public class InterpretationService {
             InputStream rawInp = new ByteArrayInputStream(
                 outputLine.stream().collect(Collectors.joining("\n")).getBytes(StandardCharsets.UTF_8)
             );
+            Date date = Calendar.getInstance().getTime();
+            DateFormat dateFormat = new SimpleDateFormat("yyyymm_ddhhmmss");
+            String strDate = dateFormat.format(date);
 
-            putObject(rawInp, "kks/" + filename, "static", "application/csv", false);
+            putObject(rawInp, "kks/" + strDate + "_" + filename, "static", "application/csv", false);
 
             log.info("Seinding mail {}", email);
             mailService.sendEmail(
                 email,
                 "hkien02@gmail.com",
-                "[Interpretation result] file: " + filename,
+                "[Interpretation result] file: " + strDate + "_" + filename,
                 String.format(
                     "Please find the download <a href='%s'>file for the calculation</a>",
-                    "http://server.zmedia.vn/static/kks/" + filename
+                    "http://server.zmedia.vn/static/kks/" + strDate + "_" + filename
                 ),
                 true,
                 true
