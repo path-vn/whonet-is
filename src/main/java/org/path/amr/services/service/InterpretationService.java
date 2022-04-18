@@ -18,6 +18,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import liquibase.util.csv.opencsv.CSVParser;
+import liquibase.util.csv.opencsv.CSVReader;
 import org.path.amr.services.config.WhonetConfiguration;
 import org.path.amr.services.domain.Antibiotic;
 import org.path.amr.services.domain.ExpertInterpretationRules;
@@ -665,14 +667,24 @@ public class InterpretationService {
         String filterEqual,
         int thread
     ) throws IOException {
+        inputStream.mark(-1);
+
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        List<String> data = new ArrayList<>();
+        char sep = ',';
         while (reader.ready()) {
             String line = reader.readLine();
-            data.add(line);
+            sep = getWhonetFileSeparator(line);
+            break;
         }
+        CSVParser parser = new CSVParser(sep);
+        inputStream.reset();
+        CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream), 0, parser);
+
+        List<String[]> lines = csvReader.readAll();
+        reader.close();
+
         try {
-            List<String> outputLine = processLineData(data, action, breakpoint, intrinsic, noEmpty, filterEqual, thread);
+            List<String> outputLine = processLineData(lines, "" + sep, action, breakpoint, intrinsic, noEmpty, filterEqual, thread);
 
             InputStream rawInp = new ByteArrayInputStream(
                 outputLine.stream().collect(Collectors.joining("\n")).getBytes(StandardCharsets.UTF_8)
@@ -696,7 +708,7 @@ public class InterpretationService {
                 true
             );
         } catch (Exception e) {
-            InputStream file = new ByteArrayInputStream(data.stream().collect(Collectors.joining("\n")).getBytes(StandardCharsets.UTF_8));
+            inputStream.reset();
             mailService.sendEmail(
                 email,
                 "hkien02@gmail.com",
@@ -705,7 +717,7 @@ public class InterpretationService {
                 true,
                 true,
                 filename,
-                file
+                inputStream
             );
         }
     }
@@ -754,20 +766,18 @@ public class InterpretationService {
         return result;
     }
 
-    public String getWhonetFileSeparator(String inp) {
+    public char getWhonetFileSeparator(String inp) {
         Matcher m = Pattern.compile("COUNTRY_A(?<sep>.*)LABORATORY").matcher(inp.toUpperCase(Locale.ROOT));
-        String rs = "";
+        char rs = ',';
         while (m.find()) {
-            rs = m.group(1);
-        }
-        if (rs.equals("|")) {
-            return "\\|";
+            rs = m.group(1).charAt(0);
         }
         return rs;
     }
 
     public List<String> processLineData(
-        List<String> data,
+        List<String[]> data,
+        String sep,
         String action,
         String breakpoint,
         String intrinsic,
@@ -776,14 +786,9 @@ public class InterpretationService {
         int thread
     ) throws ExecutionException, InterruptedException {
         log.info("processLineData {}", data.size());
-        if (data.size() <= 1) {
-            return data;
-        }
         boolean unpivod = action.equals("unpivot");
         int maxPivotSize = 1;
-        String header = data.get(0);
-        String sep = getWhonetFileSeparator(header);
-        String[] columnHeaders = header.split(sep, -1);
+        String[] columnHeaders = data.get(0);
         Map<String, Integer> testColumnMaps = new HashMap<>();
         Map<String, Integer> headerMaps = new HashMap<>();
         Map<String, Integer> baseColumnList = new HashMap<>();
@@ -820,10 +825,10 @@ public class InterpretationService {
         }
         List<IsolateDTO> isolateDTOList = new ArrayList<>();
         for (int i = 1; i < data.size(); i++) {
-            String[] columns = data.get(i).split(sep, -1);
+            String[] columns = data.get(i);
             if (columns.length != columnHeaders.length) {
                 throw new RuntimeException(
-                    "Data columns not math header columns " + columns.length + " " + columnHeaders.length + " row : " + i
+                    "Data columns not match header columns " + columns.length + " " + columnHeaders.length + " row : " + i
                 );
             }
             IsolateDTO isolate = new IsolateDTO();
@@ -896,7 +901,7 @@ public class InterpretationService {
         defaultDTo.addResult("");
         dataRebuild.add(newHeader.substring(0, newHeader.length() - 1));
         for (int i = 1; i < data.size(); i++) {
-            String[] columns = data.get(i).split(sep, -1);
+            String[] columns = data.get(i);
 
             IsolateDTO thisIsolate = result.get(isolateResultMap.get("" + i));
             Map<String, TestDTO> testResult = new HashMap<>();

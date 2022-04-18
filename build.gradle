@@ -198,6 +198,8 @@ dependencies {
         implementation platform("tech.jhipster:jhipster-dependencies:${jhipsterDependenciesVersion}")
     }
     implementation group: 'io.minio', name: 'minio', version: '8.2.0'
+    implementation group: 'com.opencsv', name: 'opencsv', version: '5.6'
+
     // Use ", version: jhipsterDependenciesVersion, changing: true" if you want
     // to use a SNAPSHOT release instead of a stable release
     implementation group: "tech.jhipster", name: "jhipster-framework"
