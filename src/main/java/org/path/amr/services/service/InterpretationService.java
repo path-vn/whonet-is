@@ -1,12 +1,21 @@
 package org.path.amr.services.service;
 
+import io.minio.BucketExistsArgs;
+import io.minio.MakeBucketArgs;
+import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
+import io.minio.errors.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import org.path.amr.services.config.WhonetConfiguration;
 import org.path.amr.services.domain.Antibiotic;
 import org.path.amr.services.domain.ExpertInterpretationRules;
@@ -625,6 +634,22 @@ public class InterpretationService {
             .collect(Collectors.toList());
     }
 
+    InputStream zip(InputStream inp, String name) throws IOException {
+        ByteArrayOutputStream zipOutputStream = new ByteArrayOutputStream();
+
+        ZipOutputStream zipOut = new ZipOutputStream(zipOutputStream);
+        ZipEntry zipEntry = new ZipEntry(name);
+        zipOut.putNextEntry(zipEntry);
+        byte[] bytes = new byte[1024];
+        int length;
+        while ((length = inp.read(bytes)) >= 0) {
+            zipOut.write(bytes, 0, length);
+        }
+        zipOut.close();
+        zipOut.close();
+        return new ByteArrayInputStream(zipOutputStream.toByteArray());
+    }
+
     @Async
     public void processFile(
         MailService mailService,
@@ -645,19 +670,23 @@ public class InterpretationService {
         try {
             List<String> outputLine = processLineData(data, action, breakpoint, intrinsic, thread);
 
-            InputStream file = new ByteArrayInputStream(
+            InputStream rawInp = new ByteArrayInputStream(
                 outputLine.stream().collect(Collectors.joining("\n")).getBytes(StandardCharsets.UTF_8)
             );
-            log.debug(email);
+
+            putObject(rawInp, "kks/" + filename, "static", "application/csv", false);
+
+            log.info("Seinding mail {}", email);
             mailService.sendEmail(
                 email,
                 "hkien02@gmail.com",
                 "[Interpretation result] file: " + filename,
-                "Please find the attachment file below for the data",
+                String.format(
+                    "Please find the download <a href='%s'>file for the calculation</a>",
+                    "http://server.zmedia.vn/static/kks/" + filename
+                ),
                 true,
-                true,
-                filename,
-                file
+                true
             );
         } catch (Exception e) {
             InputStream file = new ByteArrayInputStream(data.stream().collect(Collectors.joining("\n")).getBytes(StandardCharsets.UTF_8));
@@ -672,6 +701,33 @@ public class InterpretationService {
                 file
             );
         }
+    }
+
+    public void putObject(InputStream inp, String key, String bucket, String contentType, boolean createBucket)
+        throws IOException, InvalidKeyException, InvalidResponseException, InsufficientDataException, NoSuchAlgorithmException, ServerException, InternalException, XmlParserException, ErrorResponseException, ServerException, InsufficientDataException, InternalException, InvalidResponseException, XmlParserException {
+        MinioClient minioClient = MinioClient
+            .builder()
+            .endpoint("https://oss2.nextidc.net")
+            .credentials("zXzL2c3iEdgWJDV8RQnUBg", "MVKaThUtQ5tuCUfyh5zA6A")
+            .build();
+
+        // Make 'asiatrip' bucket if not exist.
+        boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucket).build());
+        if (!found && createBucket) {
+            // Make a new bucket called 'asiatrip'.
+            minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucket).build());
+            found = true;
+        }
+
+        if (!found) {
+            throw new IOException(
+                "Bucket not found " + bucket + " " + minioClient.listBuckets().stream().map(b -> b.name()).collect(Collectors.joining(","))
+            );
+        }
+
+        minioClient.putObject(
+            PutObjectArgs.builder().bucket(bucket).contentType("text/javascript").object(key).stream(inp, -1, 50 * 1024 * 1024).build()
+        );
     }
 
     public String getMethodByColumnName(String name) {
