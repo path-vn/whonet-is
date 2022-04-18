@@ -168,12 +168,14 @@ export const interpretationEntity: ICrudPutAction<any> = entity => async dispatc
 export const interpretationFile: ICrudPutAction<any> = data => async dispatch => {
   const entity = data.file;
   const email = data.email;
-  if (empty(entity.target.files) || entity.target.files.length !== 1) {
+  if (empty(entity.target.files)) {
     return;
   }
   const formData = new FormData();
-  const file = entity.target.files[0];
-  formData.append('file', file, file.name);
+
+  entity.target.files.forEach(file => {
+    formData.append('files[]', file, file.name);
+  });
   formData.append('email', email);
   formData.append('action', !empty(data.action) ? data.action : '');
   formData.append('breakpoint', data.breakpoint ? 'yes' : '');

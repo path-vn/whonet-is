@@ -44,7 +44,16 @@ export const TargetUpdate = (props: ITargetPopup) => {
         <ModalBody id="tooltip-custom-body">
           <AvGroup>
             <label htmlFor="file">Choose a file to upload</label>
-            <AvInput name="file" required className="inputfile" type="file" id="file" onChange={fileUpload} style={{ float: 'right' }} />
+            <AvInput
+              name="file"
+              multiple
+              required
+              className="inputfile"
+              type="file"
+              id="file"
+              onChange={fileUpload}
+              style={{ float: 'right' }}
+            />
           </AvGroup>
           <AvGroup>
             <label htmlFor="action">Unpivot result</label>

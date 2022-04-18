@@ -6,7 +6,6 @@ import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.*;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
@@ -16,10 +15,13 @@ import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import liquibase.util.csv.CSVWriter;
 import liquibase.util.csv.opencsv.CSVParser;
 import liquibase.util.csv.opencsv.CSVReader;
+import org.apache.commons.compress.utils.IOUtils;
 import org.path.amr.services.config.WhonetConfiguration;
 import org.path.amr.services.domain.Antibiotic;
 import org.path.amr.services.domain.ExpertInterpretationRules;
@@ -36,6 +38,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional(readOnly = true)
@@ -667,48 +670,16 @@ public class InterpretationService {
         String filterEqual,
         int thread
     ) throws IOException {
-        inputStream.mark(-1);
+        byte[] bytes = IOUtils.toByteArray(inputStream);
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        char sep = ',';
-        while (reader.ready()) {
-            String line = reader.readLine();
-            sep = getWhonetFileSeparator(line);
-            break;
-        }
+        char sep = getWhonetFileSeparator(new ByteArrayInputStream(bytes));
         CSVParser parser = new CSVParser(sep);
-        inputStream.reset();
-        CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream), 0, parser);
 
+        CSVReader csvReader = new CSVReader(new InputStreamReader(new ByteArrayInputStream(bytes)), 0, parser);
         List<String[]> lines = csvReader.readAll();
-        reader.close();
-
         try {
-            List<String> outputLine = processLineData(lines, "" + sep, action, breakpoint, intrinsic, noEmpty, filterEqual, thread);
-
-            InputStream rawInp = new ByteArrayInputStream(
-                outputLine.stream().collect(Collectors.joining("\n")).getBytes(StandardCharsets.UTF_8)
-            );
-            Date date = Calendar.getInstance().getTime();
-            DateFormat dateFormat = new SimpleDateFormat("yyyymm_ddhhmmss");
-            String strDate = dateFormat.format(date);
-
-            putObject(rawInp, "kks/" + strDate + "_" + filename, "static", "application/csv", false);
-
-            log.info("Seinding mail {}", email);
-            mailService.sendEmail(
-                email,
-                "hkien02@gmail.com",
-                "[Interpretation result] file: " + strDate + "_" + filename,
-                String.format(
-                    "Please find the download <a href='%s'>file for the calculation</a>",
-                    "http://server.zmedia.vn/static/kks/" + strDate + "_" + filename
-                ),
-                true,
-                true
-            );
+            processFile(mailService, lines, filename, email, action, breakpoint, intrinsic, noEmpty, filterEqual, thread);
         } catch (Exception e) {
-            inputStream.reset();
             mailService.sendEmail(
                 email,
                 "hkien02@gmail.com",
@@ -720,6 +691,53 @@ public class InterpretationService {
                 inputStream
             );
         }
+    }
+
+    @Async
+    public void processFile(
+        MailService mailService,
+        List<String[]> lines,
+        String filename,
+        String email,
+        String action,
+        String breakpoint,
+        String intrinsic,
+        String noEmpty,
+        String filterEqual,
+        int thread
+    )
+        throws IOException, ExecutionException, InterruptedException, ServerException, InsufficientDataException, NoSuchAlgorithmException, InternalException, InvalidResponseException, XmlParserException, InvalidKeyException, ErrorResponseException {
+        List<List<String>> outputLine = processLineData(lines, action, breakpoint, intrinsic, noEmpty, filterEqual, thread);
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        CSVWriter writer = new CSVWriter(new OutputStreamWriter(byteArrayOutputStream));
+        for (int i = 0; i < outputLine.size(); i++) {
+            writer.writeNext(outputLine.get(i).toArray(new String[0]));
+        }
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_hhmmss");
+        String strDate = dateFormat.format(date);
+
+        putObject(
+            new ByteArrayInputStream(byteArrayOutputStream.toByteArray()),
+            "kks/" + strDate + "_" + filename,
+            "static",
+            "application/csv",
+            false
+        );
+
+        log.info("Sending mail {}", email);
+        mailService.sendEmail(
+            email,
+            "hkien02@gmail.com",
+            "[Interpretation result] file: " + strDate + "_" + filename,
+            String.format(
+                "Please find the download <a href='%s'>file for the calculation</a>",
+                "http://server.zmedia.vn/static/kks/" + strDate + "_" + filename
+            ),
+            true,
+            true
+        );
     }
 
     public void putObject(InputStream inp, String key, String bucket, String contentType, boolean createBucket)
@@ -775,9 +793,19 @@ public class InterpretationService {
         return rs;
     }
 
-    public List<String> processLineData(
+    public char getWhonetFileSeparator(InputStream inputStream) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        char sep = ',';
+        while (reader.ready()) {
+            String line = reader.readLine();
+            sep = getWhonetFileSeparator(line);
+            break;
+        }
+        return sep;
+    }
+
+    public List<List<String>> processLineData(
         List<String[]> data,
-        String sep,
         String action,
         String breakpoint,
         String intrinsic,
@@ -857,49 +885,40 @@ public class InterpretationService {
             isolateResultMap.put(result.get(i).getRequestID(), i);
         }
         // re-build csv file
-        StringBuilder headerBuilder = new StringBuilder();
-        List<String> dataRebuild = new ArrayList<>();
+        List<String> headerBuilder = new ArrayList<>();
+        List<List<String>> dataRebuild = new ArrayList<>();
         for (int i = 0; i < columnHeaders.length; i++) {
             String cur = columnHeaders[i];
             if (unpivod && !baseColumnList.containsKey(cur)) {
                 continue;
             }
-            headerBuilder.append(cur);
-            headerBuilder.append(sep);
+            headerBuilder.add(cur);
             if (testColumnMaps.containsKey(columnHeaders[i])) {
                 String inpCol = columnHeaders[i] + "_INTERP";
                 if (headerMaps.containsKey(inpCol)) {
                     inpCol = inpCol + "_1";
                 }
-                headerBuilder.append(inpCol);
-                headerBuilder.append(sep);
+                headerBuilder.add(inpCol);
             }
         }
         if (unpivod) {
-            headerBuilder.append("antibiotic");
-            headerBuilder.append(sep);
-            headerBuilder.append("raw");
-            headerBuilder.append(sep);
-            headerBuilder.append("result");
-            headerBuilder.append(sep);
+            headerBuilder.add("antibiotic");
+            headerBuilder.add("raw");
+            headerBuilder.add("result");
 
             if (breakpoint.equalsIgnoreCase("yes")) {
-                headerBuilder.append("breakpoint");
-                headerBuilder.append(sep);
+                headerBuilder.add("breakpoint");
             }
             if (intrinsic.equalsIgnoreCase("yes")) {
-                headerBuilder.append("intrinsic");
-                headerBuilder.append(sep);
+                headerBuilder.add("intrinsic");
             }
             for (int k = 0; k < maxPivotSize * 2; k++) {
-                headerBuilder.append("OLD_").append(k);
-                headerBuilder.append(sep);
+                headerBuilder.add("OLD_" + k);
             }
         }
-        String newHeader = headerBuilder.toString();
         TestDTO defaultDTo = new TestDTO();
         defaultDTo.addResult("");
-        dataRebuild.add(newHeader.substring(0, newHeader.length() - 1));
+        dataRebuild.add(headerBuilder);
         for (int i = 1; i < data.size(); i++) {
             String[] columns = data.get(i);
 
@@ -912,47 +931,38 @@ public class InterpretationService {
                 }
             }
             if (!unpivod) {
-                StringBuilder columnBuilder = new StringBuilder();
+                List<String> columnBuilder = new ArrayList<>();
                 for (int j = 0; j < columns.length; j++) {
-                    columnBuilder.append(columns[j]);
-                    columnBuilder.append(sep);
+                    columnBuilder.add(columns[j]);
                     if (testColumnMaps.containsKey(columnHeaders[j])) {
-                        columnBuilder.append(testResult.getOrDefault(columnHeaders[j], defaultDTo).getResult().get(0).getResult());
-                        columnBuilder.append(sep);
+                        columnBuilder.add(testResult.getOrDefault(columnHeaders[j], defaultDTo).getResult().get(0).getResult());
                     }
                 }
-                String newColumn = columnBuilder.toString();
-                dataRebuild.add(newColumn.substring(0, newColumn.length() - 1));
+                dataRebuild.add(columnBuilder);
             }
             if (unpivod) {
-                StringBuilder columnBuilder = new StringBuilder();
+                List<String> columnBuilder = new ArrayList<>();
                 for (int j = 0; j < columns.length; j++) {
                     if (!baseColumnList.containsKey(columnHeaders[j])) {
                         continue;
                     }
-                    columnBuilder.append(columns[j]);
-                    columnBuilder.append(sep);
+                    columnBuilder.add(columns[j]);
                 }
-                String baseColumn = columnBuilder.toString();
                 for (Map.Entry<String, Integer> entry : testColumnMaps.entrySet()) {
-                    StringBuilder columnPivotBuilder = new StringBuilder();
-                    columnPivotBuilder.append(baseColumn);
+                    List<String> columnPivotBuilder = new ArrayList<>();
+                    columnPivotBuilder.addAll(columnBuilder);
                     // tên ks
-                    columnPivotBuilder.append(entry.getKey());
-                    columnPivotBuilder.append(sep);
+                    columnPivotBuilder.add(entry.getKey());
                     // kết quả
-                    columnPivotBuilder.append(columns[entry.getValue()]);
-                    columnPivotBuilder.append(sep);
+                    columnPivotBuilder.add(columns[entry.getValue()]);
                     // phiên giải
                     String interpretationResult = testResult.getOrDefault(entry.getKey(), defaultDTo).getResult().get(0).getResult();
-                    columnPivotBuilder.append(interpretationResult);
-                    columnPivotBuilder.append(sep);
+                    columnPivotBuilder.add(interpretationResult);
 
                     if (breakpoint.equalsIgnoreCase("yes")) {
                         String breaking = testResult.getOrDefault(entry.getKey(), defaultDTo).getResult().get(0).getBreaking();
 
-                        columnPivotBuilder.append("\"").append(breaking).append("\"");
-                        columnPivotBuilder.append(sep);
+                        columnPivotBuilder.add(breaking);
                     }
 
                     if (intrinsic.equalsIgnoreCase("yes")) {
@@ -963,8 +973,7 @@ public class InterpretationService {
                         ) {
                             intrinsicValue = testResult.getOrDefault(entry.getKey(), defaultDTo).getIntrinsicResistance().get(0).toString();
                         }
-                        columnPivotBuilder.append("\"").append(intrinsicValue).append("\"");
-                        columnPivotBuilder.append(sep);
+                        columnPivotBuilder.add(intrinsicValue);
                     }
 
                     List<String> ref = testColumnRefMap.get(entry.getKey());
@@ -972,11 +981,10 @@ public class InterpretationService {
                     StringBuilder resultList = new StringBuilder();
                     for (String columnRef : ref) {
                         // kết quả liên quan
-                        columnPivotBuilder.append(columnRef);
-                        columnPivotBuilder.append(sep);
+                        columnPivotBuilder.add(columnRef);
                         String thisResult = columns[headerMaps.get(columnRef)].trim();
 
-                        columnPivotBuilder.append(thisResult);
+                        columnPivotBuilder.add(thisResult);
                         if (!thisResult.equals("")) {
                             isEmpty = false;
                         }
@@ -984,7 +992,6 @@ public class InterpretationService {
                             thisResult = "_";
                         }
                         resultList.append(thisResult).append(",");
-                        columnPivotBuilder.append(sep);
                     }
                     String checkResult = interpretationResult + ",";
                     if (interpretationResult.equals("")) {
@@ -1000,13 +1007,12 @@ public class InterpretationService {
 
                     if (ref.size() < maxPivotSize) {
                         for (int k = 0; k < maxPivotSize - ref.size(); k++) {
-                            columnPivotBuilder.append(sep);
-                            columnPivotBuilder.append(sep);
+                            columnPivotBuilder.add("");
+                            columnPivotBuilder.add("");
                         }
                     }
 
-                    String newColumn = columnPivotBuilder.toString();
-                    dataRebuild.add(columnPivotBuilder.substring(0, newColumn.length() - 1));
+                    dataRebuild.add(columnPivotBuilder);
                 }
             }
         }
@@ -1027,6 +1033,159 @@ public class InterpretationService {
             result.add(future.get());
         }
         executorService.shutdown();
+        return result;
+    }
+
+    public List<String[]> mergeInputStreams(MultipartFile[] files) throws IOException {
+        log.info("Merge inputstream {}", Arrays.stream(files).map(MultipartFile::getOriginalFilename).collect(Collectors.joining(",")));
+
+        int master = -1;
+        Map<Integer, List<String[]>> data = new HashMap<>();
+        Map<Integer, Map<String, Integer>> testColumnMaps = new HashMap<>();
+        Map<Integer, Map<String, Integer>> fullColumnMaps = new HashMap<>();
+
+        for (int i = 0; i < files.length; i++) {
+            InputStream inputStream = files[i].getInputStream();
+            byte[] bytes = IOUtils.toByteArray(inputStream);
+
+            char sep = getWhonetFileSeparator(new ByteArrayInputStream(bytes));
+
+            CSVParser parser = new CSVParser(sep);
+            CSVReader csvReader = new CSVReader(new InputStreamReader(new ByteArrayInputStream(bytes)), 0, parser);
+
+            List<String[]> lines = csvReader.readAll();
+            data.put(i, lines);
+
+            if (lines.size() <= 1) {
+                throw new RuntimeException("Data only have header");
+            }
+
+            Map<String, Integer> mapColums = new HashMap<>();
+            Map<String, Integer> mapFullColums = new HashMap<>();
+
+            String[] columnHeaders = lines.get(0);
+            for (int j = 0; j < columnHeaders.length; j++) {
+                String method = getMethodByColumnName(columnHeaders[j]);
+                if (!method.equals("")) {
+                    mapColums.put(columnHeaders[j], j);
+                }
+                mapFullColums.put(columnHeaders[j], j);
+            }
+            if (master == -1 && isMaster(mapColums, lines.get(1))) {
+                master = i;
+            }
+            testColumnMaps.put(i, mapColums);
+            fullColumnMaps.put(i, mapFullColums);
+            if (mapColums.containsKey("PATIENT_ID")) {
+                throw new RuntimeException("PATIENT_ID column not found");
+            }
+            if (mapColums.containsKey("SPEC_DATE")) {
+                throw new RuntimeException("SPEC_DATE column not found");
+            }
+            if (mapColums.containsKey("SPEC_TYPE")) {
+                throw new RuntimeException("SPEC_TYPE column not found");
+            }
+            if (mapColums.containsKey("SPEC_NUM")) {
+                throw new RuntimeException("SPEC_NUM column not found");
+            }
+        }
+        if (data.size() == 1) {
+            return data.get(0);
+        }
+
+        if (master == -1) {
+            log.info("Not master found, get first one {-1}");
+            master = 0;
+        }
+        List<String[]> dataMaster = data.get(master);
+        Map<String, Integer> masterFullColumnMaps = fullColumnMaps.get(master);
+        Map<String, Integer> masterTestColumnMaps = testColumnMaps.get(master);
+
+        List<List<String>> result = dataMaster.stream().map(Arrays::asList).collect(Collectors.toList());
+
+        for (Map.Entry<Integer, List<String[]>> entry : data.entrySet()) {
+            if (entry.getKey() == master) {
+                continue;
+            }
+            if (result.size() != entry.getValue().size()) {
+                throw new RuntimeException(String.format("Data size not match %d %d", master, entry.getKey()));
+            }
+            Map<String, List<String>> mapSlave = new HashMap<>();
+            Map<String, Integer> columnMaps = fullColumnMaps.get(entry.getKey());
+            Map<Integer, String> newColumnMaps = new HashMap<>();
+
+            for (Map.Entry<String, Integer> sub : columnMaps.entrySet()) {
+                String columnName = sub.getKey();
+                boolean dup = masterFullColumnMaps.containsKey(sub.getKey());
+
+                if (dup && getMethodByColumnName(sub.getKey()).equals("") && !sub.getKey().contains("INTERP")) {
+                    continue;
+                }
+                if (dup) {
+                    columnName = columnName + "_1";
+                }
+                newColumnMaps.put(sub.getValue(), columnName);
+            }
+
+            String[] header = entry.getValue().get(0);
+            List<String> newHeader = IntStream
+                .range(0, header.length)
+                .filter(newColumnMaps::containsKey)
+                .mapToObj(newColumnMaps::get)
+                .collect(Collectors.toList());
+
+            result.get(0).addAll(result.get(0).size(), newHeader);
+
+            for (int i = 1; i < entry.getValue().size(); i++) {
+                String[] thisColumns = entry.getValue().get(i);
+                String[] masterColumns = dataMaster.get(i);
+                String masterKey = buildKey(masterColumns, masterFullColumnMaps);
+                String thisKey = buildKey(thisColumns, columnMaps);
+                if (!masterKey.equals(thisKey)) {
+                    throw new RuntimeException(String.format("Key not match %s vs %s", masterKey, thisKey));
+                }
+                List<String> newColumns = IntStream
+                    .range(0, thisColumns.length)
+                    .filter(newColumnMaps::containsKey)
+                    .mapToObj(index -> thisColumns[index])
+                    .collect(Collectors.toList());
+                result.get(i).addAll(result.get(i).size(), newColumns);
+            }
+        }
+
+        return result.stream().map(s -> s.toArray(new String[0])).collect(Collectors.toList());
+    }
+
+    private String buildKey(String[] thisColumns, Map<String, Integer> columnMaps) {
+        return String.format(
+            "%s-%s-%s-%s",
+            thisColumns[columnMaps.get("PATIENT_ID")],
+            thisColumns[columnMaps.get("SPEC_DATE")],
+            thisColumns[columnMaps.get("SPEC_TYPE")],
+            thisColumns[columnMaps.get("SPEC_NUM")]
+        );
+    }
+
+    private boolean isMaster(Map<String, Integer> testColumnMaps, String[] columns) {
+        boolean result = false;
+        for (Map.Entry<String, Integer> entry : testColumnMaps.entrySet()) {
+            String pattern = "(\\d+)";
+
+            // Create a Pattern object
+            Pattern r = Pattern.compile(pattern);
+
+            // Now create matcher object.
+            Matcher m = r.matcher(columns[entry.getValue()]);
+            while (m.find()) {
+                if (m.groupCount() > 0) {
+                    result = true;
+                    break;
+                }
+            }
+            if (result) {
+                break;
+            }
+        }
         return result;
     }
 }

@@ -1,6 +1,9 @@
 package org.path.amr.services.web.rest;
 
+import io.minio.errors.*;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -54,18 +57,22 @@ public class WhonetResource {
      */
     @PostMapping("/whonet/interpretation-file")
     public ResponseEntity<Void> getInterpretation_file(
-        @RequestParam(value = "file") MultipartFile file,
+        @RequestParam(value = "files") MultipartFile[] files,
         @RequestParam(value = "email") String email,
         @RequestParam(value = "action") String action,
         @RequestParam(value = "breakpoint") String breakpoint,
         @RequestParam(value = "intrinsic") String intrinsic,
         @RequestParam(value = "no-empty") String noEmpty,
         @RequestParam(value = "equal") String filterEqual
-    ) throws IOException, ExecutionException, InterruptedException {
+    )
+        throws IOException, ExecutionException, InterruptedException, InsufficientDataException, NoSuchAlgorithmException, InternalException, InvalidResponseException, ErrorResponseException, XmlParserException, ServerException, InvalidKeyException {
+        if (files.length == 0) {
+            throw new RuntimeException("Missing file");
+        }
         interpretationService.processFile(
             this.mailService,
-            file.getInputStream(),
-            file.getOriginalFilename(),
+            interpretationService.mergeInputStreams(files),
+            files[0].getOriginalFilename(),
             email,
             action,
             breakpoint,
