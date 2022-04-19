@@ -58,6 +58,10 @@ public class OrganismIntrinsicResistanceAntibioticDTO {
     }
 
     public String toString() {
-        return "orgCode: " + orgCode + ", abxCode: " + abxCode + ", IntrinsicResistance:" + intrinsicResistance.toString();
+        String log = "";
+        if (intrinsicResistance != null) {
+            log = intrinsicResistance.toString();
+        }
+        return "orgCode: " + orgCode + ", abxCode: " + abxCode + ", IntrinsicResistance:" + log;
     }
 }

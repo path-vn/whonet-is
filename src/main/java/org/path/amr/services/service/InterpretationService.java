@@ -788,12 +788,22 @@ public class InterpretationService {
         return result;
     }
 
-    public char getWhonetFileSeparator(String inp) {
+    public char getWhonetFileSeparator(String inp, int check) {
         Matcher m = Pattern.compile("COUNTRY_A(?<sep>.*)LABORATORY").matcher(inp.toUpperCase(Locale.ROOT));
         char rs = ',';
+        boolean found = false;
         while (m.find()) {
             rs = m.group(1).charAt(0);
+            found = true;
         }
+        if (!found && check == 0) {
+            return getWhonetFileSeparator(inp, 1);
+        }
+        if (!found && check == 1) {
+            inp = inp.toUpperCase(Locale.ROOT).replace("COUNTRY", "Country_A");
+            return getWhonetFileSeparator(inp, 2);
+        }
+
         return rs;
     }
 
@@ -802,7 +812,7 @@ public class InterpretationService {
         char sep = ',';
         while (reader.ready()) {
             String line = reader.readLine();
-            sep = getWhonetFileSeparator(line);
+            sep = getWhonetFileSeparator(line, 0);
             break;
         }
         return sep;
@@ -1047,6 +1057,32 @@ public class InterpretationService {
         return result;
     }
 
+    private String[] mapHeader(String[] headers) {
+        String[] nameCode =
+            "COUNTRY_A,Laboratory,Origin,PATIENT_ID,LAST_NAME,FIRST_NAME,Sex,DATE_BIRTH,Age,PAT_TYPE,WARD,INSTITUT,Department,WARD_TYPE,DATE_ADMIS,SPEC_NUM,SPEC_DATE,SPEC_TYPE,LOCAL_SPEC,SPEC_CODE,SPEC_REAS,ISOL_NUM,Organism,X_INFSOUR,LOCAL_ORG,ORG_TYPE,Serotype,MRSA,VRE,BETA_LACT,ESBL,CARBAPENEM,MRSA_SCRN,INDUC_CLI,Comment,DATE_DATA,N219001073,FULL_NAME".split(
+                    ","
+                );
+        String[] nameDisplay =
+            "Country\tLaboratory\tOrigin\tIdentification number\tLast name\tFirst name\tSex\tDate of birth\tAge\tAge category\tLocation\tInstitution\tDepartment\tLocation type\tDate of admission\tSpecimen number\tSpecimen date\tSpecimen type\tLocal specimen code\tSpecimen type (Numeric)\tReason\tIsolate number\tOrganism\tX_INFSOUR\tLocal organism code\tOrganism type\tSerotype\tMRSA\tVRE\tBeta-lactamase\tESBL\tCarbapenem resistance\tMRSA screening test\tInducible clindamycin resistance\tComment\tDate of data entry\tN219001073\tFull name".split(
+                    "\\t"
+                );
+        Map<String, String> mapName = new HashMap<>();
+        for (int i = 0; i < nameCode.length; i++) {
+            mapName.put(nameDisplay[i], nameCode[i]);
+        }
+        return Arrays
+            .stream(headers)
+            .map(
+                f -> {
+                    if (mapName.containsKey(f)) {
+                        return mapName.get(f);
+                    }
+                    return f;
+                }
+            )
+            .toArray(String[]::new);
+    }
+
     public List<String[]> mergeInputStreams(MultipartFile[] files) throws IOException {
         log.info("Merge inputstream {}", Arrays.stream(files).map(MultipartFile::getOriginalFilename).collect(Collectors.joining(",")));
 
@@ -1074,7 +1110,7 @@ public class InterpretationService {
             Map<String, Integer> mapColums = new HashMap<>();
             Map<String, Integer> mapFullColums = new HashMap<>();
 
-            String[] columnHeaders = lines.get(0);
+            String[] columnHeaders = mapHeader(lines.get(0));
             for (int j = 0; j < columnHeaders.length; j++) {
                 String method = getMethodByColumnName(columnHeaders[j]);
                 if (!method.equals("")) {
