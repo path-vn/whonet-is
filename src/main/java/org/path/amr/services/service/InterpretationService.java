@@ -1002,7 +1002,7 @@ public class InterpretationService {
 
                     List<String> ref = testColumnRefMap.get(entry.getKey());
                     boolean isEmpty = true;
-                    StringBuilder resultList = new StringBuilder();
+                    Map<String, Integer> resultList = new HashMap<>();
                     for (String columnRef : ref) {
                         // kết quả liên quan
                         columnPivotBuilder.add(columnRef);
@@ -1018,13 +1018,10 @@ public class InterpretationService {
                         if (thisResult.equals("?")) {
                             thisResult = "_";
                         }
-                        resultList.append(thisResult).append(",");
+                        resultList.put(thisResult, 1);
                     }
-                    String checkResult = interpretationResult + ",";
-                    if (interpretationResult.equals("")) {
-                        checkResult = "_,";
-                    }
-                    if (filterEqual.equals("yes") && !resultList.toString().equals("") && resultList.toString().contains(checkResult)) {
+
+                    if (filterEqual.equals("yes") && resultList.size() == 1 && resultList.containsKey(interpretationResult)) {
                         continue;
                     }
 
