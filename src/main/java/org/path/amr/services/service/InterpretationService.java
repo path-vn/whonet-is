@@ -793,7 +793,13 @@ public class InterpretationService {
         char rs = ',';
         boolean found = false;
         while (m.find()) {
-            rs = m.group(1).charAt(0);
+            if (m.group(1).length() == 1) {
+                rs = m.group(1).charAt(0);
+            }
+            if (m.group(1).length() >= 1) {
+                rs = m.group(1).charAt(1);
+            }
+
             found = true;
         }
         if (!found && check == 0) {

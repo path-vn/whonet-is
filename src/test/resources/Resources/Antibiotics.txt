@@ -519,7 +519,7 @@ CDZ						Cadazolid	CLSI	X								523			Quinolonyl oxazolidinones	OTHER		28						
 FPT						Cefepime/Tazobactam	CLSI	X								524			Beta-lactam+Inhibitors	BL+INH		03c														2021-01-01		
 DFX						Delafloxacin	CLSI	X								525	5μg	J01MA23	Quinolones	QUIN		11a														2021-01-01		
 GEP						Gepotidacin	CLSI	X								526	10μg		Triazaacenaphylenes	OTHER		28														2021-01-01		
-IMR						Imipenem/relebactam	CLSI	X								527	10/25μg	J01DH56	Beta-lactam+Inhibitors	BL+INH		03c		X												2021-01-01		
+IMR						Imipenem/Relebactam	CLSI	X								527	10/25μg	J01DH56	Beta-lactam+Inhibitors	BL+INH		03c		X												2021-01-01		
 LMU						Lefamulin	CLSI	X								528	20μg	J01XX12	Pleuromutilins	OTHER		28														2021-01-01		
 LND						Levonadifloxacin	CLSI	X								529	10μg	J01MA24	Quinolones	BQ		11c														2021-01-01		
 SEC						Secnidazole	CLSI	X								530		P01AB07	Nitroimidazoles	IMIDAZ																2021-01-01		
@@ -539,7 +539,7 @@ MNC						Meropenem/Nacubactam	CLSI	X											Beta-lactam+Inhibitors					X					
 NAC						Nacubactam	CLSI	X											Beta-lactamase inhibitors					X												2021-01-01		
 TYL						Tylosin	CLSI,EUCAST	X	X							304	30μg	QJ01FA90	Macrolides			17														2021-01-01		
 ITR						Itraconazole	NEO	X						X		133	10μg	J02AC02	Antifungals	FUNG		29		X												2021-01-01		
-CZA						Ceftazidime/Avibactam	EUCAST									498	10/4μg		Beta-lactam+Inhibitors			03		X												2021-01-01		
+CZA						Ceftazidime/Avibactam	EUCAST		X							498	10/4μg		Beta-lactam+Inhibitors			03		X												2021-01-01		
 BPR						Ceftobiprole	CLSI,EUCAST	X	X							474	5μg	J01DI01	Cephems	CEPH		04e		X												2021-01-01		
 AMX						Amoxicillin				X						82	20μg	J01CA04	Penicillins			01b		X												2021-01-01		
 ZFD						Zoliflodacin	CLSI	X								544			Spiropyrimidinetrione					X												2021-01-01		
