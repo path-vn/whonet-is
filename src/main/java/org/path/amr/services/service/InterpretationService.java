@@ -1013,10 +1013,10 @@ public class InterpretationService {
                             isEmpty = false;
                         }
                         if (thisResult.equals("")) {
-                            thisResult = "_";
+                            thisResult = "";
                         }
                         if (thisResult.equals("?")) {
-                            thisResult = "_";
+                            thisResult = "";
                         }
                         resultList.put(thisResult, 1);
                     }
