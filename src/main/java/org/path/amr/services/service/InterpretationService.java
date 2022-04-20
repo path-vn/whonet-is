@@ -796,7 +796,7 @@ public class InterpretationService {
             if (m.group(1).length() == 1) {
                 rs = m.group(1).charAt(0);
             }
-            if (m.group(1).length() >= 1) {
+            if (m.group(1).length() > 1) {
                 rs = m.group(1).charAt(1);
             }
 
