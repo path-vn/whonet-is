@@ -258,7 +258,7 @@ public class InterpretationService {
             // A.1 Check intrinsic resistance
             List<OrganismIntrinsicResistanceAntibioticDTO> organismIntrinsicResistanceAntibioticDTOList = getIntrinsicResistance(
                 isolate.getOrgCode(),
-                test.getWhonet5Code()
+                test.getWhonet5Code().replaceAll("_NE", "_NM")
             );
 
             if (organismIntrinsicResistanceAntibioticDTOList.size() > 0) {
@@ -268,7 +268,7 @@ public class InterpretationService {
                 // A.2, 3 Apply breakpoints
                 List<OrganismBreakPointDTO> organismBreakPointDTOList = getBreakpoints(
                     isolate.getOrgCode(),
-                    test.getWhonet5Code().replace("_NE", "_NM"),
+                    test.getWhonet5Code().replaceAll("_NE", "_NM"),
                     isolate.getBreakpointType()
                 );
 
@@ -793,11 +793,12 @@ public class InterpretationService {
         char rs = ',';
         boolean found = false;
         while (m.find()) {
-            if (m.group(1).length() == 1) {
-                rs = m.group(1).charAt(0);
+            String text = m.group(0).replace("COUNTRY_A", "").replace("LABORATORY", "");
+            if (text.length() == 1) {
+                rs = text.charAt(0);
             }
-            if (m.group(1).length() > 1) {
-                rs = m.group(1).charAt(1);
+            if (text.length() > 1) {
+                rs = text.charAt(1);
             }
 
             found = true;
@@ -1121,6 +1122,8 @@ public class InterpretationService {
                 }
                 mapFullColums.put(columnHeaders[j], j);
             }
+
+            log.info("******* {} {} {}", sep, lines.get(0).length, lines.get(1).length);
             if (master == -1 && isMaster(mapColums, lines.get(1))) {
                 master = i;
             }
