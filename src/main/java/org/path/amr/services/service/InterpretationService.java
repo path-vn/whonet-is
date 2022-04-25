@@ -258,7 +258,7 @@ public class InterpretationService {
             // A.1 Check intrinsic resistance
             List<OrganismIntrinsicResistanceAntibioticDTO> organismIntrinsicResistanceAntibioticDTOList = getIntrinsicResistance(
                 isolate.getOrgCode(),
-                test.getWhonet5Code().replaceAll("_NE", "_NM")
+                test.getWhonet5Code().replaceAll("_NE", "_NM").replaceAll("\\.", "_")
             );
 
             if (organismIntrinsicResistanceAntibioticDTOList.size() > 0) {
@@ -268,7 +268,7 @@ public class InterpretationService {
                 // A.2, 3 Apply breakpoints
                 List<OrganismBreakPointDTO> organismBreakPointDTOList = getBreakpoints(
                     isolate.getOrgCode(),
-                    test.getWhonet5Code().replaceAll("_NE", "_NM"),
+                    test.getWhonet5Code().replaceAll("_NE", "_NM").replaceAll("\\.", "_"),
                     isolate.getBreakpointType()
                 );
 
