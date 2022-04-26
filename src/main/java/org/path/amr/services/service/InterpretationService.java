@@ -837,7 +837,7 @@ public class InterpretationService {
         log.info("processLineData {}", data.size());
         boolean unpivod = action.equals("unpivot");
         int maxPivotSize = 1;
-        String[] columnHeaders = data.get(0);
+        String[] columnHeaders = mapHeader(data.get(0));
         Map<String, Integer> testColumnMaps = new HashMap<>();
         Map<String, Integer> headerMaps = new HashMap<>();
         Map<String, Integer> baseColumnList = new HashMap<>();
