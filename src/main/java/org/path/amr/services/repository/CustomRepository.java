@@ -304,8 +304,8 @@ public class CustomRepository {
             "  CASE b.ORGANISM_CODE_TYPE " +
             "  WHEN 'SEROVAR_GROUP' THEN 1 " +
             "  WHEN 'WHONET_ORG_CODE' THEN 2 " +
-            "  WHEN 'SPECIES_GROUP' THEN 3 " +
-            "  WHEN 'GENUS_CODE' THEN 4 " +
+            "  WHEN 'SPECIES_GROUP' THEN 4 " +
+            "  WHEN 'GENUS_CODE' THEN 3 " +
             "   " +
             " " +
             "  WHEN 'GENUS_GROUP' THEN 5 " +
