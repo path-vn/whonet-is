@@ -42,7 +42,7 @@ public class CustomRepository {
         return result;
     }
 
-    public List<OrganismIntrinsicResistanceAntibioticDTO> getIntrinsicResistance(String orgCode, String abxCode) {
+    public List<OrganismIntrinsicResistanceAntibioticDTO> getIntrinsicResistance(String orgCode, String abxCode, List<String> guidelines) {
         abxCode = abxCode.split("_")[0];
         String sql =
             //            "-- Find the intrinsic resistance rules for the organism specified in the WHERE clause. " +
@@ -121,6 +121,7 @@ public class CustomRepository {
             "    AND o.WHONET_ORG_CODE = :orgCode " +
             " AND o.TAXONOMIC_STATUS = 'C' " +
             " AND i.ABX_CODE = :abxCode " +
+            " AND i.GUIDELINE in (:guidelines) " +
             " AND ( " +
             //            "   -- Organism exceptions to the intrinsic rule, if applicable. " +
             "   coalesce(i.EXCEPTION_ORGANISM_CODE, '') = '' " +
@@ -219,6 +220,7 @@ public class CustomRepository {
         NativeQuery qry = getCurrentSession().createNativeQuery(sql);
         qry.setParameter("abxCode", abxCode);
         qry.setParameter("orgCode", orgCode);
+        qry.setParameter("guidelines", guidelines);
 
         List<OrganismIntrinsicResistanceAntibioticDTO> result = new ArrayList<>();
         List<Object[]> rows = qry.getResultList();

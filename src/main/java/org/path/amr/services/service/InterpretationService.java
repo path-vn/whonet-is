@@ -271,7 +271,8 @@ public class InterpretationService {
             // A.1 Check intrinsic resistance
             List<OrganismIntrinsicResistanceAntibioticDTO> organismIntrinsicResistanceAntibioticDTOList = getIntrinsicResistance(
                 isolate.getOrgCode(),
-                test.getWhonet5Code().replaceAll("_NE", "_NM").replaceAll("\\.", "_")
+                test.getWhonet5Code().replaceAll("_NE", "_NM").replaceAll("\\.", "_"),
+                isolate.getGuidelines()
             );
 
             if (organismIntrinsicResistanceAntibioticDTOList.size() > 0) {
@@ -307,13 +308,21 @@ public class InterpretationService {
         applyExpertRules(isolate);
     }
 
-    public List<OrganismIntrinsicResistanceAntibioticDTO> getIntrinsicResistance(String orgCode, String whonet5Test) {
-        String key = String.format("%s%s", orgCode, whonet5Test);
+    public List<OrganismIntrinsicResistanceAntibioticDTO> getIntrinsicResistance(
+        String orgCode,
+        String whonet5Test,
+        List<String> guidelines
+    ) {
+        if (guidelines == null) {
+            guidelines = new ArrayList<>();
+            guidelines.add("CLSI");
+        }
+        String key = String.format("%s%s%s", orgCode, whonet5Test, String.join(",", guidelines));
         if (cacheIntrinsics.containsKey(key)) {
             return cacheIntrinsics.get(key);
         }
         List<OrganismIntrinsicResistanceAntibioticDTO> newList = customRepository
-            .getIntrinsicResistance(orgCode, whonet5Test)
+            .getIntrinsicResistance(orgCode, whonet5Test, guidelines)
             .stream()
             .peek(
                 oir -> {

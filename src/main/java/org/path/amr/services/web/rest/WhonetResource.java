@@ -105,8 +105,9 @@ public class WhonetResource {
     @GetMapping("/whonet/intrinsic_resistance")
     public List<OrganismIntrinsicResistanceAntibioticDTO> getIntrinsicResistance(
         @RequestParam String abxCode,
-        @RequestParam String orgCode
+        @RequestParam String orgCode,
+        @RequestParam List<String> guidelines
     ) {
-        return this.interpretationService.getIntrinsicResistance(orgCode, abxCode);
+        return this.interpretationService.getIntrinsicResistance(orgCode, abxCode, guidelines);
     }
 }
