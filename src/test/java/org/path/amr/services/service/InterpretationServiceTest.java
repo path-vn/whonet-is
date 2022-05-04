@@ -30,7 +30,13 @@ class InterpretationServiceTest {
 
     @Test
     void getBreakpoints() {
-        List<OrganismBreakPointDTO> organismBreakPointDTOList = interpretationService.getBreakpoints("aba", "SAM_ND10", "Human");
+        List<OrganismBreakPointDTO> organismBreakPointDTOList = interpretationService.getBreakpoints(
+            "aba",
+            "SAM_ND10",
+            "Human",
+            null,
+            null
+        );
         organismBreakPointDTOList.forEach(f -> System.out.println("KKK => " + f.getBreakPointID()));
         assert organismBreakPointDTOList.size() > 0;
     }

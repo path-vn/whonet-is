@@ -31,10 +31,6 @@ public class CustomRepository {
         return em.unwrap(Session.class);
     }
 
-    public List<OrganismBreakPointDTO> getBreakPoints(String orgCode, String whonetTest, String breakpointType) {
-        return this.getBreakPoints(orgCode, whonetTest, breakpointType, "C", 2021);
-    }
-
     public List<String> findBreakpointGroupByField(String field) {
         String sql = String.format("select %s , 'ab' as c from breakpoints group by %s order by %s desc", field, field, field);
         NativeQuery qry = getCurrentSession().createNativeQuery(sql);
@@ -237,7 +233,14 @@ public class CustomRepository {
         return result;
     }
 
-    public List<OrganismBreakPointDTO> getBreakPoints(String orgCode, String whonetTest, String breakpointType, String status, int year) {
+    public List<OrganismBreakPointDTO> getBreakPoints(
+        String orgCode,
+        String whonetTest,
+        String breakpointType,
+        String status,
+        int year,
+        List<String> guidelines
+    ) {
         String sql =
             " SELECT o.ID as organismID, b.ID breakpointID " +
             " FROM organisms o " +
@@ -282,7 +285,7 @@ public class CustomRepository {
             "  ) " +
             "WHERE o.WHONET_ORG_CODE = :orgCode " +
             " AND o.TAXONOMIC_STATUS = :status " +
-            //            "-- AND b.GUIDELINES = 'EUCAST' " +
+            "AND b.GUIDELINES in (:guideline)" +
             " AND b.YEAR = :year  " +
             " AND b.BREAKPOINT_TYPE = :breakpointType  " +
             //            "-- AND b.TEST_METHOD = 'MIC' " +
@@ -323,6 +326,7 @@ public class CustomRepository {
         qry.setParameter("status", status);
         qry.setParameter("whonetTest", whonetTest);
         qry.setParameter("breakpointType", breakpointType);
+        qry.setParameter("guideline", guidelines);
 
         List<OrganismBreakPointDTO> result = new ArrayList<>();
         List<Object[]> rows = qry.getResultList();

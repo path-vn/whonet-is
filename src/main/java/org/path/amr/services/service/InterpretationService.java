@@ -118,13 +118,26 @@ public class InterpretationService {
         log.info(this.whonetConfiguration.getPriority(), this.specTypeSort.size());
     }
 
-    public List<OrganismBreakPointDTO> getBreakpoints(String orgCode, String whonet5Test, String breakpointType) {
-        String key = String.format("%s%s%s", orgCode, whonet5Test, breakpointType);
+    public List<OrganismBreakPointDTO> getBreakpoints(
+        String orgCode,
+        String whonet5Test,
+        String breakpointType,
+        Integer year,
+        List<String> guidelines
+    ) {
+        if (year == null) {
+            year = 2021;
+        }
+        if (guidelines == null) {
+            guidelines = new ArrayList<>();
+            guidelines.add("CLSI");
+        }
+        String key = String.format("%s%s%s%s%s", orgCode, whonet5Test, breakpointType, year.toString(), String.join(",", guidelines));
         if (cacheBreakpoints.containsKey(key)) {
             return cacheBreakpoints.get(key);
         }
         List<OrganismBreakPointDTO> newPoint = customRepository
-            .getBreakPoints(orgCode, whonet5Test, breakpointType)
+            .getBreakPoints(orgCode, whonet5Test, breakpointType, "C", year, guidelines)
             .stream()
             .peek(
                 ob -> {
@@ -269,7 +282,9 @@ public class InterpretationService {
                 List<OrganismBreakPointDTO> organismBreakPointDTOList = getBreakpoints(
                     isolate.getOrgCode(),
                     test.getWhonet5Code().replaceAll("_NE", "_NM").replaceAll("\\.", "_"),
-                    isolate.getBreakpointType()
+                    isolate.getBreakpointType(),
+                    isolate.getYear(),
+                    isolate.getGuidelines()
                 );
 
                 organismBreakPointDTOList.forEach(

@@ -12,6 +12,8 @@ public class IsolateDTO {
     String orgCode;
     String breakpointType; // Human or Animal
     String specType; //...
+    List<String> guidelines;
+    Integer year;
     OrganismDTO organism;
     List<TestDTO> test;
     Map<String, String> dataFields;
@@ -95,6 +97,22 @@ public class IsolateDTO {
             this.test = new ArrayList<>();
         }
         this.test.add(test);
+    }
+
+    public List<String> getGuidelines() {
+        return guidelines;
+    }
+
+    public void setGuidelines(List<String> guidelines) {
+        this.guidelines = guidelines;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
     }
 
     public void setDataFields(Map<String, Integer> headerMap, String[] columns) {
