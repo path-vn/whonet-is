@@ -28,6 +28,8 @@ export const Home = (props: IHomeProp) => {
       ? [
           {
             orgCode: 'eco',
+            guidelines: ['CLSI'],
+            year: 2021,
             dataFields: { BETA_LACT: '-' },
             test: [{ rawValue: '4', whonet5Code: 'AMK_ND30' }],
           },
