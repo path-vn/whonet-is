@@ -1041,12 +1041,7 @@ public class InterpretationService {
                         if (!thisResult.equals("")) {
                             isEmpty = false;
                         }
-                        if (thisResult.equals("")) {
-                            thisResult = "";
-                        }
-                        if (thisResult.equals("?")) {
-                            thisResult = "";
-                        }
+
                         resultList.put(thisResult, 1);
                     }
 
