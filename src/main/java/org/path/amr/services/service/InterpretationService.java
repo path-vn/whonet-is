@@ -297,6 +297,10 @@ public class InterpretationService {
                         }
                     }
                 );
+
+                if (organismBreakPointDTOList.size() == 0) {
+                    test.addResult(new InterpretationResult("?"));
+                }
             }
 
             test.sort(this.specTypeSort);
