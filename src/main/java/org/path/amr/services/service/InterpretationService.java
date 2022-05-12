@@ -126,11 +126,11 @@ public class InterpretationService {
         List<String> guidelines
     ) {
         if (year == null) {
-            year = 2021;
+            year = whonetConfiguration.getYear();
         }
         if (guidelines == null) {
             guidelines = new ArrayList<>();
-            guidelines.add("CLSI");
+            guidelines.addAll(Arrays.asList(whonetConfiguration.getClsi().split(",")));
         }
         String key = String.format("%s%s%s%s%s", orgCode, whonet5Test, breakpointType, year.toString(), String.join(",", guidelines));
         if (cacheBreakpoints.containsKey(key)) {

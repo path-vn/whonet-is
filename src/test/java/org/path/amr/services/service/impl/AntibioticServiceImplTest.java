@@ -1,10 +1,13 @@
 package org.path.amr.services.service.impl;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.time.ZonedDateTime;
 import java.util.*;
 import liquibase.util.csv.opencsv.CSVParser;
 import liquibase.util.csv.opencsv.CSVReader;
@@ -136,7 +139,7 @@ public class AntibioticServiceImplTest {
     @Test
     public void ImportBreakpointsTest() throws IOException, InvocationTargetException, IllegalAccessException {
         URL url = AntibioticServiceImplTest.class.getClassLoader().getResource("Resources/Breakpoints.txt");
-
+        String stringDate = ZonedDateTime.now().format(ISO_LOCAL_DATE);
         assert url != null;
         CSVParser parser = new CSVParser('\t');
         File file = new File(url.getPath());
@@ -187,6 +190,9 @@ public class AntibioticServiceImplTest {
                     default:
                         throw new RuntimeException("Not support " + className);
                 }
+            }
+            if (breakpointDTO.getDateEntered() == null || breakpointDTO.getDateEntered().equals("")) {
+                breakpointDTO.setDateEntered(stringDate);
             }
             newDTO.add(breakpointDTO);
         }

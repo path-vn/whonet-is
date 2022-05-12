@@ -9,6 +9,8 @@ public class WhonetConfiguration {
 
     String priority;
     Integer thread;
+    Integer year;
+    String clsi;
 
     public String getPriority() {
         return priority;
@@ -24,5 +26,27 @@ public class WhonetConfiguration {
 
     public void setThread(Integer thread) {
         this.thread = thread;
+    }
+
+    public Integer getYear() {
+        if (year == null || year == 0) {
+            year = 2022;
+        }
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public String getClsi() {
+        if (clsi == null) {
+            clsi = "CLSI";
+        }
+        return clsi;
+    }
+
+    public void setClsi(String clsi) {
+        this.clsi = clsi;
     }
 }
