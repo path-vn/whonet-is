@@ -17,6 +17,7 @@ public class IsolateDTO {
     OrganismDTO organism;
     List<TestDTO> test;
     Map<String, String> dataFields;
+    String organismCodeTypeOrder;
 
     public IsolateDTO() {
         dataFields = new HashMap<>();
@@ -113,6 +114,14 @@ public class IsolateDTO {
 
     public void setYear(Integer year) {
         this.year = year;
+    }
+
+    public String getOrganismCodeTypeOrder() {
+        return organismCodeTypeOrder;
+    }
+
+    public void setOrganismCodeTypeOrder(String organismCodeTypeOrder) {
+        this.organismCodeTypeOrder = organismCodeTypeOrder;
     }
 
     public void setDataFields(Map<String, Integer> headerMap, String[] columns) {

@@ -123,7 +123,8 @@ public class InterpretationService {
         String whonet5Test,
         String breakpointType,
         Integer year,
-        List<String> guidelines
+        List<String> guidelines,
+        String organismCodeType
     ) {
         if (year == null) {
             year = whonetConfiguration.getYear();
@@ -137,7 +138,7 @@ public class InterpretationService {
             return cacheBreakpoints.get(key);
         }
         List<OrganismBreakPointDTO> newPoint = customRepository
-            .getBreakPoints(orgCode, whonet5Test, breakpointType, "C", year, guidelines)
+            .getBreakPoints(orgCode, whonet5Test, breakpointType, "C", year, guidelines, organismCodeType)
             .stream()
             .peek(
                 ob -> {
@@ -272,7 +273,8 @@ public class InterpretationService {
             List<OrganismIntrinsicResistanceAntibioticDTO> organismIntrinsicResistanceAntibioticDTOList = getIntrinsicResistance(
                 isolate.getOrgCode(),
                 test.getWhonet5Code().replaceAll("_NE", "_NM").replaceAll("\\.", "_"),
-                isolate.getGuidelines()
+                isolate.getGuidelines(),
+                isolate.getOrganismCodeTypeOrder()
             );
 
             if (organismIntrinsicResistanceAntibioticDTOList.size() > 0) {
@@ -285,7 +287,8 @@ public class InterpretationService {
                     test.getWhonet5Code().replaceAll("_NE", "_NM").replaceAll("\\.", "_"),
                     isolate.getBreakpointType(),
                     isolate.getYear(),
-                    isolate.getGuidelines()
+                    isolate.getGuidelines(),
+                    isolate.getOrganismCodeTypeOrder()
                 );
 
                 organismBreakPointDTOList.forEach(
@@ -315,7 +318,8 @@ public class InterpretationService {
     public List<OrganismIntrinsicResistanceAntibioticDTO> getIntrinsicResistance(
         String orgCode,
         String whonet5Test,
-        List<String> guidelines
+        List<String> guidelines,
+        String organismCodeTypeOrder
     ) {
         if (guidelines == null) {
             guidelines = new ArrayList<>();
@@ -326,7 +330,7 @@ public class InterpretationService {
             return cacheIntrinsics.get(key);
         }
         List<OrganismIntrinsicResistanceAntibioticDTO> newList = customRepository
-            .getIntrinsicResistance(orgCode, whonet5Test, guidelines)
+            .getIntrinsicResistance(orgCode, whonet5Test, guidelines, organismCodeTypeOrder)
             .stream()
             .peek(
                 oir -> {
@@ -698,42 +702,6 @@ public class InterpretationService {
     @Async
     public void processFile(
         MailService mailService,
-        InputStream inputStream,
-        String filename,
-        String email,
-        String action,
-        String breakpoint,
-        String intrinsic,
-        String noEmpty,
-        String filterEqual,
-        int thread
-    ) throws IOException {
-        byte[] bytes = IOUtils.toByteArray(inputStream);
-
-        char sep = getWhonetFileSeparator(new ByteArrayInputStream(bytes));
-        CSVParser parser = new CSVParser(sep);
-
-        CSVReader csvReader = new CSVReader(new InputStreamReader(new ByteArrayInputStream(bytes)), 0, parser);
-        List<String[]> lines = csvReader.readAll();
-        try {
-            processFile(mailService, lines, filename, email, action, breakpoint, intrinsic, noEmpty, filterEqual, thread);
-        } catch (Exception e) {
-            mailService.sendEmail(
-                email,
-                "hkien02@gmail.com",
-                "[Interpretation false] file: " + filename,
-                e.getMessage(),
-                true,
-                true,
-                filename,
-                inputStream
-            );
-        }
-    }
-
-    @Async
-    public void processFile(
-        MailService mailService,
         List<String[]> lines,
         String filename,
         String email,
@@ -742,10 +710,20 @@ public class InterpretationService {
         String intrinsic,
         String noEmpty,
         String filterEqual,
+        String organismCodeTypeOrder,
         int thread
     )
         throws IOException, ExecutionException, InterruptedException, ServerException, InsufficientDataException, NoSuchAlgorithmException, InternalException, InvalidResponseException, XmlParserException, InvalidKeyException, ErrorResponseException {
-        List<List<String>> outputLine = processLineData(lines, action, breakpoint, intrinsic, noEmpty, filterEqual, thread);
+        List<List<String>> outputLine = processLineData(
+            lines,
+            action,
+            breakpoint,
+            intrinsic,
+            noEmpty,
+            filterEqual,
+            organismCodeTypeOrder,
+            thread
+        );
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         CSVWriter writer = new CSVWriter(new OutputStreamWriter(byteArrayOutputStream));
@@ -866,6 +844,7 @@ public class InterpretationService {
         String intrinsic,
         String noEmpty,
         String filterEqual,
+        String organismCodeTypeOrder,
         int thread
     ) throws ExecutionException, InterruptedException {
         log.info("processLineData {}", data.size());
@@ -918,6 +897,7 @@ public class InterpretationService {
             isolate.setOrgCode(columns[organismIndex]);
             isolate.setDataFields(headerMaps, columns);
             isolate.setRequestID(i + "");
+            isolate.setOrganismCodeTypeOrder(organismCodeTypeOrder);
             for (Map.Entry<String, Integer> entry : testColumnMaps.entrySet()) {
                 TestDTO test = new TestDTO();
                 if (entry.getValue() < 0 || entry.getValue() > columns.length) {

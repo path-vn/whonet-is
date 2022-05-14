@@ -185,6 +185,7 @@ export const interpretationFile: ICrudPutAction<any> = data => async dispatch =>
   formData.append('intrinsic', data.intrinsic ? 'yes' : '');
   formData.append('no-empty', data.empty ? 'yes' : '');
   formData.append('equal', data.equal ? 'yes' : '');
+  formData.append('organismGroupTypeOrder', data.organismGroupTypeOrder);
 
   return await dispatch({
     type: ACTION_TYPES.INTERPRETATION_EXECUTE_FILE,

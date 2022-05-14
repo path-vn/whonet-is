@@ -42,7 +42,12 @@ public class CustomRepository {
         return result;
     }
 
-    public List<OrganismIntrinsicResistanceAntibioticDTO> getIntrinsicResistance(String orgCode, String abxCode, List<String> guidelines) {
+    public List<OrganismIntrinsicResistanceAntibioticDTO> getIntrinsicResistance(
+        String orgCode,
+        String abxCode,
+        List<String> guidelines,
+        String organismCodeTypeOrder
+    ) {
         abxCode = abxCode.split("_")[0];
         //        "SELECT i.id as iid, a.id as aid " +
         //
@@ -218,18 +223,7 @@ public class CustomRepository {
             " )  " +
             "ORDER BY i.GUIDELINE ASC,  " +
             " (  " +
-            "  CASE i.ORGANISM_CODE_TYPE  " +
-            "  WHEN 'SEROVAR_GROUP' THEN 1  " +
-            "  WHEN 'WHONET_ORG_CODE' THEN 2  " +
-            "  WHEN 'SPECIES_GROUP' THEN 3  " +
-            "  WHEN 'GENUS_CODE' THEN 4  " +
-            "  WHEN 'GENUS_GROUP' THEN 5  " +
-            "  WHEN 'FAMILY_CODE' THEN 6  " +
-            "  WHEN 'SUBKINGDOM_CODE' THEN 7  " +
-            "  WHEN 'ANAEROBE+SUBKINGDOM_CODE' THEN 8  " +
-            "  WHEN 'ANAEROBE' THEN 9  " +
-            "  ELSE 10  " +
-            "  END  " +
+            buildSQL(organismCodeTypeOrder, "i") +
             " ) ASC,  " +
             " (  " +
             "  CASE i.ABX_CODE_TYPE  " +
@@ -259,13 +253,29 @@ public class CustomRepository {
         return result;
     }
 
+    private String buildSQL(String organismCodeTypeOrder, String table) {
+        if (organismCodeTypeOrder == null || organismCodeTypeOrder.isEmpty()) {
+            organismCodeTypeOrder =
+                "SEROVAR_GROUP,WHONET_ORG_CODE,SPECIES_GROUP,GENUS_CODE,GENUS_GROUP,FAMILY_CODE,SUBKINGDOM_CODE,ANAEROBE+SUBKINGDOM_CODE,ANAEROBE";
+        }
+        StringBuilder rs = new StringBuilder(String.format("CASE %s.ORGANISM_CODE_TYPE  ", table));
+        String[] order = organismCodeTypeOrder.split(",");
+        int i = 0;
+        for (i = 0; i < order.length; i++) {
+            rs.append(String.format(" WHEN '%s' THEN %d ", order[i], i + 1));
+        }
+        rs.append(String.format("ELSE %d END", i + 1));
+        return rs.toString();
+    }
+
     public List<OrganismBreakPointDTO> getBreakPoints(
         String orgCode,
         String whonetTest,
         String breakpointType,
         String status,
         int year,
-        List<String> guidelines
+        List<String> guidelines,
+        String organismCodeType
     ) {
         String sql =
             " SELECT o.ID as organismID, b.ID breakpointID " +
@@ -328,17 +338,8 @@ public class CustomRepository {
             "  END  " +
             " ) ASC,  " +
             " b.HOST ASC, (  " +
-            "  CASE b.ORGANISM_CODE_TYPE  " +
-            "  WHEN 'SEROVAR_GROUP' THEN 1  " +
-            "  WHEN 'WHONET_ORG_CODE' THEN 2  " +
-            "  WHEN 'SPECIES_GROUP' THEN 3  " +
-            "  WHEN 'GENUS_CODE' THEN 4  " +
-            "  WHEN 'GENUS_GROUP' THEN 5  " +
-            "  WHEN 'FAMILY_CODE' THEN 6  " +
-            "  WHEN 'ANAEROBE+SUBKINGDOM_CODE' THEN 7  " +
-            "  WHEN 'ANAEROBE' THEN 8  " +
-            "  ELSE 9  " +
-            "  END  " +
+            // "SEROVAR_GROUP,WHONET_ORG_CODE,SPECIES_GROUP,GENUS_CODE,GENUS_GROUP,FAMILY_CODE,SUBKINGDOM_CODE,ANAEROBE+SUBKINGDOM_CODE,ANAEROBE"
+            buildSQL(organismCodeType, "b") +
             " ) ASC,  " +
             " b.WHONET_TEST ASC,  " +
             " b.SITE_OF_INFECTION ASC";

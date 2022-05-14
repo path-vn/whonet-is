@@ -39,7 +39,15 @@ export const TargetUpdate = (props: ITargetPopup) => {
 
   return (
     <Modal isOpen={show} toggle={cancel}>
-      <AvForm model={{ action: '', email: 'hkien02@gmail.com' }} onSubmit={saveEntity}>
+      <AvForm
+        model={{
+          action: '',
+          email: 'hkien02@gmail.com',
+          organismGroupTypeOrder:
+            'SEROVAR_GROUP,WHONET_ORG_CODE,SPECIES_GROUP,GENUS_CODE,GENUS_GROUP,FAMILY_CODE,SUBKINGDOM_CODE,ANAEROBE+SUBKINGDOM_CODE,ANAEROBE',
+        }}
+        onSubmit={saveEntity}
+      >
         <ModalHeader toggle={cancel}>{title}</ModalHeader>
         <ModalBody id="tooltip-custom-body">
           <AvGroup>
@@ -83,6 +91,15 @@ export const TargetUpdate = (props: ITargetPopup) => {
               <AvInput style={{ marginLeft: 10 }} type="checkbox" id="equal" name="equal" />
             </AvGroup>
           )}
+          <AvGroup>
+            <label htmlFor="organismGroupTypeOrder">organismGroupTypeOrder</label>
+            <AvInput
+              name="organismGroupTypeOrder"
+              placeholder={
+                'SEROVAR_GROUP,WHONET_ORG_CODE,SPECIES_GROUP,GENUS_CODE,GENUS_GROUP,FAMILY_CODE,SUBKINGDOM_CODE,ANAEROBE+SUBKINGDOM_CODE,ANAEROBE'
+              }
+            />
+          </AvGroup>
           <AvGroup>
             <label htmlFor="email">Email</label>
             <AvInput name="email" required type={'email'} placeholder={'Email for results'} />

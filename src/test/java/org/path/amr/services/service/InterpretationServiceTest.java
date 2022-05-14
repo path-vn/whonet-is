@@ -35,6 +35,7 @@ class InterpretationServiceTest {
             "SAM_ND10",
             "Human",
             null,
+            null,
             null
         );
         organismBreakPointDTOList.forEach(f -> System.out.println("KKK => " + f.getBreakPointID()));

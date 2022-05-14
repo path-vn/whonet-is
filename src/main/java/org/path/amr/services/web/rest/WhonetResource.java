@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import org.path.amr.services.config.WhonetConfiguration;
 import org.path.amr.services.service.InterpretationService;
@@ -63,7 +64,8 @@ public class WhonetResource {
         @RequestParam(value = "breakpoint") String breakpoint,
         @RequestParam(value = "intrinsic") String intrinsic,
         @RequestParam(value = "no-empty") String noEmpty,
-        @RequestParam(value = "equal") String filterEqual
+        @RequestParam(value = "equal") String filterEqual,
+        @RequestParam(value = "organismGroupTypeOrder") String organismCodeTypeOrder
     )
         throws IOException, ExecutionException, InterruptedException, InsufficientDataException, NoSuchAlgorithmException, InternalException, InvalidResponseException, ErrorResponseException, XmlParserException, ServerException, InvalidKeyException {
         if (files.length == 0) {
@@ -79,6 +81,7 @@ public class WhonetResource {
             intrinsic,
             noEmpty,
             filterEqual,
+            organismCodeTypeOrder,
             this.thread
         );
         return new ResponseEntity<>(HttpStatus.OK);
@@ -106,8 +109,13 @@ public class WhonetResource {
     public List<OrganismIntrinsicResistanceAntibioticDTO> getIntrinsicResistance(
         @RequestParam String abxCode,
         @RequestParam String orgCode,
-        @RequestParam List<String> guidelines
+        @RequestParam List<String> guidelines,
+        @RequestParam Optional<String> organismCodeTypeOrderParam
     ) {
-        return this.interpretationService.getIntrinsicResistance(orgCode, abxCode, guidelines);
+        String organismCodeTypeOrder = "";
+        if (organismCodeTypeOrderParam.isPresent()) {
+            organismCodeTypeOrder = organismCodeTypeOrderParam.get();
+        }
+        return this.interpretationService.getIntrinsicResistance(orgCode, abxCode, guidelines, organismCodeTypeOrder);
     }
 }
