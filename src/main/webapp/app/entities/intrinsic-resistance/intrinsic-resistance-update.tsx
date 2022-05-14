@@ -138,6 +138,17 @@ export const IntrinsicResistanceUpdate = (props: IIntrinsicResistanceUpdateProps
                 <AvField id="intrinsic-resistance-abxCodeType" data-cy="abxCodeType" type="text" name="abxCodeType" />
               </AvGroup>
               <AvGroup>
+                <Label id="antibioticExceptionsLabel" for="intrinsic-resistance-antibioticExceptions">
+                  <Translate contentKey="amrInterpreationApp.intrinsicResistance.antibioticExceptions">Antibiotic Exceptions</Translate>
+                </Label>
+                <AvField
+                  id="intrinsic-resistance-antibioticExceptions"
+                  data-cy="antibioticExceptions"
+                  type="text"
+                  name="antibioticExceptions"
+                />
+              </AvGroup>
+              <AvGroup>
                 <Label id="dateEnteredLabel" for="intrinsic-resistance-dateEntered">
                   <Translate contentKey="amrInterpreationApp.intrinsicResistance.dateEntered">Date Entered</Translate>
                 </Label>

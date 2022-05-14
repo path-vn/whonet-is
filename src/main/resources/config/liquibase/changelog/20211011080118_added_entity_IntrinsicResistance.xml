@@ -38,6 +38,9 @@
             <column name="abx_code_type" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="antibiotic_exceptions" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <column name="date_entered" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
@@ -75,6 +78,7 @@
             <column name="exception_organism_code_type" type="string"/>
             <column name="abx_code" type="string"/>
             <column name="abx_code_type" type="string"/>
+            <column name="antibiotic_exceptions" type="string"/>
             <column name="date_entered" type="string"/>
             <column name="date_modified" type="string"/>
             <column name="comments" type="string"/>

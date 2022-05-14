@@ -127,6 +127,10 @@ export const IntrinsicResistance = (props: IIntrinsicResistanceProps) => {
                   <Translate contentKey="amrInterpreationApp.intrinsicResistance.abxCodeType">Abx Code Type</Translate>{' '}
                   <FontAwesomeIcon icon="sort" />
                 </th>
+                <th className="hand" onClick={sort('antibioticExceptions')}>
+                  <Translate contentKey="amrInterpreationApp.intrinsicResistance.antibioticExceptions">Antibiotic Exceptions</Translate>{' '}
+                  <FontAwesomeIcon icon="sort" />
+                </th>
                 <th className="hand" onClick={sort('dateEntered')}>
                   <Translate contentKey="amrInterpreationApp.intrinsicResistance.dateEntered">Date Entered</Translate>{' '}
                   <FontAwesomeIcon icon="sort" />
@@ -159,6 +163,7 @@ export const IntrinsicResistance = (props: IIntrinsicResistanceProps) => {
                   <td>{intrinsicResistance.exceptionOrganismCodeType}</td>
                   <td>{intrinsicResistance.abxCode}</td>
                   <td>{intrinsicResistance.abxCodeType}</td>
+                  <td>{intrinsicResistance.antibioticExceptions}</td>
                   <td>{intrinsicResistance.dateEntered}</td>
                   <td>{intrinsicResistance.dateModified}</td>
                   <td>{intrinsicResistance.comments}</td>

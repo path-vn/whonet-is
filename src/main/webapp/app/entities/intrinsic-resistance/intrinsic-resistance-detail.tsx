@@ -81,6 +81,12 @@ export const IntrinsicResistanceDetail = (props: IIntrinsicResistanceDetailProps
           </dt>
           <dd>{intrinsicResistanceEntity.abxCodeType}</dd>
           <dt>
+            <span id="antibioticExceptions">
+              <Translate contentKey="amrInterpreationApp.intrinsicResistance.antibioticExceptions">Antibiotic Exceptions</Translate>
+            </span>
+          </dt>
+          <dd>{intrinsicResistanceEntity.antibioticExceptions}</dd>
+          <dt>
             <span id="dateEntered">
               <Translate contentKey="amrInterpreationApp.intrinsicResistance.dateEntered">Date Entered</Translate>
             </span>

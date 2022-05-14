@@ -33,6 +33,10 @@
       "fieldType": "String"
     },
     {
+      "fieldName": "antibioticExceptions",
+      "fieldType": "String"
+    },
+    {
       "fieldName": "dateEntered",
       "fieldType": "String"
     },

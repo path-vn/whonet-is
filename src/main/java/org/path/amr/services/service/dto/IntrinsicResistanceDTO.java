@@ -26,6 +26,8 @@ public class IntrinsicResistanceDTO implements Serializable {
 
     private String abxCodeType;
 
+    private String antibioticExceptions;
+
     private String dateEntered;
 
     private String dateModified;
@@ -104,6 +106,14 @@ public class IntrinsicResistanceDTO implements Serializable {
         this.abxCodeType = abxCodeType;
     }
 
+    public String getAntibioticExceptions() {
+        return antibioticExceptions;
+    }
+
+    public void setAntibioticExceptions(String antibioticExceptions) {
+        this.antibioticExceptions = antibioticExceptions;
+    }
+
     public String getDateEntered() {
         return dateEntered;
     }
@@ -162,6 +172,7 @@ public class IntrinsicResistanceDTO implements Serializable {
             ", exceptionOrganismCodeType='" + getExceptionOrganismCodeType() + "'" +
             ", abxCode='" + getAbxCode() + "'" +
             ", abxCodeType='" + getAbxCodeType() + "'" +
+            ", antibioticExceptions='" + getAntibioticExceptions() + "'" +
             ", dateEntered='" + getDateEntered() + "'" +
             ", dateModified='" + getDateModified() + "'" +
             ", comments='" + getComments() + "'" +
