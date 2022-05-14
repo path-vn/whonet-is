@@ -116,17 +116,22 @@ describe('IntrinsicResistance e2e test', () => {
       .invoke('val')
       .should('match', new RegExp('Chief projection'));
 
-    cy.get(`[data-cy="dateEntered"]`).type('Bedfordshire', { force: true }).invoke('val').should('match', new RegExp('Bedfordshire'));
+    cy.get(`[data-cy="antibioticExceptions"]`)
+      .type('Bedfordshire', { force: true })
+      .invoke('val')
+      .should('match', new RegExp('Bedfordshire'));
+
+    cy.get(`[data-cy="dateEntered"]`).type('Account payment', { force: true }).invoke('val').should('match', new RegExp('Account payment'));
 
     cy.get(`[data-cy="dateModified"]`)
-      .type('Account payment', { force: true })
-      .invoke('val')
-      .should('match', new RegExp('Account payment'));
-
-    cy.get(`[data-cy="comments"]`)
       .type('Future Dynamic Assistant', { force: true })
       .invoke('val')
       .should('match', new RegExp('Future Dynamic Assistant'));
+
+    cy.get(`[data-cy="comments"]`)
+      .type('1080p quantifying Sleek', { force: true })
+      .invoke('val')
+      .should('match', new RegExp('1080p quantifying Sleek'));
 
     cy.get(entityCreateSaveButtonSelector).click({ force: true });
     cy.scrollTo('top', { ensureScrollable: false });

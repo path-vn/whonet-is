@@ -207,6 +207,17 @@ export const IntrinsicResistance = (props: IIntrinsicResistanceProps) => {
                     sortHandle={() => innerSort('abxCodeType')}
                   />
                 </th>
+
+                <th className="hand">
+                  <FilterTableHeader
+                    filter={props.filter}
+                    handle={props.getFilerGroup}
+                    name={'antibiotic_exceptions'}
+                    contentKey="amrInterpreationApp.intrinsicResistance.antibioticExceptions"
+                    filterHandle={values => setSelected({ ...selected, antibioticExceptions: values })}
+                    sortHandle={() => innerSort('antibioticExceptions')}
+                  />
+                </th>
                 <th className="hand">
                   <FilterTableHeader
                     filter={props.filter}
@@ -227,6 +238,7 @@ export const IntrinsicResistance = (props: IIntrinsicResistanceProps) => {
                     sortHandle={() => innerSort('dateModified')}
                   />
                 </th>
+
                 <th />
               </tr>
             </thead>
@@ -245,6 +257,7 @@ export const IntrinsicResistance = (props: IIntrinsicResistanceProps) => {
                   <td>{intrinsicResistance.exceptionOrganismCodeType}</td>
                   <td>{intrinsicResistance.abxCode}</td>
                   <td>{intrinsicResistance.abxCodeType}</td>
+                  <td>{intrinsicResistance.antibioticExceptions}</td>
                   <td>{intrinsicResistance.dateEntered}</td>
                   <td>{intrinsicResistance.dateModified}</td>
                   <td className="text-right">

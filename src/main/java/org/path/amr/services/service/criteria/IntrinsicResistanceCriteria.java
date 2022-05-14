@@ -42,6 +42,8 @@ public class IntrinsicResistanceCriteria implements Serializable, Criteria {
 
     private StringFilter abxCodeType;
 
+    private StringFilter antibioticExceptions;
+
     private StringFilter dateEntered;
 
     private StringFilter dateModified;
@@ -60,6 +62,7 @@ public class IntrinsicResistanceCriteria implements Serializable, Criteria {
         this.exceptionOrganismCodeType = other.exceptionOrganismCodeType == null ? null : other.exceptionOrganismCodeType.copy();
         this.abxCode = other.abxCode == null ? null : other.abxCode.copy();
         this.abxCodeType = other.abxCodeType == null ? null : other.abxCodeType.copy();
+        this.antibioticExceptions = other.antibioticExceptions == null ? null : other.antibioticExceptions.copy();
         this.dateEntered = other.dateEntered == null ? null : other.dateEntered.copy();
         this.dateModified = other.dateModified == null ? null : other.dateModified.copy();
         this.comments = other.comments == null ? null : other.comments.copy();
@@ -205,6 +208,21 @@ public class IntrinsicResistanceCriteria implements Serializable, Criteria {
         this.abxCodeType = abxCodeType;
     }
 
+    public StringFilter getAntibioticExceptions() {
+        return antibioticExceptions;
+    }
+
+    public StringFilter antibioticExceptions() {
+        if (antibioticExceptions == null) {
+            antibioticExceptions = new StringFilter();
+        }
+        return antibioticExceptions;
+    }
+
+    public void setAntibioticExceptions(StringFilter antibioticExceptions) {
+        this.antibioticExceptions = antibioticExceptions;
+    }
+
     public StringFilter getDateEntered() {
         return dateEntered;
     }
@@ -269,6 +287,7 @@ public class IntrinsicResistanceCriteria implements Serializable, Criteria {
             Objects.equals(exceptionOrganismCodeType, that.exceptionOrganismCodeType) &&
             Objects.equals(abxCode, that.abxCode) &&
             Objects.equals(abxCodeType, that.abxCodeType) &&
+            Objects.equals(antibioticExceptions, that.antibioticExceptions) &&
             Objects.equals(dateEntered, that.dateEntered) &&
             Objects.equals(dateModified, that.dateModified) &&
             Objects.equals(comments, that.comments)
@@ -287,6 +306,7 @@ public class IntrinsicResistanceCriteria implements Serializable, Criteria {
             exceptionOrganismCodeType,
             abxCode,
             abxCodeType,
+            antibioticExceptions,
             dateEntered,
             dateModified,
             comments
@@ -306,6 +326,7 @@ public class IntrinsicResistanceCriteria implements Serializable, Criteria {
             (exceptionOrganismCodeType != null ? "exceptionOrganismCodeType=" + exceptionOrganismCodeType + ", " : "") +
             (abxCode != null ? "abxCode=" + abxCode + ", " : "") +
             (abxCodeType != null ? "abxCodeType=" + abxCodeType + ", " : "") +
+            (antibioticExceptions != null ? "antibioticExceptions=" + antibioticExceptions + ", " : "") +
             (dateEntered != null ? "dateEntered=" + dateEntered + ", " : "") +
             (dateModified != null ? "dateModified=" + dateModified + ", " : "") +
             (comments != null ? "comments=" + comments + ", " : "") +

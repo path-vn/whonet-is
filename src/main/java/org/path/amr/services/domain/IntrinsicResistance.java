@@ -44,7 +44,10 @@ public class IntrinsicResistance implements Serializable {
     @Column(name = "abx_code_type", columnDefinition = "TEXT")
     private String abxCodeType;
 
-    @Column(name = "date_entered", columnDefinition = "TEXT")
+    @Column(name = "antibiotic_exceptions")
+    private String antibioticExceptions;
+
+    @Column(name = "date_entered")
     private String dateEntered;
 
     @Column(name = "date_modified", columnDefinition = "TEXT")
@@ -171,6 +174,19 @@ public class IntrinsicResistance implements Serializable {
         this.abxCodeType = abxCodeType;
     }
 
+    public String getAntibioticExceptions() {
+        return this.antibioticExceptions;
+    }
+
+    public IntrinsicResistance antibioticExceptions(String antibioticExceptions) {
+        this.antibioticExceptions = antibioticExceptions;
+        return this;
+    }
+
+    public void setAntibioticExceptions(String antibioticExceptions) {
+        this.antibioticExceptions = antibioticExceptions;
+    }
+
     public String getDateEntered() {
         return this.dateEntered;
     }
@@ -242,6 +258,7 @@ public class IntrinsicResistance implements Serializable {
             ", exceptionOrganismCodeType='" + getExceptionOrganismCodeType() + "'" +
             ", abxCode='" + getAbxCode() + "'" +
             ", abxCodeType='" + getAbxCodeType() + "'" +
+            ", antibioticExceptions='" + getAntibioticExceptions() + "'" +
             ", dateEntered='" + getDateEntered() + "'" +
             ", dateModified='" + getDateModified() + "'" +
             ", comments='" + getComments() + "'" +

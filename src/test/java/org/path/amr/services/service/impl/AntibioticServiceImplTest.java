@@ -13,14 +13,8 @@ import liquibase.util.csv.opencsv.CSVParser;
 import liquibase.util.csv.opencsv.CSVReader;
 import org.junit.jupiter.api.Test;
 import org.path.amr.services.AmrInterpreationApp;
-import org.path.amr.services.service.AntibioticService;
-import org.path.amr.services.service.BreakpointService;
-import org.path.amr.services.service.ExpertInterpretationRulesService;
-import org.path.amr.services.service.OrganismService;
-import org.path.amr.services.service.dto.AntibioticDTO;
-import org.path.amr.services.service.dto.BreakpointDTO;
-import org.path.amr.services.service.dto.ExpertInterpretationRulesDTO;
-import org.path.amr.services.service.dto.OrganismDTO;
+import org.path.amr.services.service.*;
+import org.path.amr.services.service.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +35,9 @@ public class AntibioticServiceImplTest {
 
     @Autowired
     BreakpointService breakpointService;
+
+    @Autowired
+    IntrinsicResistanceService intrinsicResistanceService;
 
     @Autowired
     ExpertInterpretationRulesService expertInterpretationRulesService;
@@ -244,5 +241,51 @@ public class AntibioticServiceImplTest {
         }
 
         expertInterpretationRulesService.flushAllAndSaveAll(newDTO);
+    }
+
+    @Test
+    public void ImportIntrinsicResistanceTest() throws IOException, InvocationTargetException, IllegalAccessException {
+        URL url = AntibioticServiceImplTest.class.getClassLoader().getResource("Resources/ExpectedResistancePhenotypes.txt");
+
+        assert url != null;
+        CSVParser parser = new CSVParser('\t');
+        File file = new File(url.getPath());
+        InputStream fileInp = new FileInputStream(file);
+        CSVReader reader = new CSVReader(new InputStreamReader(fileInp), 0, parser);
+        List<String[]> lines = reader.readAll();
+        reader.close();
+        fileInp.close();
+        assert lines.size() >= 1;
+        String[] head = lines.get(0);
+        // check method
+        Map<String, Method> methodMap = getMethods(IntrinsicResistanceDTO.class);
+        Map<Integer, Method> setMethods = new HashMap<>();
+        for (int i = 0; i < head.length; i++) {
+            String field = head[i];
+            String setMethodName = "SET" + field.toUpperCase(Locale.ROOT).replace("_", "");
+            log.info(setMethodName);
+            assert methodMap.containsKey(setMethodName);
+            setMethods.put(i, methodMap.get(setMethodName));
+        }
+        List<IntrinsicResistanceDTO> newDTO = new ArrayList<>();
+        for (int i = 1; i < lines.size(); i++) {
+            IntrinsicResistanceDTO intrinsicResistanceDTO = new IntrinsicResistanceDTO();
+            for (Map.Entry<Integer, Method> entry : setMethods.entrySet()) {
+                String className = entry.getValue().getParameterTypes()[0].getName();
+                switch (className) {
+                    case "java.lang.String":
+                        entry.getValue().invoke(intrinsicResistanceDTO, lines.get(i)[entry.getKey()]);
+                        break;
+                    case "java.lang.Integer":
+                        entry.getValue().invoke(intrinsicResistanceDTO, Integer.valueOf(lines.get(i)[entry.getKey()]));
+                        break;
+                    default:
+                        throw new RuntimeException("Not support " + className);
+                }
+            }
+            newDTO.add(intrinsicResistanceDTO);
+        }
+
+        intrinsicResistanceService.flushAllAndSaveAll(newDTO);
     }
 }

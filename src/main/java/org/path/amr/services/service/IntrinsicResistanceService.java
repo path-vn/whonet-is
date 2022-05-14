@@ -50,4 +50,6 @@ public interface IntrinsicResistanceService {
     void delete(Long id);
 
     List<String> findGroups(String key);
+
+    void flushAllAndSaveAll(List<IntrinsicResistanceDTO> newDTO);
 }

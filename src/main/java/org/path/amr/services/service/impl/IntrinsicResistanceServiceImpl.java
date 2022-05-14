@@ -2,6 +2,7 @@ package org.path.amr.services.service.impl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.path.amr.services.domain.IntrinsicResistance;
 import org.path.amr.services.repository.CustomRepository;
 import org.path.amr.services.repository.IntrinsicResistanceRepository;
@@ -87,5 +88,11 @@ public class IntrinsicResistanceServiceImpl implements IntrinsicResistanceServic
     @Override
     public List<String> findGroups(String key) {
         return customRepository.findIntrinsicResistanceGroupByField(key);
+    }
+
+    @Override
+    public void flushAllAndSaveAll(List<IntrinsicResistanceDTO> newDTO) {
+        intrinsicResistanceRepository.deleteAllInBatch();
+        intrinsicResistanceRepository.saveAll(newDTO.stream().map(intrinsicResistanceMapper::toEntity).collect(Collectors.toList()));
     }
 }

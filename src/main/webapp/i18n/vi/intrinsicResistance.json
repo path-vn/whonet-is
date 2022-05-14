@@ -26,6 +26,7 @@
       "exceptionOrganismCodeType": "Exception Organism Code Type",
       "abxCode": "Abx Code",
       "abxCodeType": "Abx Code Type",
+      "antibioticExceptions": "Antibiotic Exceptions",
       "dateEntered": "Date Entered",
       "dateModified": "Date Modified",
       "comments": "Comments"

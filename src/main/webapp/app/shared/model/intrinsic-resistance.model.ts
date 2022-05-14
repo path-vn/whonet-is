@@ -8,6 +8,7 @@ export interface IIntrinsicResistance {
   exceptionOrganismCodeType?: string | null;
   abxCode?: string | null;
   abxCodeType?: string | null;
+  antibioticExceptions?: string | null;
   dateEntered?: string | null;
   dateModified?: string | null;
   comments?: string | null;

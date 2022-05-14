@@ -56,6 +56,9 @@ class IntrinsicResistanceResourceIT {
     private static final String DEFAULT_ABX_CODE_TYPE = "AAAAAAAAAA";
     private static final String UPDATED_ABX_CODE_TYPE = "BBBBBBBBBB";
 
+    private static final String DEFAULT_ANTIBIOTIC_EXCEPTIONS = "AAAAAAAAAA";
+    private static final String UPDATED_ANTIBIOTIC_EXCEPTIONS = "BBBBBBBBBB";
+
     private static final String DEFAULT_DATE_ENTERED = "AAAAAAAAAA";
     private static final String UPDATED_DATE_ENTERED = "BBBBBBBBBB";
 
@@ -101,6 +104,7 @@ class IntrinsicResistanceResourceIT {
             .exceptionOrganismCodeType(DEFAULT_EXCEPTION_ORGANISM_CODE_TYPE)
             .abxCode(DEFAULT_ABX_CODE)
             .abxCodeType(DEFAULT_ABX_CODE_TYPE)
+            .antibioticExceptions(DEFAULT_ANTIBIOTIC_EXCEPTIONS)
             .dateEntered(DEFAULT_DATE_ENTERED)
             .dateModified(DEFAULT_DATE_MODIFIED)
             .comments(DEFAULT_COMMENTS);
@@ -123,6 +127,7 @@ class IntrinsicResistanceResourceIT {
             .exceptionOrganismCodeType(UPDATED_EXCEPTION_ORGANISM_CODE_TYPE)
             .abxCode(UPDATED_ABX_CODE)
             .abxCodeType(UPDATED_ABX_CODE_TYPE)
+            .antibioticExceptions(UPDATED_ANTIBIOTIC_EXCEPTIONS)
             .dateEntered(UPDATED_DATE_ENTERED)
             .dateModified(UPDATED_DATE_MODIFIED)
             .comments(UPDATED_COMMENTS);
@@ -160,6 +165,7 @@ class IntrinsicResistanceResourceIT {
         assertThat(testIntrinsicResistance.getExceptionOrganismCodeType()).isEqualTo(DEFAULT_EXCEPTION_ORGANISM_CODE_TYPE);
         assertThat(testIntrinsicResistance.getAbxCode()).isEqualTo(DEFAULT_ABX_CODE);
         assertThat(testIntrinsicResistance.getAbxCodeType()).isEqualTo(DEFAULT_ABX_CODE_TYPE);
+        assertThat(testIntrinsicResistance.getAntibioticExceptions()).isEqualTo(DEFAULT_ANTIBIOTIC_EXCEPTIONS);
         assertThat(testIntrinsicResistance.getDateEntered()).isEqualTo(DEFAULT_DATE_ENTERED);
         assertThat(testIntrinsicResistance.getDateModified()).isEqualTo(DEFAULT_DATE_MODIFIED);
         assertThat(testIntrinsicResistance.getComments()).isEqualTo(DEFAULT_COMMENTS);
@@ -208,6 +214,7 @@ class IntrinsicResistanceResourceIT {
             .andExpect(jsonPath("$.[*].exceptionOrganismCodeType").value(hasItem(DEFAULT_EXCEPTION_ORGANISM_CODE_TYPE)))
             .andExpect(jsonPath("$.[*].abxCode").value(hasItem(DEFAULT_ABX_CODE)))
             .andExpect(jsonPath("$.[*].abxCodeType").value(hasItem(DEFAULT_ABX_CODE_TYPE)))
+            .andExpect(jsonPath("$.[*].antibioticExceptions").value(hasItem(DEFAULT_ANTIBIOTIC_EXCEPTIONS)))
             .andExpect(jsonPath("$.[*].dateEntered").value(hasItem(DEFAULT_DATE_ENTERED)))
             .andExpect(jsonPath("$.[*].dateModified").value(hasItem(DEFAULT_DATE_MODIFIED)))
             .andExpect(jsonPath("$.[*].comments").value(hasItem(DEFAULT_COMMENTS)));
@@ -233,6 +240,7 @@ class IntrinsicResistanceResourceIT {
             .andExpect(jsonPath("$.exceptionOrganismCodeType").value(DEFAULT_EXCEPTION_ORGANISM_CODE_TYPE))
             .andExpect(jsonPath("$.abxCode").value(DEFAULT_ABX_CODE))
             .andExpect(jsonPath("$.abxCodeType").value(DEFAULT_ABX_CODE_TYPE))
+            .andExpect(jsonPath("$.antibioticExceptions").value(DEFAULT_ANTIBIOTIC_EXCEPTIONS))
             .andExpect(jsonPath("$.dateEntered").value(DEFAULT_DATE_ENTERED))
             .andExpect(jsonPath("$.dateModified").value(DEFAULT_DATE_MODIFIED))
             .andExpect(jsonPath("$.comments").value(DEFAULT_COMMENTS));
@@ -886,6 +894,86 @@ class IntrinsicResistanceResourceIT {
 
     @Test
     @Transactional
+    void getAllIntrinsicResistancesByAntibioticExceptionsIsEqualToSomething() throws Exception {
+        // Initialize the database
+        intrinsicResistanceRepository.saveAndFlush(intrinsicResistance);
+
+        // Get all the intrinsicResistanceList where antibioticExceptions equals to DEFAULT_ANTIBIOTIC_EXCEPTIONS
+        defaultIntrinsicResistanceShouldBeFound("antibioticExceptions.equals=" + DEFAULT_ANTIBIOTIC_EXCEPTIONS);
+
+        // Get all the intrinsicResistanceList where antibioticExceptions equals to UPDATED_ANTIBIOTIC_EXCEPTIONS
+        defaultIntrinsicResistanceShouldNotBeFound("antibioticExceptions.equals=" + UPDATED_ANTIBIOTIC_EXCEPTIONS);
+    }
+
+    @Test
+    @Transactional
+    void getAllIntrinsicResistancesByAntibioticExceptionsIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        intrinsicResistanceRepository.saveAndFlush(intrinsicResistance);
+
+        // Get all the intrinsicResistanceList where antibioticExceptions not equals to DEFAULT_ANTIBIOTIC_EXCEPTIONS
+        defaultIntrinsicResistanceShouldNotBeFound("antibioticExceptions.notEquals=" + DEFAULT_ANTIBIOTIC_EXCEPTIONS);
+
+        // Get all the intrinsicResistanceList where antibioticExceptions not equals to UPDATED_ANTIBIOTIC_EXCEPTIONS
+        defaultIntrinsicResistanceShouldBeFound("antibioticExceptions.notEquals=" + UPDATED_ANTIBIOTIC_EXCEPTIONS);
+    }
+
+    @Test
+    @Transactional
+    void getAllIntrinsicResistancesByAntibioticExceptionsIsInShouldWork() throws Exception {
+        // Initialize the database
+        intrinsicResistanceRepository.saveAndFlush(intrinsicResistance);
+
+        // Get all the intrinsicResistanceList where antibioticExceptions in DEFAULT_ANTIBIOTIC_EXCEPTIONS or UPDATED_ANTIBIOTIC_EXCEPTIONS
+        defaultIntrinsicResistanceShouldBeFound(
+            "antibioticExceptions.in=" + DEFAULT_ANTIBIOTIC_EXCEPTIONS + "," + UPDATED_ANTIBIOTIC_EXCEPTIONS
+        );
+
+        // Get all the intrinsicResistanceList where antibioticExceptions equals to UPDATED_ANTIBIOTIC_EXCEPTIONS
+        defaultIntrinsicResistanceShouldNotBeFound("antibioticExceptions.in=" + UPDATED_ANTIBIOTIC_EXCEPTIONS);
+    }
+
+    @Test
+    @Transactional
+    void getAllIntrinsicResistancesByAntibioticExceptionsIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        intrinsicResistanceRepository.saveAndFlush(intrinsicResistance);
+
+        // Get all the intrinsicResistanceList where antibioticExceptions is not null
+        defaultIntrinsicResistanceShouldBeFound("antibioticExceptions.specified=true");
+
+        // Get all the intrinsicResistanceList where antibioticExceptions is null
+        defaultIntrinsicResistanceShouldNotBeFound("antibioticExceptions.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllIntrinsicResistancesByAntibioticExceptionsContainsSomething() throws Exception {
+        // Initialize the database
+        intrinsicResistanceRepository.saveAndFlush(intrinsicResistance);
+
+        // Get all the intrinsicResistanceList where antibioticExceptions contains DEFAULT_ANTIBIOTIC_EXCEPTIONS
+        defaultIntrinsicResistanceShouldBeFound("antibioticExceptions.contains=" + DEFAULT_ANTIBIOTIC_EXCEPTIONS);
+
+        // Get all the intrinsicResistanceList where antibioticExceptions contains UPDATED_ANTIBIOTIC_EXCEPTIONS
+        defaultIntrinsicResistanceShouldNotBeFound("antibioticExceptions.contains=" + UPDATED_ANTIBIOTIC_EXCEPTIONS);
+    }
+
+    @Test
+    @Transactional
+    void getAllIntrinsicResistancesByAntibioticExceptionsNotContainsSomething() throws Exception {
+        // Initialize the database
+        intrinsicResistanceRepository.saveAndFlush(intrinsicResistance);
+
+        // Get all the intrinsicResistanceList where antibioticExceptions does not contain DEFAULT_ANTIBIOTIC_EXCEPTIONS
+        defaultIntrinsicResistanceShouldNotBeFound("antibioticExceptions.doesNotContain=" + DEFAULT_ANTIBIOTIC_EXCEPTIONS);
+
+        // Get all the intrinsicResistanceList where antibioticExceptions does not contain UPDATED_ANTIBIOTIC_EXCEPTIONS
+        defaultIntrinsicResistanceShouldBeFound("antibioticExceptions.doesNotContain=" + UPDATED_ANTIBIOTIC_EXCEPTIONS);
+    }
+
+    @Test
+    @Transactional
     void getAllIntrinsicResistancesByDateEnteredIsEqualToSomething() throws Exception {
         // Initialize the database
         intrinsicResistanceRepository.saveAndFlush(intrinsicResistance);
@@ -1135,6 +1223,7 @@ class IntrinsicResistanceResourceIT {
             .andExpect(jsonPath("$.[*].exceptionOrganismCodeType").value(hasItem(DEFAULT_EXCEPTION_ORGANISM_CODE_TYPE)))
             .andExpect(jsonPath("$.[*].abxCode").value(hasItem(DEFAULT_ABX_CODE)))
             .andExpect(jsonPath("$.[*].abxCodeType").value(hasItem(DEFAULT_ABX_CODE_TYPE)))
+            .andExpect(jsonPath("$.[*].antibioticExceptions").value(hasItem(DEFAULT_ANTIBIOTIC_EXCEPTIONS)))
             .andExpect(jsonPath("$.[*].dateEntered").value(hasItem(DEFAULT_DATE_ENTERED)))
             .andExpect(jsonPath("$.[*].dateModified").value(hasItem(DEFAULT_DATE_MODIFIED)))
             .andExpect(jsonPath("$.[*].comments").value(hasItem(DEFAULT_COMMENTS)));
@@ -1194,6 +1283,7 @@ class IntrinsicResistanceResourceIT {
             .exceptionOrganismCodeType(UPDATED_EXCEPTION_ORGANISM_CODE_TYPE)
             .abxCode(UPDATED_ABX_CODE)
             .abxCodeType(UPDATED_ABX_CODE_TYPE)
+            .antibioticExceptions(UPDATED_ANTIBIOTIC_EXCEPTIONS)
             .dateEntered(UPDATED_DATE_ENTERED)
             .dateModified(UPDATED_DATE_MODIFIED)
             .comments(UPDATED_COMMENTS);
@@ -1219,6 +1309,7 @@ class IntrinsicResistanceResourceIT {
         assertThat(testIntrinsicResistance.getExceptionOrganismCodeType()).isEqualTo(UPDATED_EXCEPTION_ORGANISM_CODE_TYPE);
         assertThat(testIntrinsicResistance.getAbxCode()).isEqualTo(UPDATED_ABX_CODE);
         assertThat(testIntrinsicResistance.getAbxCodeType()).isEqualTo(UPDATED_ABX_CODE_TYPE);
+        assertThat(testIntrinsicResistance.getAntibioticExceptions()).isEqualTo(UPDATED_ANTIBIOTIC_EXCEPTIONS);
         assertThat(testIntrinsicResistance.getDateEntered()).isEqualTo(UPDATED_DATE_ENTERED);
         assertThat(testIntrinsicResistance.getDateModified()).isEqualTo(UPDATED_DATE_MODIFIED);
         assertThat(testIntrinsicResistance.getComments()).isEqualTo(UPDATED_COMMENTS);
@@ -1311,6 +1402,7 @@ class IntrinsicResistanceResourceIT {
             .exceptionOrganismCodeType(UPDATED_EXCEPTION_ORGANISM_CODE_TYPE)
             .abxCode(UPDATED_ABX_CODE)
             .abxCodeType(UPDATED_ABX_CODE_TYPE)
+            .antibioticExceptions(UPDATED_ANTIBIOTIC_EXCEPTIONS)
             .dateEntered(UPDATED_DATE_ENTERED)
             .dateModified(UPDATED_DATE_MODIFIED)
             .comments(UPDATED_COMMENTS);
@@ -1335,6 +1427,7 @@ class IntrinsicResistanceResourceIT {
         assertThat(testIntrinsicResistance.getExceptionOrganismCodeType()).isEqualTo(UPDATED_EXCEPTION_ORGANISM_CODE_TYPE);
         assertThat(testIntrinsicResistance.getAbxCode()).isEqualTo(UPDATED_ABX_CODE);
         assertThat(testIntrinsicResistance.getAbxCodeType()).isEqualTo(UPDATED_ABX_CODE_TYPE);
+        assertThat(testIntrinsicResistance.getAntibioticExceptions()).isEqualTo(UPDATED_ANTIBIOTIC_EXCEPTIONS);
         assertThat(testIntrinsicResistance.getDateEntered()).isEqualTo(UPDATED_DATE_ENTERED);
         assertThat(testIntrinsicResistance.getDateModified()).isEqualTo(UPDATED_DATE_MODIFIED);
         assertThat(testIntrinsicResistance.getComments()).isEqualTo(UPDATED_COMMENTS);
@@ -1361,6 +1454,7 @@ class IntrinsicResistanceResourceIT {
             .exceptionOrganismCodeType(UPDATED_EXCEPTION_ORGANISM_CODE_TYPE)
             .abxCode(UPDATED_ABX_CODE)
             .abxCodeType(UPDATED_ABX_CODE_TYPE)
+            .antibioticExceptions(UPDATED_ANTIBIOTIC_EXCEPTIONS)
             .dateEntered(UPDATED_DATE_ENTERED)
             .dateModified(UPDATED_DATE_MODIFIED)
             .comments(UPDATED_COMMENTS);
@@ -1385,6 +1479,7 @@ class IntrinsicResistanceResourceIT {
         assertThat(testIntrinsicResistance.getExceptionOrganismCodeType()).isEqualTo(UPDATED_EXCEPTION_ORGANISM_CODE_TYPE);
         assertThat(testIntrinsicResistance.getAbxCode()).isEqualTo(UPDATED_ABX_CODE);
         assertThat(testIntrinsicResistance.getAbxCodeType()).isEqualTo(UPDATED_ABX_CODE_TYPE);
+        assertThat(testIntrinsicResistance.getAntibioticExceptions()).isEqualTo(UPDATED_ANTIBIOTIC_EXCEPTIONS);
         assertThat(testIntrinsicResistance.getDateEntered()).isEqualTo(UPDATED_DATE_ENTERED);
         assertThat(testIntrinsicResistance.getDateModified()).isEqualTo(UPDATED_DATE_MODIFIED);
         assertThat(testIntrinsicResistance.getComments()).isEqualTo(UPDATED_COMMENTS);

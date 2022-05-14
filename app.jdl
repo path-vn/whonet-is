@@ -130,10 +130,12 @@ entity IntrinsicResistance {
   exceptionOrganismCodeType String
   abxCode String
   abxCodeType String
+  antibioticExceptions String
   dateEntered String
   dateModified String
   comments String
 }
+
 entity Organism {
   whonetOrgCode String
   organism String

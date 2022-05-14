@@ -121,6 +121,12 @@ public class IntrinsicResistanceQueryService extends QueryService<IntrinsicResis
             if (criteria.getAbxCodeType() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getAbxCodeType(), IntrinsicResistance_.abxCodeType));
             }
+            if (criteria.getAntibioticExceptions() != null) {
+                specification =
+                    specification.and(
+                        buildStringSpecification(criteria.getAntibioticExceptions(), IntrinsicResistance_.antibioticExceptions)
+                    );
+            }
             if (criteria.getDateEntered() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getDateEntered(), IntrinsicResistance_.dateEntered));
             }
