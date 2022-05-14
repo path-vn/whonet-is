@@ -1,108 +1,225 @@
 import './home.scss';
 
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Translate } from 'react-jhipster';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, RouteComponentProps } from 'react-router-dom';
+import { Storage, Translate } from 'react-jhipster';
 import { connect } from 'react-redux';
-import { Row, Col, Alert } from 'reactstrap';
+import { Alert, Col, Row } from 'reactstrap';
+import { JsonEditor as Editor } from 'jsoneditor-react';
+import ace from 'brace';
+import { interpretationEntity, interpretationFile } from '../../entities/execute/execute.reducer';
+import { IRootState } from 'app/shared/reducers';
+import { empty } from 'app/shared/util/entity-utils';
+import { saveAs } from 'file-saver';
+import { TargetUpdate } from 'app/modules/home/file';
 
-export type IHomeProp = StateProps;
+// export type IHomeProp = StateProps;
+
+export interface IHomeProp extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
 
 export const Home = (props: IHomeProp) => {
   const { account } = props;
 
+  const [history, setHistory] = useState(
+    empty(Storage.local.get('_interpretation_history')) ? [] : Storage.local.get('_interpretation_history')
+  );
+  const [json, setJson] = useState(
+    history.length === 0
+      ? [
+          {
+            orgCode: 'eco',
+            guidelines: ['CLSI'],
+            year: 2021,
+            dataFields: { BETA_LACT: '-' },
+            test: [{ rawValue: '4', whonet5Code: 'AMK_ND30' }],
+          },
+        ]
+      : history[0]
+  );
+  const [jsonResult, setJsonResult] = useState({});
+  const [key, setKey] = useState(0);
+  const ref = useRef();
+  const expand = val => {
+    val.expandAll();
+  };
+
+  useEffect(() => {
+    if (ref.current !== null && typeof ref.current !== 'undefined') {
+      expand(ref.current);
+    }
+  }, [key]);
+  useEffect(() => {
+    if (history.length > 0) {
+      Storage.local.set('_interpretation_history', history);
+    }
+  }, [history]);
+
+  const jsonEditorGetvalue = refE => {
+    if (empty(refE) || empty(refE.current)) {
+      alert('Unknown error');
+    }
+    return refE.current.jsonEditor.get();
+  };
+
+  const interpretationHandle = () => {
+    const value = jsonEditorGetvalue(ref);
+    if (!history.map(j => JSON.stringify(j)).includes(JSON.stringify(value))) {
+      const newHistory = [value];
+      newHistory.push(...(history.length > 50 ? history.slice(0, 50) : history));
+      setHistory(newHistory);
+    }
+    setJson(value);
+    props.interpretationEntity(value);
+  };
+
+  const clearHistoryHandle = () => {
+    setHistory([]);
+  };
+
+  useEffect(() => {
+    setJsonResult(props.result == null ? {} : props.result);
+    setKey(Math.random());
+  }, [props.result]);
+
+  useEffect(() => {
+    setKey(Math.random());
+  }, [json, jsonResult]);
+
+  const [showUpload, setShowUpload] = useState(false);
+  const [email, setEmail] = useState('');
+  const handleInterpretationFile = data => {
+    props.interpretationFile(data);
+    setEmail(data.email);
+    setShowUpload(false);
+  };
+
   return (
-    <Row>
-      <Col md="3" className="pad">
-        <span className="hipster rounded" />
-      </Col>
-      <Col md="9">
-        <h2>
-          <Translate contentKey="home.title">Welcome, Java Hipster!</Translate>
-        </h2>
-        <p className="lead">
-          <Translate contentKey="home.subtitle">This is your homepage</Translate>
-        </p>
-        {account && account.login ? (
-          <div>
-            <Alert color="success">
-              <Translate contentKey="home.logged.message" interpolate={{ username: account.login }}>
-                You are logged in as user {account.login}.
-              </Translate>
-            </Alert>
-          </div>
-        ) : (
-          <div>
-            <Alert color="warning">
-              <Translate contentKey="global.messages.info.authenticated.prefix">If you want to </Translate>
+    <>
+      <TargetUpdate
+        show={showUpload}
+        handleCancel={() => setShowUpload(false)}
+        title={'Upload and Interpretation'}
+        handleOk={handleInterpretationFile}
+      />
+      <Row>
+        <Col md="5" className="pad">
+          <Editor ref={ref} value={json} key={`i-${key}`} ace={ace} theme="ace/theme/github" />
+          <br />
+          {!props.loading && (
+            <button style={{ float: 'right' }} className={'btn btn-info'} onClick={interpretationHandle}>
+              Interpretation
+            </button>
+          )}
 
-              <Link to="/login" className="alert-link">
-                <Translate contentKey="global.messages.info.authenticated.link"> sign in</Translate>
-              </Link>
-              <Translate contentKey="global.messages.info.authenticated.suffix">
-                , you can try the default accounts:
-                <br />- Administrator (login=&quot;admin&quot; and password=&quot;admin&quot;)
-                <br />- User (login=&quot;user&quot; and password=&quot;user&quot;).
-              </Translate>
-            </Alert>
+          {!props.loading && !props.uploadSuccess && (
+            <div>
+              <span className={'textLink'} onClick={() => setShowUpload(true)}>
+                Upload file and interpretation
+              </span>
+            </div>
+          )}
+          {props.uploadSuccess && (
+            <div>
+              <span>Running in background, please check email {email} for more information</span>
+            </div>
+          )}
+          {!empty(props.message) && <label className={'alert'}>ERROR {props.message}</label>}
+          {props.loading && (
+            <div className="lds-ripple">
+              <div></div>
+              <div></div>
+            </div>
+          )}
+        </Col>
+        <Col md="7" className="pad">
+          {account && account.login ? (
+            <div>
+              <Editor readOnly={true} key={`k-${key}`} value={jsonResult} ace={ace} theme="ace/theme/gob" />
+            </div>
+          ) : (
+            <div>
+              <h2>
+                <Translate contentKey="home.title">Welcome to WHONET interpretation service!</Translate>
+              </h2>
+              <Alert color="warning">
+                <Translate contentKey="global.messages.info.authenticated.prefix">If you want to </Translate>
 
-            <Alert color="warning">
-              <Translate contentKey="global.messages.info.register.noaccount">You do not have an account yet?</Translate>&nbsp;
-              <Link to="/account/register" className="alert-link">
-                <Translate contentKey="global.messages.info.register.link">Register a new account</Translate>
-              </Link>
-            </Alert>
-          </div>
+                <Link to="/login" className="alert-link">
+                  <Translate contentKey="global.messages.info.authenticated.link"> sign in</Translate>
+                </Link>
+                {/*<Translate contentKey="global.messages.info.authenticated.suffix">*/}
+                {/*  , you can try the default accounts:*/}
+                {/*  <br />- Administrator (login=&quot;admin&quot; and password=&quot;admin&quot;)*/}
+                {/*  <br />- User (login=&quot;user&quot; and password=&quot;user&quot;).*/}
+                {/*</Translate>*/}
+              </Alert>
+
+              {/*<Alert color="warning">*/}
+              {/*  <Translate contentKey="global.messages.info.register.noaccount">You do not have an account yet?</Translate>&nbsp;*/}
+              {/*  <Link to="/account/register" className="alert-link">*/}
+              {/*    <Translate contentKey="global.messages.info.register.link">Register a new account</Translate>*/}
+              {/*  </Link>*/}
+              {/*</Alert>*/}
+            </div>
+          )}
+        </Col>
+      </Row>
+      <Row>
+        {account && account.login && (
+          <>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">OrgCode</th>
+                  <th scope="col">Test</th>
+                  <th scope="col">RawValue</th>
+                </tr>
+              </thead>
+              <tbody>
+                {history.map((h, i) => {
+                  return (
+                    <tr
+                      key={`key-${i}`}
+                      onClick={() => {
+                        setJson(h);
+                        setJsonResult({});
+                      }}
+                    >
+                      <th scope="row">{i + 1}</th>
+                      <td>{h.map(x => x.orgCode).join(',')}</td>
+                      <td>{h.map(x => x.test.map(xi => xi.whonet5Code)).join(',')}</td>
+                      <td>{h.map(x => x.test.map(xi => xi.rawValue)).join(',')}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            <button style={{ float: 'right' }} className={'btn btn-primary'} onClick={clearHistoryHandle}>
+              Clear
+            </button>
+          </>
         )}
-        <p>
-          <Translate contentKey="home.question">If you have any question on JHipster:</Translate>
-        </p>
-
-        <ul>
-          <li>
-            <a href="https://www.jhipster.tech/" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.homepage">JHipster homepage</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="http://stackoverflow.com/tags/jhipster/info" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.stackoverflow">JHipster on Stack Overflow</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="https://github.com/jhipster/generator-jhipster/issues?state=open" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.bugtracker">JHipster bug tracker</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="https://gitter.im/jhipster/generator-jhipster" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.chat">JHipster public chat room</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="https://twitter.com/jhipster" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.follow">follow @jhipster on Twitter</Translate>
-            </a>
-          </li>
-        </ul>
-
-        <p>
-          <Translate contentKey="home.like">If you like JHipster, do not forget to give us a star on</Translate>{' '}
-          <a href="https://github.com/jhipster/generator-jhipster" target="_blank" rel="noopener noreferrer">
-            GitHub
-          </a>
-          !
-        </p>
-      </Col>
-    </Row>
+      </Row>
+    </>
   );
 };
 
-const mapStateToProps = storeState => ({
-  account: storeState.authentication.account,
-  isAuthenticated: storeState.authentication.isAuthenticated,
+const mapStateToProps = ({ execute, authentication }: IRootState) => ({
+  account: authentication.account,
+  isAuthenticated: authentication.isAuthenticated,
+  result: execute.result,
+  loading: execute.loading,
+  message: execute.errorMessage,
+  uploadSuccess: execute.uploadSuccess,
 });
 
-type StateProps = ReturnType<typeof mapStateToProps>;
+const mapDispatchToProps = {
+  interpretationEntity,
+  interpretationFile,
+};
 
-export default connect(mapStateToProps)(Home);
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = typeof mapDispatchToProps;
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

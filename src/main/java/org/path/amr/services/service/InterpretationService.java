@@ -476,6 +476,9 @@ public class InterpretationService {
         // case 1
         r.setResult(false);
         for (int i = 0; i < isolate.getTest().size(); i++) {
+            if (isolate.getTest().get(i).getAntibiotic() == null) {
+                continue;
+            }
             // case 2
             if (
                 (

@@ -17,13 +17,13 @@ import breakpoint, {
   BreakpointState
 } from 'app/entities/breakpoint/breakpoint.reducer';
 // prettier-ignore
-import intrinsicResistance, {
-  IntrinsicResistanceState
-} from 'app/entities/intrinsic-resistance/intrinsic-resistance.reducer';
-// prettier-ignore
 import antibiotic, {
   AntibioticState
 } from 'app/entities/antibiotic/antibiotic.reducer';
+// prettier-ignore
+import intrinsicResistance, {
+  IntrinsicResistanceState
+} from 'app/entities/intrinsic-resistance/intrinsic-resistance.reducer';
 // prettier-ignore
 import organism, {
   OrganismState
@@ -50,8 +50,8 @@ export interface IRootState {
   readonly password: PasswordState;
   readonly settings: SettingsState;
   readonly breakpoint: BreakpointState;
-  readonly intrinsicResistance: IntrinsicResistanceState;
   readonly antibiotic: AntibioticState;
+  readonly intrinsicResistance: IntrinsicResistanceState;
   readonly organism: OrganismState;
   readonly expertInterpretationRules: ExpertInterpretationRulesState;
   readonly execute: ExecuteState;
@@ -71,8 +71,8 @@ const rootReducer = combineReducers<IRootState>({
   password,
   settings,
   breakpoint,
-  intrinsicResistance,
   antibiotic,
+  intrinsicResistance,
   organism,
   expertInterpretationRules,
   execute,

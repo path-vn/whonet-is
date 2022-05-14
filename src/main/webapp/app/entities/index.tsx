@@ -5,8 +5,8 @@ import { Switch } from 'react-router-dom';
 import ErrorBoundaryRoute from 'app/shared/error/error-boundary-route';
 
 import Breakpoint from './breakpoint';
-import IntrinsicResistance from './intrinsic-resistance';
 import Antibiotic from './antibiotic';
+import IntrinsicResistance from './intrinsic-resistance';
 import Organism from './organism';
 import ExpertInterpretationRules from './expert-interpretation-rules';
 import Execute from './execute';
@@ -17,8 +17,8 @@ const Routes = ({ match }) => (
     <Switch>
       {/* prettier-ignore */}
       <ErrorBoundaryRoute path={`${match.url}breakpoint`} component={Breakpoint} />
-      <ErrorBoundaryRoute path={`${match.url}intrinsic-resistance`} component={IntrinsicResistance} />
       <ErrorBoundaryRoute path={`${match.url}antibiotic`} component={Antibiotic} />
+      <ErrorBoundaryRoute path={`${match.url}intrinsic-resistance`} component={IntrinsicResistance} />
       <ErrorBoundaryRoute path={`${match.url}organism`} component={Organism} />
       <ErrorBoundaryRoute path={`${match.url}expert-interpretation-rules`} component={ExpertInterpretationRules} />
       <ErrorBoundaryRoute path={`${match.url}execute`} component={Execute} />

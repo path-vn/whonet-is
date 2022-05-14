@@ -33,9 +33,9 @@ spring:
       enabled: false
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://localhost:3306/AMRInterpreation?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
-    username: root
-    password:
+    url: jdbc:mysql://172.20.18.52:3306/iis?AllowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+    username: iis
+    password: Iis@020.
     hikari:
       poolName: Hikari
       auto-commit: false
@@ -49,10 +49,16 @@ spring:
   liquibase:
     contexts: prod
   mail:
-    host: localhost
-    port: 25
-    username:
-    password:
+    host: smtp.gmail.com
+    port: 587
+    username: pathvn.pm@gmail.com #vams.kks@gmail.com vams.nkbv@gmail.com
+    password: umkwnlaocbaitrpy #kcb123456@ VAMS@123456
+    protocol: smtp
+    tls: false
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
+      ssl.trust: smtp.gmail.com
   thymeleaf:
     cache: true
 
@@ -128,3 +134,6 @@ jhipster:
 # ===================================================================
 
 # application:
+whonet:
+  priority: 'Meningitis,Non-meningitis,Parenteral,Oral,Urine,,Intravenous,Extraintestinal'
+  thread: 5

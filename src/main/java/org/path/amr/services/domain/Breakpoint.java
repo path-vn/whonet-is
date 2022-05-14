@@ -1,5 +1,6 @@
 package org.path.amr.services.domain;
 
+import io.swagger.models.auth.In;
 import java.io.Serializable;
 import javax.persistence.*;
 import org.hibernate.annotations.Cache;
@@ -9,8 +10,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * A Breakpoint.
  */
 @Entity
-@Table(name = "breakpoint")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Table(name = "breakpoints")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Breakpoint implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -19,67 +21,67 @@ public class Breakpoint implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "guidelines")
+    @Column(name = "guidelines", columnDefinition = "TEXT")
     private String guidelines;
 
     @Column(name = "year")
     private Integer year;
 
-    @Column(name = "test_method")
+    @Column(name = "test_method", columnDefinition = "TEXT")
     private String testMethod;
 
-    @Column(name = "potency")
+    @Column(name = "potency", columnDefinition = "TEXT")
     private String potency;
 
-    @Column(name = "organism_code")
+    @Column(name = "organism_code", columnDefinition = "TEXT")
     private String organismCode;
 
-    @Column(name = "organism_code_type")
+    @Column(name = "organism_code_type", columnDefinition = "TEXT")
     private String organismCodeType;
 
-    @Column(name = "breakpoint_type")
+    @Column(name = "breakpoint_type", columnDefinition = "TEXT")
     private String breakpointType;
 
-    @Column(name = "host")
+    @Column(name = "host", columnDefinition = "TEXT")
     private String host;
 
-    @Column(name = "site_of_infection")
+    @Column(name = "site_of_infection", columnDefinition = "TEXT")
     private String siteOfInfection;
 
-    @Column(name = "reference_table")
+    @Column(name = "reference_table", columnDefinition = "TEXT")
     private String referenceTable;
 
-    @Column(name = "reference_sequence")
+    @Column(name = "reference_sequence", columnDefinition = "TEXT")
     private String referenceSequence;
 
-    @Column(name = "whonet_abx_code")
+    @Column(name = "whonet_abx_code", columnDefinition = "TEXT")
     private String whonetAbxCode;
 
-    @Column(name = "whonet_test")
+    @Column(name = "whonet_test", columnDefinition = "TEXT")
     private String whonetTest;
 
-    @Column(name = "r")
+    @Column(name = "r", columnDefinition = "TEXT")
     private String r;
 
-    @Column(name = "i")
+    @Column(name = "i", columnDefinition = "TEXT")
     private String i;
 
-    @Column(name = "sdd")
+    @Column(name = "sdd", columnDefinition = "TEXT")
     private String sdd;
 
-    @Column(name = "s")
+    @Column(name = "s", columnDefinition = "TEXT")
     private String s;
 
-    @Column(name = "ecv_ecoff")
+    @Column(name = "ecv_ecoff", columnDefinition = "TEXT")
     private String ecvEcoff;
 
-    @Column(name = "date_entered")
+    @Column(name = "date_entered", columnDefinition = "TEXT")
     private String dateEntered;
 
-    @Column(name = "date_modified")
+    @Column(name = "date_modified", columnDefinition = "TEXT")
     private String dateModified;
 
-    @Column(name = "comments")
+    @Column(name = "comments", columnDefinition = "TEXT")
     private String comments;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

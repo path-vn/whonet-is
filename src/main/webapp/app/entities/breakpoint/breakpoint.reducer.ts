@@ -1,10 +1,11 @@
 import axios from 'axios';
-import { ICrudGetAction, ICrudGetAllAction, ICrudPutAction, ICrudDeleteAction } from 'react-jhipster';
+import { ICrudDeleteAction, ICrudGetAction, ICrudPutAction } from 'react-jhipster';
 
-import { cleanEntity } from 'app/shared/util/entity-utils';
-import { REQUEST, SUCCESS, FAILURE } from 'app/shared/reducers/action-type.util';
+import { cleanEntity, empty, merge } from 'app/shared/util/entity-utils';
+import { FAILURE, REQUEST, SUCCESS } from 'app/shared/reducers/action-type.util';
 
-import { IBreakpoint, defaultValue } from 'app/shared/model/breakpoint.model';
+import { defaultValue, IBreakpoint } from 'app/shared/model/breakpoint.model';
+import { ICrudGetAllActionWithFilter } from 'app/shared/util/filter';
 
 export const ACTION_TYPES = {
   FETCH_BREAKPOINT_LIST: 'breakpoint/FETCH_BREAKPOINT_LIST',
@@ -13,6 +14,7 @@ export const ACTION_TYPES = {
   UPDATE_BREAKPOINT: 'breakpoint/UPDATE_BREAKPOINT',
   PARTIAL_UPDATE_BREAKPOINT: 'breakpoint/PARTIAL_UPDATE_BREAKPOINT',
   DELETE_BREAKPOINT: 'breakpoint/DELETE_BREAKPOINT',
+  FILTER_BREAKPOINT: 'breakpoint/FILTER_BREAKPOINT',
   RESET: 'breakpoint/RESET',
 };
 
@@ -24,6 +26,7 @@ const initialState = {
   updating: false,
   totalItems: 0,
   updateSuccess: false,
+  filter: {},
 };
 
 export type BreakpointState = Readonly<typeof initialState>;
@@ -32,6 +35,19 @@ export type BreakpointState = Readonly<typeof initialState>;
 
 export default (state: BreakpointState = initialState, action): BreakpointState => {
   switch (action.type) {
+    case REQUEST(ACTION_TYPES.FILTER_BREAKPOINT):
+      return {
+        ...state,
+      };
+    case FAILURE(ACTION_TYPES.FILTER_BREAKPOINT):
+      return {
+        ...state,
+      };
+    case SUCCESS(ACTION_TYPES.FILTER_BREAKPOINT):
+      return {
+        ...state,
+        filter: merge(action.payload.data, state.filter),
+      };
     case REQUEST(ACTION_TYPES.FETCH_BREAKPOINT_LIST):
     case REQUEST(ACTION_TYPES.FETCH_BREAKPOINT):
       return {
@@ -105,11 +121,16 @@ const apiUrl = 'api/breakpoints';
 
 // Actions
 
-export const getEntities: ICrudGetAllAction<IBreakpoint> = (page, size, sort) => {
+export const getEntities: ICrudGetAllActionWithFilter<IBreakpoint> = (page, size, sort, filter) => {
   const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
+  const filters = empty(filter)
+    ? []
+    : Object.keys(filter).map(key => {
+        return empty(filter[key]) || filter[key].length === 0 ? '' : `&${key}.in=${filter[key].map(k => k.value).join(',')}`;
+      });
   return {
     type: ACTION_TYPES.FETCH_BREAKPOINT_LIST,
-    payload: axios.get<IBreakpoint>(`${requestUrl}${sort ? '&' : '?'}cacheBuster=${new Date().getTime()}`),
+    payload: axios.get<IBreakpoint>(`${requestUrl}${sort ? '&' : '?'}cacheBuster=${new Date().getTime()}${filters.join('')}`),
   };
 };
 
@@ -118,6 +139,14 @@ export const getEntity: ICrudGetAction<IBreakpoint> = id => {
   return {
     type: ACTION_TYPES.FETCH_BREAKPOINT,
     payload: axios.get<IBreakpoint>(requestUrl),
+  };
+};
+
+export const getFilerGroup: ICrudGetAction<any> = key => {
+  const requestUrl = `${apiUrl}/groups/${key}`;
+  return {
+    type: ACTION_TYPES.FILTER_BREAKPOINT,
+    payload: axios.get<any>(requestUrl),
   };
 };
 

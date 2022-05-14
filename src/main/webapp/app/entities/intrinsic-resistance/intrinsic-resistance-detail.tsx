@@ -31,12 +31,6 @@ export const IntrinsicResistanceDetail = (props: IIntrinsicResistanceDetailProps
           </dt>
           <dd>{intrinsicResistanceEntity.id}</dd>
           <dt>
-            <span id="guideline">
-              <Translate contentKey="amrInterpreationApp.intrinsicResistance.guideline">Guideline</Translate>
-            </span>
-          </dt>
-          <dd>{intrinsicResistanceEntity.guideline}</dd>
-          <dt>
             <span id="referenceTable">
               <Translate contentKey="amrInterpreationApp.intrinsicResistance.referenceTable">Reference Table</Translate>
             </span>

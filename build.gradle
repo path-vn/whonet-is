@@ -197,6 +197,8 @@ dependencies {
     if (!project.hasProperty("gae")) {
         implementation platform("tech.jhipster:jhipster-dependencies:${jhipsterDependenciesVersion}")
     }
+    implementation group: 'io.minio', name: 'minio', version: '8.2.0'
+    implementation group: 'com.opencsv', name: 'opencsv', version: '5.6'
 
     // Use ", version: jhipsterDependenciesVersion, changing: true" if you want
     // to use a SNAPSHOT release instead of a stable release
@@ -265,6 +267,8 @@ dependencies {
     testImplementation "com.tngtech.archunit:archunit-junit5-api:${archunitJunit5Version}"
     testRuntimeOnly "com.tngtech.archunit:archunit-junit5-engine:${archunitJunit5Version}"
     testImplementation "com.h2database:h2"
+    implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.36.0.3'
+
     //jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
 }
 

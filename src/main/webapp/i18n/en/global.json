@@ -8,8 +8,8 @@
       "entities": {
         "main": "Entities",
         "breakpoint": "Breakpoint",
-        "intrinsicResistance": "Intrinsic Resistance",
         "antibiotic": "Antibiotic",
+        "intrinsicResistance": "Intrinsic Resistance",
         "organism": "Organism",
         "expertInterpretationRules": "Expert Interpretation Rules",
         "execute": "Execute",
