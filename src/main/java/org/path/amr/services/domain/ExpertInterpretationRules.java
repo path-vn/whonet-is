@@ -10,8 +10,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  */
 @Entity
 @Table(name = "expert_interpretation_rules")
-@Cacheable
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ExpertInterpretationRules implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -20,25 +19,25 @@ public class ExpertInterpretationRules implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "rule_code", columnDefinition = "TEXT")
+    @Column(name = "rule_code")
     private String ruleCode;
 
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description")
     private String description;
 
-    @Column(name = "organism_code", columnDefinition = "TEXT")
+    @Column(name = "organism_code")
     private String organismCode;
 
-    @Column(name = "organism_code_type", columnDefinition = "TEXT")
+    @Column(name = "organism_code_type")
     private String organismCodeType;
 
-    @Column(name = "rule_criteria", columnDefinition = "TEXT")
+    @Column(name = "rule_criteria")
     private String ruleCriteria;
 
-    @Column(name = "affected_antibiotics", columnDefinition = "TEXT")
+    @Column(name = "affected_antibiotics")
     private String affectedAntibiotics;
 
-    @Column(name = "antibiotic_exceptions", columnDefinition = "TEXT")
+    @Column(name = "antibiotic_exceptions")
     private String antibioticExceptions;
 
     @Column(name = "result")

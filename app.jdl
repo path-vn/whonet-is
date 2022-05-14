@@ -1,0 +1,169 @@
+application {
+  config {
+    applicationType monolith
+    authenticationType jwt
+    baseName AMRInterpreation
+    blueprints []
+    buildTool gradle
+    cacheProvider ehcache
+    clientFramework react
+    clientPackageManager npm
+    clientTheme united
+    clientThemeVariant light
+    creationTimestamp 1633935898910
+    databaseType sql
+    devDatabaseType mysql
+    dtoSuffix DTO
+    enableHibernateCache true
+    enableSwaggerCodegen false
+    enableTranslation true
+    jhiPrefix jhi
+    jhipsterVersion "7.0.0"
+    jwtSecretKey "YTkwN2E3MzY1MzZkMWU3Njk2YmE2MjZjMjgyMjNkYWE3OTk2MDg0NjBmYTYxMWQxN2I1YmE2NTgwNTcxMWZiZWFjYjcyZTQ2Y2RkNzA5ZWI5NmM0MzVkMDljMDNhMjc2YjE2N2JkNTc2OGM0MjM5Y2FjMDZhODQ5ODMzNmNkNmE="
+    languages [en, vi]
+    messageBroker false
+    nativeLanguage en
+    otherModules []
+    packageName org.path.amr.services
+    prodDatabaseType mysql
+    reactive false
+    searchEngine false
+    serverPort 8080
+    serviceDiscoveryType false
+    skipClient false
+    skipServer false
+    skipUserManagement false
+    testFrameworks [cypress]
+    websocket false
+    withAdminUi true
+  }
+
+  entities Antibiotic, Breakpoint, Execute, ExpertInterpretationRules, IntrinsicResistance, Organism
+}
+
+entity Antibiotic {
+  whonetAbxCode String
+  whoCode String
+  dinCode String
+  jacCode String
+  eucastCode String
+  userCode String
+  antibiotic String
+  guidelines String
+  antiboticClass String
+  clsi String
+  eucast String
+  sfm String
+  srga String
+  bsac String
+  din String
+  neo String
+  afa String
+  abxNumber String
+  potency String
+  atcCode String
+  profClass String
+  ciaCategory String
+  clsiOrder String
+  eucastOrder String
+  human String
+  veterinary String
+  animalGp String
+  loinccomp String
+  loincgen String
+  loincdisk String
+  loincmic String
+  loincetest String
+  loincslow String
+  loincafb String
+  loincsbt String
+  loincmlc String
+  dateEntered String
+  dateModified String
+  comments String
+}
+entity Breakpoint {
+  guidelines String
+  year Integer
+  testMethod String
+  potency String
+  organismCode String
+  organismCodeType String
+  breakpointType String
+  host String
+  siteOfInfection String
+  referenceTable String
+  referenceSequence String
+  whonetAbxCode String
+  whonetTest String
+  r String
+  i String
+  sdd String
+  s String
+  ecvEcoff String
+  dateEntered String
+  dateModified String
+  comments String
+}
+entity Execute {
+  request String
+  response String
+  startedAt ZonedDateTime
+  time Long
+}
+entity ExpertInterpretationRules {
+  ruleCode String
+  description String
+  organismCode String
+  organismCodeType String
+  ruleCriteria String
+  affectedAntibiotics String
+  antibioticExceptions String
+  result String
+}
+entity IntrinsicResistance {
+  guideline String
+  referenceTable String
+  organismCode String
+  organismCodeType String
+  exceptionOrganismCode String
+  exceptionOrganismCodeType String
+  abxCode String
+  abxCodeType String
+  dateEntered String
+  dateModified String
+  comments String
+}
+entity Organism {
+  whonetOrgCode String
+  organism String
+  taxonomicStatus String
+  common String
+  organismType String
+  anaerobe String
+  morphology String
+  subkingdomCode String
+  familyCode String
+  genusGroup String
+  genusCode String
+  speciesGroup String
+  serovarGroup String
+  msfGrpClin String
+  sctCode String
+  sctText String
+  dwcTaxonId String
+  dwcTaxonomicStatus String
+  gbifTaxonId String
+  gbifDatasetId String
+  gbifTaxonomicStatus String
+  kingdom String
+  phylum String
+  organismClass String
+  order String
+  family String
+  genus String
+}
+dto Antibiotic, Breakpoint, Execute, ExpertInterpretationRules, IntrinsicResistance, Organism with mapstruct
+paginate Antibiotic, Breakpoint, Execute, ExpertInterpretationRules, IntrinsicResistance, Organism with pagination
+service Antibiotic, Breakpoint, Execute, ExpertInterpretationRules, IntrinsicResistance, Organism with serviceImpl
+filter Antibiotic, Breakpoint, Execute, ExpertInterpretationRules, IntrinsicResistance, Organism

@@ -2,7 +2,9 @@ package org.path.amr.services.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import org.path.amr.services.repository.OrganismRepository;
 import org.path.amr.services.service.OrganismQueryService;
 import org.path.amr.services.service.OrganismService;
@@ -197,20 +199,5 @@ public class OrganismResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
-    }
-
-    /**
-     * {@code GET  /breakpoints/group/:id} : get the "id" breakpoint.
-     *
-     * @param key the id of the breakpointDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the breakpointDTO, or with status {@code 404 (Not Found)}.
-     */
-    @GetMapping("/organisms/groups/{key}")
-    public ResponseEntity<Map<String, List<String>>> getGroupsByField(@PathVariable String key) {
-        log.debug("REST request to get Breakpoint group: {}", key);
-        List<String> breakpointDTO = organismService.findGroups(key);
-        Map<String, List<String>> result = new HashMap<>();
-        result.put(key, breakpointDTO);
-        return ResponseUtil.wrapOrNotFound(Optional.of(result));
     }
 }

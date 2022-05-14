@@ -35,14 +35,3 @@ export const overridePaginationStateWithQueryParams = (paginationBaseState: IPag
   }
   return paginationBaseState;
 };
-
-export const empty = obj => {
-  return typeof obj === 'undefined' || obj === null;
-};
-
-export const merge = (obj1, obj2) => {
-  Object.keys(obj1).forEach(k => {
-    obj2[k] = obj1[k];
-  });
-  return obj2;
-};

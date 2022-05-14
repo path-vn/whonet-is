@@ -10,8 +10,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  */
 @Entity
 @Table(name = "intrinsic_resistance")
-@Cacheable
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class IntrinsicResistance implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -20,37 +19,37 @@ public class IntrinsicResistance implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "guideline", columnDefinition = "TEXT")
+    @Column(name = "guideline")
     private String guideline;
 
-    @Column(name = "reference_table", columnDefinition = "TEXT")
+    @Column(name = "reference_table")
     private String referenceTable;
 
-    @Column(name = "organism_code", columnDefinition = "TEXT")
+    @Column(name = "organism_code")
     private String organismCode;
 
-    @Column(name = "organism_code_type", columnDefinition = "TEXT")
+    @Column(name = "organism_code_type")
     private String organismCodeType;
 
-    @Column(name = "exception_organism_code", columnDefinition = "TEXT")
+    @Column(name = "exception_organism_code")
     private String exceptionOrganismCode;
 
-    @Column(name = "exception_organism_code_type", columnDefinition = "TEXT")
+    @Column(name = "exception_organism_code_type")
     private String exceptionOrganismCodeType;
 
-    @Column(name = "abx_code", columnDefinition = "TEXT")
+    @Column(name = "abx_code")
     private String abxCode;
 
-    @Column(name = "abx_code_type", columnDefinition = "TEXT")
+    @Column(name = "abx_code_type")
     private String abxCodeType;
 
-    @Column(name = "date_entered", columnDefinition = "TEXT")
+    @Column(name = "date_entered")
     private String dateEntered;
 
-    @Column(name = "date_modified", columnDefinition = "TEXT")
+    @Column(name = "date_modified")
     private String dateModified;
 
-    @Column(name = "comments", columnDefinition = "TEXT")
+    @Column(name = "comments")
     private String comments;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

@@ -1,18 +1,16 @@
 import axios from 'axios';
 import { ICrudGetAction, ICrudGetAllAction, ICrudPutAction, ICrudDeleteAction } from 'react-jhipster';
 
-import { cleanEntity, empty, merge } from 'app/shared/util/entity-utils';
+import { cleanEntity } from 'app/shared/util/entity-utils';
 import { REQUEST, SUCCESS, FAILURE } from 'app/shared/reducers/action-type.util';
 
 import { IOrganism, defaultValue } from 'app/shared/model/organism.model';
-import { ICrudGetAllActionWithFilter } from 'app/shared/util/filter';
 
 export const ACTION_TYPES = {
   FETCH_ORGANISM_LIST: 'organism/FETCH_ORGANISM_LIST',
   FETCH_ORGANISM: 'organism/FETCH_ORGANISM',
   CREATE_ORGANISM: 'organism/CREATE_ORGANISM',
   UPDATE_ORGANISM: 'organism/UPDATE_ORGANISM',
-  FILTER_BREAKPOINT: 'organism/FILTER_ANTIBIOTIC',
   PARTIAL_UPDATE_ORGANISM: 'organism/PARTIAL_UPDATE_ORGANISM',
   DELETE_ORGANISM: 'organism/DELETE_ORGANISM',
   RESET: 'organism/RESET',
@@ -26,7 +24,6 @@ const initialState = {
   updating: false,
   totalItems: 0,
   updateSuccess: false,
-  filter: {},
 };
 
 export type OrganismState = Readonly<typeof initialState>;
@@ -35,19 +32,6 @@ export type OrganismState = Readonly<typeof initialState>;
 
 export default (state: OrganismState = initialState, action): OrganismState => {
   switch (action.type) {
-    case REQUEST(ACTION_TYPES.FILTER_BREAKPOINT):
-      return {
-        ...state,
-      };
-    case FAILURE(ACTION_TYPES.FILTER_BREAKPOINT):
-      return {
-        ...state,
-      };
-    case SUCCESS(ACTION_TYPES.FILTER_BREAKPOINT):
-      return {
-        ...state,
-        filter: merge(action.payload.data, state.filter),
-      };
     case REQUEST(ACTION_TYPES.FETCH_ORGANISM_LIST):
     case REQUEST(ACTION_TYPES.FETCH_ORGANISM):
       return {
@@ -121,16 +105,11 @@ const apiUrl = 'api/organisms';
 
 // Actions
 
-export const getEntities: ICrudGetAllActionWithFilter<IOrganism> = (page, size, sort, filter) => {
+export const getEntities: ICrudGetAllAction<IOrganism> = (page, size, sort) => {
   const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
-  const filters = empty(filter)
-    ? []
-    : Object.keys(filter).map(key => {
-        return empty(filter[key]) || filter[key].length === 0 ? '' : `&${key}.in=${filter[key].map(k => k.value).join(',')}`;
-      });
   return {
     type: ACTION_TYPES.FETCH_ORGANISM_LIST,
-    payload: axios.get<IOrganism>(`${requestUrl}${sort ? '&' : '?'}cacheBuster=${new Date().getTime()}${filters}`),
+    payload: axios.get<IOrganism>(`${requestUrl}${sort ? '&' : '?'}cacheBuster=${new Date().getTime()}`),
   };
 };
 
@@ -180,11 +159,3 @@ export const deleteEntity: ICrudDeleteAction<IOrganism> = id => async dispatch =
 export const reset = () => ({
   type: ACTION_TYPES.RESET,
 });
-
-export const getFilerGroup: ICrudGetAction<any> = key => {
-  const requestUrl = `${apiUrl}/groups/${key}`;
-  return {
-    type: ACTION_TYPES.FILTER_BREAKPOINT,
-    payload: axios.get<any>(requestUrl),
-  };
-};

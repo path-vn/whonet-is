@@ -1,9 +1,7 @@
 package org.path.amr.services.service.impl;
 
-import java.util.List;
 import java.util.Optional;
 import org.path.amr.services.domain.IntrinsicResistance;
-import org.path.amr.services.repository.CustomRepository;
 import org.path.amr.services.repository.IntrinsicResistanceRepository;
 import org.path.amr.services.service.IntrinsicResistanceService;
 import org.path.amr.services.service.dto.IntrinsicResistanceDTO;
@@ -28,16 +26,12 @@ public class IntrinsicResistanceServiceImpl implements IntrinsicResistanceServic
 
     private final IntrinsicResistanceMapper intrinsicResistanceMapper;
 
-    private final CustomRepository customRepository;
-
     public IntrinsicResistanceServiceImpl(
         IntrinsicResistanceRepository intrinsicResistanceRepository,
-        IntrinsicResistanceMapper intrinsicResistanceMapper,
-        CustomRepository customRepository
+        IntrinsicResistanceMapper intrinsicResistanceMapper
     ) {
         this.intrinsicResistanceRepository = intrinsicResistanceRepository;
         this.intrinsicResistanceMapper = intrinsicResistanceMapper;
-        this.customRepository = customRepository;
     }
 
     @Override
@@ -82,10 +76,5 @@ public class IntrinsicResistanceServiceImpl implements IntrinsicResistanceServic
     public void delete(Long id) {
         log.debug("Request to delete IntrinsicResistance : {}", id);
         intrinsicResistanceRepository.deleteById(id);
-    }
-
-    @Override
-    public List<String> findGroups(String key) {
-        return customRepository.findIntrinsicResistanceGroupByField(key);
     }
 }

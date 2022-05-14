@@ -52,5 +52,9 @@
   "readOnly": false,
   "pagination": "pagination",
   "name": "IntrinsicResistance",
-  "changelogDate": "20211011080118"
+  "changelogDate": "20211011080118",
+  "entityTableName": "intrinsic_resistance",
+  "fluentMethods": true,
+  "embedded": false,
+  "applications": ["AMRInterpreation"]
 }

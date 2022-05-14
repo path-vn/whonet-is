@@ -9,9 +9,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * A Organism.
  */
 @Entity
-@Table(name = "organisms")
-@Cacheable
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Table(name = "organism")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Organism implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -20,85 +19,85 @@ public class Organism implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "whonet_org_code", columnDefinition = "TEXT")
+    @Column(name = "whonet_org_code")
     private String whonetOrgCode;
 
-    @Column(name = "organism", columnDefinition = "TEXT")
+    @Column(name = "organism")
     private String organism;
 
-    @Column(name = "taxonomic_status", columnDefinition = "TEXT")
+    @Column(name = "taxonomic_status")
     private String taxonomicStatus;
 
-    @Column(name = "common", columnDefinition = "TEXT")
+    @Column(name = "common")
     private String common;
 
-    @Column(name = "organism_type", columnDefinition = "TEXT")
+    @Column(name = "organism_type")
     private String organismType;
 
-    @Column(name = "anaerobe", columnDefinition = "TEXT")
+    @Column(name = "anaerobe")
     private String anaerobe;
 
-    @Column(name = "morphology", columnDefinition = "TEXT")
+    @Column(name = "morphology")
     private String morphology;
 
-    @Column(name = "subkingdom_code", columnDefinition = "TEXT")
+    @Column(name = "subkingdom_code")
     private String subkingdomCode;
 
-    @Column(name = "family_code", columnDefinition = "TEXT")
+    @Column(name = "family_code")
     private String familyCode;
 
-    @Column(name = "genus_group", columnDefinition = "TEXT")
+    @Column(name = "genus_group")
     private String genusGroup;
 
-    @Column(name = "genus_code", columnDefinition = "TEXT")
+    @Column(name = "genus_code")
     private String genusCode;
 
-    @Column(name = "species_group", columnDefinition = "TEXT")
+    @Column(name = "species_group")
     private String speciesGroup;
 
-    @Column(name = "serovar_group", columnDefinition = "TEXT")
+    @Column(name = "serovar_group")
     private String serovarGroup;
 
-    @Column(name = "msf_grp_clin", columnDefinition = "TEXT")
+    @Column(name = "msf_grp_clin")
     private String msfGrpClin;
 
-    @Column(name = "sct_code", columnDefinition = "TEXT")
+    @Column(name = "sct_code")
     private String sctCode;
 
-    @Column(name = "sct_text", columnDefinition = "TEXT")
+    @Column(name = "sct_text")
     private String sctText;
 
-    @Column(name = "dwc_taxon_id", columnDefinition = "TEXT")
+    @Column(name = "dwc_taxon_id")
     private String dwcTaxonId;
 
-    @Column(name = "dwc_taxonomic_status", columnDefinition = "TEXT")
+    @Column(name = "dwc_taxonomic_status")
     private String dwcTaxonomicStatus;
 
-    @Column(name = "gbif_taxon_id", columnDefinition = "TEXT")
+    @Column(name = "gbif_taxon_id")
     private String gbifTaxonId;
 
-    @Column(name = "gbif_dataset_id", columnDefinition = "TEXT")
+    @Column(name = "gbif_dataset_id")
     private String gbifDatasetId;
 
-    @Column(name = "gbif_taxonomic_status", columnDefinition = "TEXT")
+    @Column(name = "gbif_taxonomic_status")
     private String gbifTaxonomicStatus;
 
-    @Column(name = "kingdom", columnDefinition = "TEXT")
+    @Column(name = "kingdom")
     private String kingdom;
 
-    @Column(name = "phylum", columnDefinition = "TEXT")
+    @Column(name = "phylum")
     private String phylum;
 
-    @Column(name = "class", columnDefinition = "TEXT")
+    @Column(name = "organism_class")
     private String organismClass;
 
-    @Column(name = "organism_order", columnDefinition = "TEXT")
+    @Column(name = "jhi_order")
     private String order;
 
-    @Column(name = "family", columnDefinition = "TEXT")
+    @Column(name = "family")
     private String family;
 
-    @Column(name = "genus", columnDefinition = "TEXT")
+    @Column(name = "genus")
     private String genus;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

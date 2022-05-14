@@ -1,17 +1,15 @@
 import axios from 'axios';
 import { ICrudGetAction, ICrudGetAllAction, ICrudPutAction, ICrudDeleteAction } from 'react-jhipster';
 
-import { cleanEntity, empty, merge } from 'app/shared/util/entity-utils';
+import { cleanEntity } from 'app/shared/util/entity-utils';
 import { REQUEST, SUCCESS, FAILURE } from 'app/shared/reducers/action-type.util';
 
 import { IIntrinsicResistance, defaultValue } from 'app/shared/model/intrinsic-resistance.model';
-import { ICrudGetAllActionWithFilter } from 'app/shared/util/filter';
 
 export const ACTION_TYPES = {
   FETCH_INTRINSICRESISTANCE_LIST: 'intrinsicResistance/FETCH_INTRINSICRESISTANCE_LIST',
   FETCH_INTRINSICRESISTANCE: 'intrinsicResistance/FETCH_INTRINSICRESISTANCE',
   CREATE_INTRINSICRESISTANCE: 'intrinsicResistance/CREATE_INTRINSICRESISTANCE',
-  FILTER_BREAKPOINT: 'intrinsicResistance/FILTER_INTRINSICRESISTANCE',
   UPDATE_INTRINSICRESISTANCE: 'intrinsicResistance/UPDATE_INTRINSICRESISTANCE',
   PARTIAL_UPDATE_INTRINSICRESISTANCE: 'intrinsicResistance/PARTIAL_UPDATE_INTRINSICRESISTANCE',
   DELETE_INTRINSICRESISTANCE: 'intrinsicResistance/DELETE_INTRINSICRESISTANCE',
@@ -26,7 +24,6 @@ const initialState = {
   updating: false,
   totalItems: 0,
   updateSuccess: false,
-  filter: {},
 };
 
 export type IntrinsicResistanceState = Readonly<typeof initialState>;
@@ -35,19 +32,6 @@ export type IntrinsicResistanceState = Readonly<typeof initialState>;
 
 export default (state: IntrinsicResistanceState = initialState, action): IntrinsicResistanceState => {
   switch (action.type) {
-    case REQUEST(ACTION_TYPES.FILTER_BREAKPOINT):
-      return {
-        ...state,
-      };
-    case FAILURE(ACTION_TYPES.FILTER_BREAKPOINT):
-      return {
-        ...state,
-      };
-    case SUCCESS(ACTION_TYPES.FILTER_BREAKPOINT):
-      return {
-        ...state,
-        filter: merge(action.payload.data, state.filter),
-      };
     case REQUEST(ACTION_TYPES.FETCH_INTRINSICRESISTANCE_LIST):
     case REQUEST(ACTION_TYPES.FETCH_INTRINSICRESISTANCE):
       return {
@@ -120,16 +104,12 @@ export default (state: IntrinsicResistanceState = initialState, action): Intrins
 const apiUrl = 'api/intrinsic-resistances';
 
 // Actions
-export const getEntities: ICrudGetAllActionWithFilter<IIntrinsicResistance> = (page, size, sort, filter) => {
+
+export const getEntities: ICrudGetAllAction<IIntrinsicResistance> = (page, size, sort) => {
   const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
-  const filters = empty(filter)
-    ? []
-    : Object.keys(filter).map(key => {
-        return empty(filter[key]) || filter[key].length === 0 ? '' : `&${key}.in=${filter[key].map(k => k.value).join(',')}`;
-      });
   return {
     type: ACTION_TYPES.FETCH_INTRINSICRESISTANCE_LIST,
-    payload: axios.get<IIntrinsicResistance>(`${requestUrl}${sort ? '&' : '?'}cacheBuster=${new Date().getTime()}${filters}`),
+    payload: axios.get<IIntrinsicResistance>(`${requestUrl}${sort ? '&' : '?'}cacheBuster=${new Date().getTime()}`),
   };
 };
 
@@ -179,11 +159,3 @@ export const deleteEntity: ICrudDeleteAction<IIntrinsicResistance> = id => async
 export const reset = () => ({
   type: ACTION_TYPES.RESET,
 });
-
-export const getFilerGroup: ICrudGetAction<any> = key => {
-  const requestUrl = `${apiUrl}/groups/${key}`;
-  return {
-    type: ACTION_TYPES.FILTER_BREAKPOINT,
-    payload: axios.get<any>(requestUrl),
-  };
-};

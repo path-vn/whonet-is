@@ -116,5 +116,9 @@
   "readOnly": false,
   "pagination": "pagination",
   "name": "Organism",
-  "changelogDate": "20211012022953"
+  "changelogDate": "20211012022953",
+  "entityTableName": "organism",
+  "fluentMethods": true,
+  "embedded": false,
+  "applications": ["AMRInterpreation"]
 }

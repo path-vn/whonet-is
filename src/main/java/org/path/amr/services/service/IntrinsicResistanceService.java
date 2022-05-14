@@ -1,6 +1,5 @@
 package org.path.amr.services.service;
 
-import java.util.List;
 import java.util.Optional;
 import org.path.amr.services.service.dto.IntrinsicResistanceDTO;
 import org.springframework.data.domain.Page;
@@ -48,6 +47,4 @@ public interface IntrinsicResistanceService {
      * @param id the id of the entity.
      */
     void delete(Long id);
-
-    List<String> findGroups(String key);
 }

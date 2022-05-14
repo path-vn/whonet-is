@@ -11,9 +11,10 @@
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://localhost:3307/iis?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=True
-    username: iis
-    password: Amr@020.
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:mysql:8.0.23:///AMRInterpreation?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=${user.timezone}&TC_TMPFS=/testtmpfs:rw
+    username: root
+    password:
     hikari:
       poolName: Hikari
       auto-commit: false
@@ -24,7 +25,3 @@ spring:
         useServerPrepStmts: true
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
-    show-sql: true
-
-hibernate:
-  jdbc: ba

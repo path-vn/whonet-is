@@ -40,5 +40,9 @@
   "readOnly": false,
   "pagination": "pagination",
   "name": "ExpertInterpretationRules",
-  "changelogDate": "20211020025828"
+  "changelogDate": "20211020025828",
+  "entityTableName": "expert_interpretation_rules",
+  "fluentMethods": true,
+  "embedded": false,
+  "applications": ["AMRInterpreation"]
 }

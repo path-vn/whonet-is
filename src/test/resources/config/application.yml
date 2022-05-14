@@ -47,9 +47,6 @@ spring:
       hibernate.hbm2ddl.auto: validate
       hibernate.jdbc.time_zone: UTC
       hibernate.query.fail_on_pagination_over_collection_fetch: true
-      hibernate.jdbc.batch_size: 30
-      hibernate.order_inserts: true
-      hibernate.order_updates: true
   liquibase:
     contexts: test
   mail:

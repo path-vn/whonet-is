@@ -1,6 +1,6 @@
 export interface IIntrinsicResistance {
   id?: number;
-  abxCodeTypeguideline?: string | null;
+  guideline?: string | null;
   referenceTable?: string | null;
   organismCode?: string | null;
   organismCodeType?: string | null;

@@ -24,5 +24,9 @@
   "readOnly": false,
   "pagination": "pagination",
   "name": "Execute",
-  "changelogDate": "20211214023618"
+  "changelogDate": "20211214023618",
+  "entityTableName": "execute",
+  "fluentMethods": true,
+  "embedded": false,
+  "applications": ["AMRInterpreation"]
 }

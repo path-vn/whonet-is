@@ -14,11 +14,11 @@ export const EntitiesMenu = props => (
     <MenuItem icon="asterisk" to="/breakpoint">
       <Translate contentKey="global.menu.entities.breakpoint" />
     </MenuItem>
-    <MenuItem icon="asterisk" to="/antibiotic">
-      <Translate contentKey="global.menu.entities.antibiotic" />
-    </MenuItem>
     <MenuItem icon="asterisk" to="/intrinsic-resistance">
       <Translate contentKey="global.menu.entities.intrinsicResistance" />
+    </MenuItem>
+    <MenuItem icon="asterisk" to="/antibiotic">
+      <Translate contentKey="global.menu.entities.antibiotic" />
     </MenuItem>
     <MenuItem icon="asterisk" to="/organism">
       <Translate contentKey="global.menu.entities.organism" />

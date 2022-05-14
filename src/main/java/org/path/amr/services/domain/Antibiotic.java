@@ -9,7 +9,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * A Antibiotic.
  */
 @Entity
-@Table(name = "antibiotics")
+@Table(name = "antibiotic")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Antibiotic implements Serializable {
 
@@ -19,121 +19,121 @@ public class Antibiotic implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "whonet_abx_code", columnDefinition = "TEXT")
+    @Column(name = "whonet_abx_code")
     private String whonetAbxCode;
 
-    @Column(name = "who_code", columnDefinition = "TEXT")
+    @Column(name = "who_code")
     private String whoCode;
 
-    @Column(name = "din_code", columnDefinition = "TEXT")
+    @Column(name = "din_code")
     private String dinCode;
 
-    @Column(name = "jac_code", columnDefinition = "TEXT")
+    @Column(name = "jac_code")
     private String jacCode;
 
-    @Column(name = "eucast_code", columnDefinition = "TEXT")
+    @Column(name = "eucast_code")
     private String eucastCode;
 
-    @Column(name = "user_code", columnDefinition = "TEXT")
+    @Column(name = "user_code")
     private String userCode;
 
-    @Column(name = "antibiotic", columnDefinition = "TEXT")
+    @Column(name = "antibiotic")
     private String antibiotic;
 
-    @Column(name = "guidelines", columnDefinition = "TEXT")
+    @Column(name = "guidelines")
     private String guidelines;
 
-    @Column(name = "class", columnDefinition = "TEXT")
+    @Column(name = "antibotic_class")
     private String antiboticClass;
 
-    @Column(name = "clsi", columnDefinition = "TEXT")
+    @Column(name = "clsi")
     private String clsi;
 
-    @Column(name = "eucast", columnDefinition = "TEXT")
+    @Column(name = "eucast")
     private String eucast;
 
-    @Column(name = "sfm", columnDefinition = "TEXT")
+    @Column(name = "sfm")
     private String sfm;
 
-    @Column(name = "srga", columnDefinition = "TEXT")
+    @Column(name = "srga")
     private String srga;
 
-    @Column(name = "bsac", columnDefinition = "TEXT")
+    @Column(name = "bsac")
     private String bsac;
 
-    @Column(name = "din", columnDefinition = "TEXT")
+    @Column(name = "din")
     private String din;
 
-    @Column(name = "neo", columnDefinition = "TEXT")
+    @Column(name = "neo")
     private String neo;
 
-    @Column(name = "afa", columnDefinition = "TEXT")
+    @Column(name = "afa")
     private String afa;
 
-    @Column(name = "abx_number", columnDefinition = "TEXT")
+    @Column(name = "abx_number")
     private String abxNumber;
 
-    @Column(name = "potency", columnDefinition = "TEXT")
+    @Column(name = "potency")
     private String potency;
 
-    @Column(name = "atc_code", columnDefinition = "TEXT")
+    @Column(name = "atc_code")
     private String atcCode;
 
-    @Column(name = "prof_class", columnDefinition = "TEXT")
+    @Column(name = "prof_class")
     private String profClass;
 
-    @Column(name = "cia_category", columnDefinition = "TEXT")
+    @Column(name = "cia_category")
     private String ciaCategory;
 
-    @Column(name = "clsi_order", columnDefinition = "TEXT")
+    @Column(name = "clsi_order")
     private String clsiOrder;
 
-    @Column(name = "eucast_order", columnDefinition = "TEXT")
+    @Column(name = "eucast_order")
     private String eucastOrder;
 
-    @Column(name = "human", columnDefinition = "TEXT")
+    @Column(name = "human")
     private String human;
 
-    @Column(name = "veterinary", columnDefinition = "TEXT")
+    @Column(name = "veterinary")
     private String veterinary;
 
-    @Column(name = "animal_gp", columnDefinition = "TEXT")
+    @Column(name = "animal_gp")
     private String animalGp;
 
-    @Column(name = "loinccomp", columnDefinition = "TEXT")
+    @Column(name = "loinccomp")
     private String loinccomp;
 
-    @Column(name = "loincgen", columnDefinition = "TEXT")
+    @Column(name = "loincgen")
     private String loincgen;
 
-    @Column(name = "loincdisk", columnDefinition = "TEXT")
+    @Column(name = "loincdisk")
     private String loincdisk;
 
-    @Column(name = "loincmic", columnDefinition = "TEXT")
+    @Column(name = "loincmic")
     private String loincmic;
 
-    @Column(name = "loincetest", columnDefinition = "TEXT")
+    @Column(name = "loincetest")
     private String loincetest;
 
-    @Column(name = "loincslow", columnDefinition = "TEXT")
+    @Column(name = "loincslow")
     private String loincslow;
 
-    @Column(name = "loincafb", columnDefinition = "TEXT")
+    @Column(name = "loincafb")
     private String loincafb;
 
-    @Column(name = "loincsbt", columnDefinition = "TEXT")
+    @Column(name = "loincsbt")
     private String loincsbt;
 
-    @Column(name = "loincmlc", columnDefinition = "TEXT")
+    @Column(name = "loincmlc")
     private String loincmlc;
 
-    @Column(name = "date_entered", columnDefinition = "TEXT")
+    @Column(name = "date_entered")
     private String dateEntered;
 
-    @Column(name = "date_modified", columnDefinition = "TEXT")
+    @Column(name = "date_modified")
     private String dateModified;
 
-    @Column(name = "comments", columnDefinition = "TEXT")
+    @Column(name = "comments")
     private String comments;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

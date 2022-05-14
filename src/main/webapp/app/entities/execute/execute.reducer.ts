@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ICrudGetAction, ICrudGetAllAction, ICrudPutAction, ICrudDeleteAction } from 'react-jhipster';
 
-import { cleanEntity, empty } from 'app/shared/util/entity-utils';
+import { cleanEntity } from 'app/shared/util/entity-utils';
 import { REQUEST, SUCCESS, FAILURE } from 'app/shared/reducers/action-type.util';
 
 import { IExecute, defaultValue } from 'app/shared/model/execute.model';
@@ -10,8 +10,6 @@ export const ACTION_TYPES = {
   FETCH_EXECUTE_LIST: 'execute/FETCH_EXECUTE_LIST',
   FETCH_EXECUTE: 'execute/FETCH_EXECUTE',
   CREATE_EXECUTE: 'execute/CREATE_EXECUTE',
-  INTERPRETATION_EXECUTE: 'execute/INTERPRETATION_EXECUTE',
-  INTERPRETATION_EXECUTE_FILE: 'execute/INTERPRETATION_EXECUTE_FILE',
   UPDATE_EXECUTE: 'execute/UPDATE_EXECUTE',
   PARTIAL_UPDATE_EXECUTE: 'execute/PARTIAL_UPDATE_EXECUTE',
   DELETE_EXECUTE: 'execute/DELETE_EXECUTE',
@@ -26,8 +24,6 @@ const initialState = {
   updating: false,
   totalItems: 0,
   updateSuccess: false,
-  uploadSuccess: null,
-  result: null,
 };
 
 export type ExecuteState = Readonly<typeof initialState>;
@@ -44,13 +40,6 @@ export default (state: ExecuteState = initialState, action): ExecuteState => {
         updateSuccess: false,
         loading: true,
       };
-    case REQUEST(ACTION_TYPES.INTERPRETATION_EXECUTE):
-    case REQUEST(ACTION_TYPES.INTERPRETATION_EXECUTE_FILE):
-      return {
-        ...state,
-        loading: true,
-        uploadSuccess: null,
-      };
     case REQUEST(ACTION_TYPES.CREATE_EXECUTE):
     case REQUEST(ACTION_TYPES.UPDATE_EXECUTE):
     case REQUEST(ACTION_TYPES.DELETE_EXECUTE):
@@ -60,20 +49,6 @@ export default (state: ExecuteState = initialState, action): ExecuteState => {
         errorMessage: null,
         updateSuccess: false,
         updating: true,
-      };
-    case FAILURE(ACTION_TYPES.INTERPRETATION_EXECUTE):
-      return {
-        ...state,
-        loading: false,
-        result: null,
-      };
-    case FAILURE(ACTION_TYPES.INTERPRETATION_EXECUTE_FILE):
-      return {
-        ...state,
-        loading: true,
-        updating: false,
-        updateSuccess: false,
-        errorMessage: action.payload,
       };
     case FAILURE(ACTION_TYPES.FETCH_EXECUTE_LIST):
     case FAILURE(ACTION_TYPES.FETCH_EXECUTE):
@@ -100,18 +75,6 @@ export default (state: ExecuteState = initialState, action): ExecuteState => {
         ...state,
         loading: false,
         entity: action.payload.data,
-      };
-    case SUCCESS(ACTION_TYPES.INTERPRETATION_EXECUTE):
-      return {
-        ...state,
-        loading: false,
-        result: action.payload.data,
-      };
-    case SUCCESS(ACTION_TYPES.INTERPRETATION_EXECUTE_FILE):
-      return {
-        ...state,
-        loading: false,
-        uploadSuccess: true,
       };
     case SUCCESS(ACTION_TYPES.CREATE_EXECUTE):
     case SUCCESS(ACTION_TYPES.UPDATE_EXECUTE):
@@ -156,40 +119,6 @@ export const getEntity: ICrudGetAction<IExecute> = id => {
     type: ACTION_TYPES.FETCH_EXECUTE,
     payload: axios.get<IExecute>(requestUrl),
   };
-};
-
-export const interpretationEntity: ICrudPutAction<any> = entity => async dispatch => {
-  return await dispatch({
-    type: ACTION_TYPES.INTERPRETATION_EXECUTE,
-    payload: axios.post('api/whonet/interpretation-bulk', entity),
-  });
-};
-
-export const interpretationFile: ICrudPutAction<any> = data => async dispatch => {
-  const entity = data.file.target.files;
-  const email = data.email;
-  const files = Object.keys(entity).map(k => {
-    return entity[k];
-  });
-  const formData = new FormData();
-  if (files.length === 0) {
-    return;
-  }
-
-  files.forEach(file => {
-    formData.append('files', file, file.name);
-  });
-  formData.append('email', email);
-  formData.append('action', !empty(data.action) ? data.action : '');
-  formData.append('breakpoint', data.breakpoint ? 'yes' : '');
-  formData.append('intrinsic', data.intrinsic ? 'yes' : '');
-  formData.append('no-empty', data.empty ? 'yes' : '');
-  formData.append('equal', data.equal ? 'yes' : '');
-
-  return await dispatch({
-    type: ACTION_TYPES.INTERPRETATION_EXECUTE_FILE,
-    payload: axios.post('api/whonet/interpretation-file', formData),
-  });
 };
 
 export const createEntity: ICrudPutAction<IExecute> = entity => async dispatch => {

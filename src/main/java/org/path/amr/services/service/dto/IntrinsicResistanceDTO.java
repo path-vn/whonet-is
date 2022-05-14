@@ -10,27 +10,27 @@ public class IntrinsicResistanceDTO implements Serializable {
 
     private Long id;
 
-    private String guideline = "";
+    private String guideline;
 
-    private String referenceTable = "";
+    private String referenceTable;
 
-    private String organismCode = "";
+    private String organismCode;
 
-    private String organismCodeType = "";
+    private String organismCodeType;
 
-    private String exceptionOrganismCode = "";
+    private String exceptionOrganismCode;
 
-    private String exceptionOrganismCodeType = "";
+    private String exceptionOrganismCodeType;
 
-    private String abxCode = "";
+    private String abxCode;
 
-    private String abxCodeType = "";
+    private String abxCodeType;
 
-    private String dateEntered = "";
+    private String dateEntered;
 
-    private String dateModified = "";
+    private String dateModified;
 
-    private String comments = "";
+    private String comments;
 
     public Long getId() {
         return id;

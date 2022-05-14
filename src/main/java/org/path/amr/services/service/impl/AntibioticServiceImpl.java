@@ -1,11 +1,8 @@
 package org.path.amr.services.service.impl;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.path.amr.services.domain.Antibiotic;
 import org.path.amr.services.repository.AntibioticRepository;
-import org.path.amr.services.repository.CustomRepository;
 import org.path.amr.services.service.AntibioticService;
 import org.path.amr.services.service.dto.AntibioticDTO;
 import org.path.amr.services.service.mapper.AntibioticMapper;
@@ -29,16 +26,9 @@ public class AntibioticServiceImpl implements AntibioticService {
 
     private final AntibioticMapper antibioticMapper;
 
-    private final CustomRepository customRepository;
-
-    public AntibioticServiceImpl(
-        AntibioticRepository antibioticRepository,
-        AntibioticMapper antibioticMapper,
-        CustomRepository customRepository
-    ) {
+    public AntibioticServiceImpl(AntibioticRepository antibioticRepository, AntibioticMapper antibioticMapper) {
         this.antibioticRepository = antibioticRepository;
         this.antibioticMapper = antibioticMapper;
-        this.customRepository = customRepository;
     }
 
     @Override
@@ -83,16 +73,5 @@ public class AntibioticServiceImpl implements AntibioticService {
     public void delete(Long id) {
         log.debug("Request to delete Antibiotic : {}", id);
         antibioticRepository.deleteById(id);
-    }
-
-    @Override
-    public List<String> findGroups(String key) {
-        return customRepository.findAntibioticGroupByField(key);
-    }
-
-    @Override
-    public void flushAllAndSaveAll(List<AntibioticDTO> newDTO) {
-        antibioticRepository.deleteAllInBatch();
-        antibioticRepository.saveAll(newDTO.stream().map(antibioticMapper::toEntity).collect(Collectors.toList()));
     }
 }

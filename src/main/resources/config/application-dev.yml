@@ -17,17 +17,10 @@ logging:
   level:
     ROOT: DEBUG
     tech.jhipster: DEBUG
-    org.hibernate.SQL: INFO
+    org.hibernate.SQL: DEBUG
     org.path.amr.services: DEBUG
 
 spring:
-  session:
-    timeout: 300s
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
-
   devtools:
     restart:
       enabled: true
@@ -39,9 +32,9 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://localhost:3307/iis?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
-    username: iis
-    password: Amr@020.
+    url: jdbc:mysql://localhost:3306/AMRInterpreation?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+    username: root
+    password:
     hikari:
       poolName: Hikari
       auto-commit: false
@@ -55,16 +48,10 @@ spring:
     # Remove 'faker' if you do not want the sample data to be loaded automatically
     contexts: dev, faker
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: pathvn.pm@gmail.com #vams.kks@gmail.com vams.nkbv@gmail.com
-    password: umkwnlaocbaitrpy #kcb123456@ VAMS@123456
-    protocol: smtp
-    tls: false
-    properties.mail.smtp:
-      auth: true
-      starttls.enable: true
-      ssl.trust: smtp.gmail.com
+    host: localhost
+    port: 25
+    username:
+    password:
   messages:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
   thymeleaf:
@@ -72,9 +59,6 @@ spring:
 
 server:
   port: 8080
-  jetty:
-    threads:
-      idle-timeout: 300s
 
 # ===================================================================
 # JHipster specific properties
@@ -123,6 +107,3 @@ jhipster:
 # ===================================================================
 
 # application:
-whonet:
-  priority: 'Meningitis,Non-meningitis,Parenteral,Oral,,Urine,Intravenous,Extraintestinal'
-  thread: 5

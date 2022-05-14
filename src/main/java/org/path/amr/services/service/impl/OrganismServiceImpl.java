@@ -1,10 +1,7 @@
 package org.path.amr.services.service.impl;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.path.amr.services.domain.Organism;
-import org.path.amr.services.repository.CustomRepository;
 import org.path.amr.services.repository.OrganismRepository;
 import org.path.amr.services.service.OrganismService;
 import org.path.amr.services.service.dto.OrganismDTO;
@@ -29,12 +26,9 @@ public class OrganismServiceImpl implements OrganismService {
 
     private final OrganismMapper organismMapper;
 
-    private final CustomRepository customRepository;
-
-    public OrganismServiceImpl(OrganismRepository organismRepository, OrganismMapper organismMapper, CustomRepository customRepository) {
+    public OrganismServiceImpl(OrganismRepository organismRepository, OrganismMapper organismMapper) {
         this.organismRepository = organismRepository;
         this.organismMapper = organismMapper;
-        this.customRepository = customRepository;
     }
 
     @Override
@@ -79,16 +73,5 @@ public class OrganismServiceImpl implements OrganismService {
     public void delete(Long id) {
         log.debug("Request to delete Organism : {}", id);
         organismRepository.deleteById(id);
-    }
-
-    @Override
-    public List<String> findGroups(String key) {
-        return customRepository.findOrganismGroupByField(key);
-    }
-
-    @Override
-    public void flushAllAndSaveAll(List<OrganismDTO> newDTO) {
-        organismRepository.deleteAllInBatch();
-        organismRepository.saveAll(newDTO.stream().map(organismMapper::toEntity).collect(Collectors.toList()));
     }
 }

@@ -1,11 +1,8 @@
 package org.path.amr.services.service.impl;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.path.amr.services.domain.Breakpoint;
 import org.path.amr.services.repository.BreakpointRepository;
-import org.path.amr.services.repository.CustomRepository;
 import org.path.amr.services.service.BreakpointService;
 import org.path.amr.services.service.dto.BreakpointDTO;
 import org.path.amr.services.service.mapper.BreakpointMapper;
@@ -29,16 +26,9 @@ public class BreakpointServiceImpl implements BreakpointService {
 
     private final BreakpointMapper breakpointMapper;
 
-    private final CustomRepository customRepository;
-
-    public BreakpointServiceImpl(
-        BreakpointRepository breakpointRepository,
-        BreakpointMapper breakpointMapper,
-        CustomRepository customRepository
-    ) {
+    public BreakpointServiceImpl(BreakpointRepository breakpointRepository, BreakpointMapper breakpointMapper) {
         this.breakpointRepository = breakpointRepository;
         this.breakpointMapper = breakpointMapper;
-        this.customRepository = customRepository;
     }
 
     @Override
@@ -83,16 +73,5 @@ public class BreakpointServiceImpl implements BreakpointService {
     public void delete(Long id) {
         log.debug("Request to delete Breakpoint : {}", id);
         breakpointRepository.deleteById(id);
-    }
-
-    @Override
-    public List<String> findGroups(String key) {
-        return customRepository.findBreakpointGroupByField(key);
-    }
-
-    @Override
-    public void flushAllAndSaveAll(List<BreakpointDTO> newDTO) {
-        breakpointRepository.deleteAllInBatch();
-        breakpointRepository.saveAll(newDTO.stream().map(breakpointMapper::toEntity).collect(Collectors.toList()));
     }
 }

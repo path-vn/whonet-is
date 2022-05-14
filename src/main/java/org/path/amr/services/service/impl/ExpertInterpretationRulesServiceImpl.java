@@ -1,8 +1,6 @@
 package org.path.amr.services.service.impl;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.path.amr.services.domain.ExpertInterpretationRules;
 import org.path.amr.services.repository.ExpertInterpretationRulesRepository;
 import org.path.amr.services.service.ExpertInterpretationRulesService;
@@ -78,13 +76,5 @@ public class ExpertInterpretationRulesServiceImpl implements ExpertInterpretatio
     public void delete(Long id) {
         log.debug("Request to delete ExpertInterpretationRules : {}", id);
         expertInterpretationRulesRepository.deleteById(id);
-    }
-
-    @Override
-    public void flushAllAndSaveAll(List<ExpertInterpretationRulesDTO> newDTO) {
-        expertInterpretationRulesRepository.deleteAllInBatch();
-        expertInterpretationRulesRepository.saveAll(
-            newDTO.stream().map(expertInterpretationRulesMapper::toEntity).collect(Collectors.toList())
-        );
     }
 }

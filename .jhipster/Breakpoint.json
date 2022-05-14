@@ -92,5 +92,9 @@
   "readOnly": false,
   "pagination": "pagination",
   "name": "Breakpoint",
-  "changelogDate": "20211011080118"
+  "changelogDate": "20211011080118",
+  "entityTableName": "breakpoint",
+  "fluentMethods": true,
+  "embedded": false,
+  "applications": ["AMRInterpreation"]
 }

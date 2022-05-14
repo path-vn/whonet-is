@@ -164,5 +164,9 @@
   "readOnly": false,
   "pagination": "pagination",
   "name": "Antibiotic",
-  "changelogDate": "20211012015410"
+  "changelogDate": "20211012015410",
+  "entityTableName": "antibiotic",
+  "fluentMethods": true,
+  "embedded": false,
+  "applications": ["AMRInterpreation"]
 }
