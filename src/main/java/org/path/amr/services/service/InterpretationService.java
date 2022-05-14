@@ -133,7 +133,15 @@ public class InterpretationService {
             guidelines = new ArrayList<>();
             guidelines.addAll(Arrays.asList(whonetConfiguration.getClsi().split(",")));
         }
-        String key = String.format("%s%s%s%s%s", orgCode, whonet5Test, breakpointType, year.toString(), String.join(",", guidelines));
+        String key = String.format(
+            "%s%s%s%s%s%s",
+            orgCode,
+            whonet5Test,
+            breakpointType,
+            year.toString(),
+            String.join(",", guidelines),
+            organismCodeType
+        );
         if (cacheBreakpoints.containsKey(key)) {
             return cacheBreakpoints.get(key);
         }
@@ -325,7 +333,7 @@ public class InterpretationService {
             guidelines = new ArrayList<>();
             guidelines.add("CLSI");
         }
-        String key = String.format("%s%s%s", orgCode, whonet5Test, String.join(",", guidelines));
+        String key = String.format("%s%s%s%s", orgCode, whonet5Test, String.join(",", guidelines), organismCodeTypeOrder);
         if (cacheIntrinsics.containsKey(key)) {
             return cacheIntrinsics.get(key);
         }
