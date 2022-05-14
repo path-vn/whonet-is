@@ -44,10 +44,10 @@ public class IntrinsicResistance implements Serializable {
     @Column(name = "abx_code_type", columnDefinition = "TEXT")
     private String abxCodeType;
 
-    @Column(name = "antibiotic_exceptions")
+    @Column(name = "antibiotic_exceptions", columnDefinition = "TEXT")
     private String antibioticExceptions;
 
-    @Column(name = "date_entered")
+    @Column(name = "date_entered", columnDefinition = "TEXT")
     private String dateEntered;
 
     @Column(name = "date_modified", columnDefinition = "TEXT")

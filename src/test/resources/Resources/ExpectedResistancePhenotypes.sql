@@ -1,16 +1,16 @@
 -- Find the expected resistance phenotypes (intrinsic resistance) rules for the organism specified in the WHERE clause.
 -- The organism might only match at a higher level. For example, a rule applying to all Enterobacterales should be returned
 -- when the isolate's organism is a Salmonella sp.
-SELECT i.*, a.*
-FROM Organisms o
+SELECT i.id as iid, a.id as aid
+FROM organisms o
 	INNER JOIN (
 		SELECT *,
 			-- This would need to be expanded if we needed to support more than two exceptions for a single rule.
 			-- In C# it will be implemented to handle an arbitrary number of items.
 			-- Tried a CTE here, but couldn't get EXCEPTION_ORGANISM_CODE to feed into the base case of the recurrsion.
-			substr(EXCEPTION_ORGANISM_CODE, 1, instr(EXCEPTION_ORGANISM_CODE, ',') - 1)  AS [FirstException], 
-			substr(EXCEPTION_ORGANISM_CODE, instr(EXCEPTION_ORGANISM_CODE, ',') + 1) AS [SecondException]
-		FROM ExpectedResistancePhenotypes
+			substr(EXCEPTION_ORGANISM_CODE, 1, instr(EXCEPTION_ORGANISM_CODE, ',') - 1)  AS FirstException,
+			substr(EXCEPTION_ORGANISM_CODE, instr(EXCEPTION_ORGANISM_CODE, ',') + 1) AS SecondException
+		FROM intrinsic_resistance
 	) i
 		ON (
 			o.SEROVAR_GROUP IS NOT NULL
@@ -48,13 +48,13 @@ FROM Organisms o
 				) OR (
 					o.SUBKINGDOM_CODE = '-'
 					AND i.ORGANISM_CODE = 'AN-'
-			))			
+			))
 		) OR (
 			o.ANAEROBE = 'X'
 			AND i.ORGANISM_CODE_TYPE = 'ANAEROBE'
 			AND i.ORGANISM_CODE = 'ANA'
 		)
-	INNER JOIN Antibiotics a
+	INNER JOIN antibiotics a
 		ON (
 				i.ABX_CODE_TYPE = 'ATC_CODE'
 				AND substr(a.ATC_CODE, 1, length(i.ABX_CODE)) = i.ABX_CODE
@@ -74,9 +74,9 @@ FROM Organisms o
 			ELSE 0
 			END
 		) = 1
-WHERE o.WHONET_ORG_CODE = 'efa'
+WHERE o.WHONET_ORG_CODE = 'san'
 	AND o.TAXONOMIC_STATUS = 'C'
---	AND i.ABX_CODE = 'VAN'
+	AND i.ABX_CODE = 'FMX'
 	AND (
 			-- Organism exceptions to the intrinsic rule, if applicable.
 			coalesce(i.EXCEPTION_ORGANISM_CODE, '') = ''
@@ -107,7 +107,7 @@ WHERE o.WHONET_ORG_CODE = 'efa'
 					AND (
 						o.GENUS_CODE = i.FirstException
 						OR o.GENUS_CODE = i.SecondException
-					)							
+					)
 				) OR (
 					o.GENUS_GROUP IS NOT NULL
 					AND i.EXCEPTION_ORGANISM_CODE_TYPE = 'GENUS_GROUP'
@@ -144,7 +144,7 @@ WHERE o.WHONET_ORG_CODE = 'efa'
 								i.FirstException = 'AN-'
 								OR i.SecondException = 'AN-'
 							)
-					))			
+					))
 				) OR (
 					o.ANAEROBE = 'X'
 					AND i.EXCEPTION_ORGANISM_CODE_TYPE = 'ANAEROBE'
