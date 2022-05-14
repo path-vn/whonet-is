@@ -38,7 +38,7 @@ FROM Organisms o
 				) OR (
 					o.SUBKINGDOM_CODE = '-'
 					AND b.ORGANISM_CODE = 'AN-'
-			))			
+			))
 		) OR (
 			o.ANAEROBE = 'X'
 			AND b.ORGANISM_CODE_TYPE = 'ANAEROBE'
@@ -46,13 +46,8 @@ FROM Organisms o
 		)
 WHERE o.WHONET_ORG_CODE = 'spn'
 	AND o.TAXONOMIC_STATUS = 'C'
---	AND b.GUIDELINES = 'EUCAST'
-	AND b.YEAR = 2021 
---	AND b.BREAKPOINT_TYPE = 'Animal' 
---	AND b.TEST_METHOD = 'MIC'
--- Filter on one drug.
+	AND b.YEAR = 2021
 	AND b.WHONET_TEST = 'CRO_NM'
---	AND b.WHONET_ABX_CODE = 'CRO'
 ORDER BY o.WHONET_ORG_CODE ASC,
 	b.GUIDELINES ASC,
 	b.YEAR ASC,
