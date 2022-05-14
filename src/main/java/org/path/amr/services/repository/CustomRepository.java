@@ -311,8 +311,6 @@ public class CustomRepository {
             "  WHEN 'WHONET_ORG_CODE' THEN 2 " +
             "  WHEN 'SPECIES_GROUP' THEN 4 " +
             "  WHEN 'GENUS_CODE' THEN 3 " +
-            "   " +
-            " " +
             "  WHEN 'GENUS_GROUP' THEN 5 " +
             "  WHEN 'FAMILY_CODE' THEN 6 " +
             "  WHEN 'ANAEROBE+SUBKINGDOM_CODE' THEN 7 " +

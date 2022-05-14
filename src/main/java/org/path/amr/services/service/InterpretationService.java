@@ -670,6 +670,9 @@ public class InterpretationService {
                 }
             }
         }
+        if (!hasBreakpoint) {
+            result.setResult("?");
+        }
         return result;
     }
 
