@@ -123,6 +123,9 @@ public class TestDTO {
                     new Comparator<InterpretationResult>() {
                         @Override
                         public int compare(InterpretationResult o1, InterpretationResult o2) {
+                            if (!o1.getOrganismCodeType().equals(o2.getOrganismCodeType())) {
+                                return o1.getPriority() - o2.getPriority();
+                            }
                             if (!priority.containsKey(o1.getSpecType()) || !priority.containsKey(o2.getSpecType())) {
                                 return 0;
                             }

@@ -358,7 +358,6 @@ public class CustomRepository {
             breakPoint.setOrganismID(Long.valueOf(rows.get(i)[0].toString()));
             breakPoint.setBreakPointID(Long.valueOf(rows.get(i)[1].toString()));
 
-            log.info("buildSQL(organismCodeType, \"b\") {} {}", buildSQL(organismCodeType, "b"), Long.valueOf(rows.get(i)[1].toString()));
             result.add(breakPoint);
         }
         return result;

@@ -6,6 +6,8 @@ public class InterpretationResult {
     String result;
     String specType;
     String breaking = "";
+    String organismCodeType = "";
+    int priority;
 
     public InterpretationResult(String result) {
         this.result = result;
@@ -43,5 +45,21 @@ public class InterpretationResult {
 
     public void setBreaking(String breaking) {
         this.breaking = breaking;
+    }
+
+    public void setOrganismCodeType(String organismCodeType) {
+        this.organismCodeType = organismCodeType;
+    }
+
+    public String getOrganismCodeType() {
+        return this.organismCodeType;
+    }
+
+    public void setPriority(int ob) {
+        this.priority = ob;
+    }
+
+    public int getPriority() {
+        return this.priority;
     }
 }

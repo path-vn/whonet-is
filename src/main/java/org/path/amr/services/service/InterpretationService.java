@@ -299,21 +299,22 @@ public class InterpretationService {
                     isolate.getOrganismCodeTypeOrder()
                 );
 
-                organismBreakPointDTOList.forEach(
-                    o -> {
-                        InterpretationResult interpretationResult = interpretation(test, o);
-                        if (interpretationResult != null && interpretationResult.getResult() != null) {
-                            isolate.setOrganism(o.getOrganism());
-                            test.addResult(interpretationResult);
-                        }
+                for (int ob = 0; ob < organismBreakPointDTOList.size(); ob++) {
+                    OrganismBreakPointDTO o = organismBreakPointDTOList.get(ob);
+                    InterpretationResult interpretationResult = interpretation(test, o);
+                    if (interpretationResult != null && interpretationResult.getResult() != null) {
+                        interpretationResult.setPriority(ob);
+                        isolate.setOrganism(o.getOrganism());
+                        test.addResult(interpretationResult);
                     }
-                );
+                }
 
                 if (organismBreakPointDTOList.size() == 0) {
                     test.addResult(new InterpretationResult("?"));
                 }
             }
-            // test.sort(this.specTypeSort);
+
+            test.sort(this.specTypeSort);
         }
         if (isolate.getOrganism() == null) {
             return;
@@ -556,6 +557,7 @@ public class InterpretationService {
             return null;
         }
         BreakpointDTO g = organismBreakPointDTO.getBreakpoint();
+        result.setOrganismCodeType(g.getOrganismCodeType());
         String method = g.getTestMethod();
         short oper = testResult.getOper();
         boolean hasBreakpoint = notEmpty(g.getI()) || notEmpty(g.getR()) || notEmpty(g.getS());
