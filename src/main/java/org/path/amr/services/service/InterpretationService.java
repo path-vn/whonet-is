@@ -743,6 +743,7 @@ public class InterpretationService {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_hhmmss");
         String strDate = dateFormat.format(date);
 
+        writer.flush();
         putObject(
             new ByteArrayInputStream(byteArrayOutputStream.toByteArray()),
             "kks/" + strDate + "_" + filename,
@@ -751,6 +752,8 @@ public class InterpretationService {
             false
         );
 
+        writer.close();
+        byteArrayOutputStream.close();
         log.info("Sending mail {}", email);
         mailService.sendEmail(
             email,
