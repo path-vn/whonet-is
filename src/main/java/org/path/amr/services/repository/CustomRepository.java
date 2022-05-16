@@ -351,13 +351,14 @@ public class CustomRepository {
         qry.setParameter("whonetTest", whonetTest);
         qry.setParameter("breakpointType", breakpointType);
         qry.setParameter("guideline", guidelines);
-        log.info("buildSQL(organismCodeType, \"b\") {}", buildSQL(organismCodeType, "b"));
         List<OrganismBreakPointDTO> result = new ArrayList<>();
         List<Object[]> rows = qry.getResultList();
         for (int i = 0; i < rows.size(); i++) {
             OrganismBreakPointDTO breakPoint = new OrganismBreakPointDTO();
             breakPoint.setOrganismID(Long.valueOf(rows.get(i)[0].toString()));
             breakPoint.setBreakPointID(Long.valueOf(rows.get(i)[1].toString()));
+
+            log.info("buildSQL(organismCodeType, \"b\") {} {}", buildSQL(organismCodeType, "b"), Long.valueOf(rows.get(i)[1].toString()));
             result.add(breakPoint);
         }
         return result;

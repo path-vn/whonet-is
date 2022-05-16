@@ -313,8 +313,7 @@ public class InterpretationService {
                     test.addResult(new InterpretationResult("?"));
                 }
             }
-
-            test.sort(this.specTypeSort);
+            // test.sort(this.specTypeSort);
         }
         if (isolate.getOrganism() == null) {
             return;
