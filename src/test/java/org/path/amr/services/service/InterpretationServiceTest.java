@@ -31,8 +31,8 @@ class InterpretationServiceTest {
     @Test
     void getBreakpoints() {
         List<OrganismBreakPointDTO> organismBreakPointDTOList = interpretationService.getBreakpoints(
-            "aba",
-            "SAM_ND10",
+            "spn",
+            "MFX_NM",
             "Human",
             null,
             null,
@@ -45,7 +45,7 @@ class InterpretationServiceTest {
     @Test
     void execute() {
         IsolateDTO isolateDTO = new IsolateDTO();
-        isolateDTO.setOrgCode("san");
+        isolateDTO.setOrgCode("spn");
         isolateDTO.setBreakpointType("Human");
 
         TestDTO test = new TestDTO();

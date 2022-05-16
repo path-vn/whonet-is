@@ -351,7 +351,7 @@ public class CustomRepository {
         qry.setParameter("whonetTest", whonetTest);
         qry.setParameter("breakpointType", breakpointType);
         qry.setParameter("guideline", guidelines);
-
+        log.info("buildSQL(organismCodeType, \"b\") {}", buildSQL(organismCodeType, "b"));
         List<OrganismBreakPointDTO> result = new ArrayList<>();
         List<Object[]> rows = qry.getResultList();
         for (int i = 0; i < rows.size(); i++) {
