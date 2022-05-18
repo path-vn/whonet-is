@@ -670,6 +670,11 @@ public class InterpretationService {
                 if (R != null && (newOper == GREATER_THAN || newOper == GREATER_THAN_OR_EQUAL) && value < R) {
                     result.setResult("R");
                     result.setIsQuestionMark(RESULT_TYPE_QUESTION_MARK);
+                    // todo: remove this NS logic
+                    if (S != null && value <= S) {
+                        result.setResult("NS");
+                        result.setIsQuestionMark(RESULT_TYPE_NORMAL);
+                    }
                 }
 
                 if (S != null && (newOper == LESS_THAN || newOper == LESS_THAN_OR_EQUAL) && value > S) {

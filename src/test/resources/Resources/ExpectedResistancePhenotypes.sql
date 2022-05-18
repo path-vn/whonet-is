@@ -74,9 +74,9 @@ FROM organisms o
 			ELSE 0
 			END
 		) = 1
-WHERE o.WHONET_ORG_CODE = 'san'
+WHERE o.WHONET_ORG_CODE = 'pce'
 	AND o.TAXONOMIC_STATUS = 'C'
-	AND i.ABX_CODE = 'FMX'
+	AND i.ABX_CODE = 'TCC'
 	AND (
 			-- Organism exceptions to the intrinsic rule, if applicable.
 			coalesce(i.EXCEPTION_ORGANISM_CODE, '') = ''

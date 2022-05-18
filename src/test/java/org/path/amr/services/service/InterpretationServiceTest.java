@@ -45,12 +45,12 @@ class InterpretationServiceTest {
     @Test
     void execute() {
         IsolateDTO isolateDTO = new IsolateDTO();
-        isolateDTO.setOrgCode("spn");
+        isolateDTO.setOrgCode("efa");
         isolateDTO.setBreakpointType("Human");
 
         TestDTO test = new TestDTO();
-        test.setRawValue("6");
-        test.setWhonet5Code("MFX_NM");
+        test.setRawValue(">1");
+        test.setWhonet5Code("AMP_NM");
 
         isolateDTO.addTest(test);
         interpretationService.execute(isolateDTO);
