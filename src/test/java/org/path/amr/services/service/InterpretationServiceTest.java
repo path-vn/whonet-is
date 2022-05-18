@@ -45,11 +45,11 @@ class InterpretationServiceTest {
     @Test
     void execute() {
         IsolateDTO isolateDTO = new IsolateDTO();
-        isolateDTO.setOrgCode("efa");
+        isolateDTO.setOrgCode("pma");
 
         TestDTO test = new TestDTO();
-        test.setRawValue(">1");
-        test.setWhonet5Code("AMP_NM");
+        test.setRawValue(">32");
+        test.setWhonet5Code("TCC_NM");
 
         //        TestDTO test2 = new TestDTO();
         //        test2.setRawValue("28");
