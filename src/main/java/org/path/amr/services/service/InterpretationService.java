@@ -172,14 +172,9 @@ public class InterpretationService {
         if (oper.equals(GREATER_THAN) || oper.equals(EQUAL)) {
             boolean uplevel = oper.equals(GREATER_THAN);
             double valueNextLevel = Rrange;
-
             do {
-                // nếu value là giá trị hợp lệ, không cần up thêm level
-                if (value == valueNextLevel) {
-                    uplevel = false;
-                }
                 valueNextLevel = valueNextLevel * 2;
-            } while (!(valueNextLevel > value));
+            } while (!(valueNextLevel >= value));
             value = uplevel ? valueNextLevel * 2 : valueNextLevel;
         }
 
