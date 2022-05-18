@@ -671,7 +671,7 @@ public class InterpretationService {
                     result.setResult("R");
                     result.setIsQuestionMark(RESULT_TYPE_QUESTION_MARK);
                     // todo: remove this NS logic
-                    if (S != null && value <= R / 2 && value >= S) {
+                    if (S != null && value <= R / 2 && value > S) {
                         result.setResult("NS");
                         result.setIsQuestionMark(RESULT_TYPE_NORMAL);
                     }
