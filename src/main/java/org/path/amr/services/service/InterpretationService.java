@@ -168,9 +168,9 @@ public class InterpretationService {
             return value;
         }
 
-        double Rrange = value < micS ? micS / 2 : micR / 2;
-        if (oper.equals(GREATER_THAN)) {
-            boolean uplevel = true;
+        double Rrange = value <= micS ? micS / 2 : micR / 2;
+        if (oper.equals(GREATER_THAN) || oper.equals(EQUAL)) {
+            boolean uplevel = oper.equals(GREATER_THAN);
             double valueNextLevel = Rrange;
 
             do {
@@ -184,7 +184,7 @@ public class InterpretationService {
         }
 
         if (oper.equals(LESS_THAN)) {
-            double valueNextLevel = micS;
+            double valueNextLevel = value > micS ? micS : value;
             do {
                 valueNextLevel = valueNextLevel * 2;
             } while (!(valueNextLevel >= value));
