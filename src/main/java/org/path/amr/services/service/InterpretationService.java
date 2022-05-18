@@ -185,9 +185,9 @@ public class InterpretationService {
             value = valueNextLevel / 2;
         }
 
-        if (value > Rrange && value < micR) {
-            value = micR;
-        }
+        //        if (value > Rrange && value < micR) {
+        //            value = micR;
+        //        }
 
         return value;
     }
