@@ -511,6 +511,9 @@ public class InterpretationService {
                         r.setResult(true);
                         break;
                     }
+                    // todo: cần confirm lại, với expert rule yc test với KS có kết qủa là XX
+                    // trong trường hợp ra nhiều kết quả thì chỉ xét kết quả đầu hay lấy cả kết quả sau
+                    break;
                 }
             }
         }

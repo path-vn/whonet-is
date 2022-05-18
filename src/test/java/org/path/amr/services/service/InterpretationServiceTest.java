@@ -45,14 +45,19 @@ class InterpretationServiceTest {
     @Test
     void execute() {
         IsolateDTO isolateDTO = new IsolateDTO();
-        isolateDTO.setOrgCode("efa");
+        isolateDTO.setOrgCode("sau");
         isolateDTO.setBreakpointType("Human");
 
         TestDTO test = new TestDTO();
-        test.setRawValue(">1");
-        test.setWhonet5Code("AMP_NM");
+        test.setRawValue("1");
+        test.setWhonet5Code("OXA_NM");
+
+        TestDTO test2 = new TestDTO();
+        test2.setRawValue("28");
+        test2.setWhonet5Code("FOX_ND30");
 
         isolateDTO.addTest(test);
+        isolateDTO.addTest(test2);
         interpretationService.execute(isolateDTO);
         System.out.println("SIZE: " + isolateDTO.getTest().size());
         System.out.println("SIZE: " + isolateDTO.getTest().get(0).getResult().size());
