@@ -168,7 +168,7 @@ public class InterpretationService {
             return value;
         }
 
-        double Rrange = micR / 2;
+        double Rrange = micS < micS ? micS / 2 : micR / 2;
         if (oper.equals(GREATER_THAN)) {
             double valueNextLevel = micS;
             do {
