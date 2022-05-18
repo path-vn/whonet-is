@@ -135,7 +135,7 @@ public class CustomRepository {
             "  ) = 1  " +
             "WHERE o.WHONET_ORG_CODE = :orgCode  " +
             " AND o.TAXONOMIC_STATUS = 'C'  " +
-            " AND i.ABX_CODE = :abxCode  " +
+            " AND (i.ABX_CODE = :abxCode  or a.WHONET_ABX_CODE = :abxCode) " +
             " AND i.GUIDELINE in (:guidelines) " +
             " AND (  " +
             //                "   -- Organism exceptions to the intrinsic rule, if applicable.  " +

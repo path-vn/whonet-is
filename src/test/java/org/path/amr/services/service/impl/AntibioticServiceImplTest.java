@@ -240,6 +240,18 @@ public class AntibioticServiceImplTest {
             newDTO.add(expertInterpretationRulesDTO);
         }
 
+        ExpertInterpretationRulesDTO custom = new ExpertInterpretationRulesDTO();
+        custom.setRuleCode("MRSi");
+        custom.setDescription(
+            "PATH - For example, MRSA should be considered resistant to most beta-lactams. So if you have a strain that is “OXA=R”, then WHONET will automatically change “FOX” to “R” as well.\t"
+        );
+        custom.setOrganismCode("STA");
+        custom.setOrganismCodeType("GENUS_CODE");
+        custom.setRuleCriteria("OXA=R");
+        custom.setAffectedAntibiotics("FOX");
+        custom.setResult("R");
+        newDTO.add(custom);
+
         expertInterpretationRulesService.flushAllAndSaveAll(newDTO);
     }
 
