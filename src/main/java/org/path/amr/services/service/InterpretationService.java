@@ -168,13 +168,13 @@ public class InterpretationService {
             return value;
         }
 
-        double Rrange = value <= micS ? micS / 2 : micR / 4;
+        double Rrange = value <= micS ? micS / 4 : micR / 4;
         if (oper.equals(GREATER_THAN) || oper.equals(EQUAL)) {
             boolean uplevel = oper.equals(GREATER_THAN);
             double valueNextLevel = Rrange;
-            do {
+            while (!(valueNextLevel >= value)) {
                 valueNextLevel = valueNextLevel * 2;
-            } while (!(valueNextLevel >= value));
+            }
             value = uplevel ? valueNextLevel * 2 : valueNextLevel;
         }
 
@@ -671,7 +671,7 @@ public class InterpretationService {
                     result.setResult("R");
                     result.setIsQuestionMark(RESULT_TYPE_QUESTION_MARK);
                     // todo: remove this NS logic
-                    if (S != null && value <= R / 2) {
+                    if (S != null && value <= R / 2 && value >= S) {
                         result.setResult("NS");
                         result.setIsQuestionMark(RESULT_TYPE_NORMAL);
                     }
