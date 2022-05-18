@@ -170,11 +170,17 @@ public class InterpretationService {
 
         double Rrange = value < micS ? micS / 2 : micR / 2;
         if (oper.equals(GREATER_THAN)) {
-            double valueNextLevel = micS;
+            boolean uplevel = true;
+            double valueNextLevel = Rrange;
+
             do {
+                // nếu value là giá trị hợp lệ, không cần up thêm level
+                if (value == valueNextLevel) {
+                    uplevel = false;
+                }
                 valueNextLevel = valueNextLevel * 2;
             } while (!(valueNextLevel > value));
-            value = valueNextLevel;
+            value = uplevel ? valueNextLevel * 2 : valueNextLevel;
         }
 
         if (oper.equals(LESS_THAN)) {
@@ -184,10 +190,6 @@ public class InterpretationService {
             } while (!(valueNextLevel >= value));
             value = valueNextLevel / 2;
         }
-
-        //        if (value > Rrange && value < micR) {
-        //            value = micR;
-        //        }
 
         return value;
     }
