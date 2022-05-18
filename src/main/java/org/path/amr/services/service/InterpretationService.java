@@ -179,7 +179,7 @@ public class InterpretationService {
         }
 
         if (oper.equals(LESS_THAN)) {
-            double valueNextLevel = value > micS ? micS : value;
+            double valueNextLevel = value > micS ? micS : micS / 2;
             do {
                 valueNextLevel = valueNextLevel * 2;
             } while (!(valueNextLevel >= value));
