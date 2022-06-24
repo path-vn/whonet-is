@@ -7,6 +7,8 @@ public class InterpretationResult {
     String specType;
     String breaking = "";
     String organismCodeType = "";
+    String method;
+
     int priority;
 
     public InterpretationResult(String result) {
@@ -61,5 +63,13 @@ public class InterpretationResult {
 
     public int getPriority() {
         return this.priority;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
     }
 }

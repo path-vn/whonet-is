@@ -562,6 +562,7 @@ public class InterpretationService {
         short oper = testResult.getOper();
         boolean hasBreakpoint = notEmpty(g.getI()) || notEmpty(g.getR()) || notEmpty(g.getS());
         result.setSpecType(g.getSiteOfInfection());
+        result.setMethod(method);
         if (hasBreakpoint) {
             Double R = notEmpty(g.getR()) ? Double.valueOf(g.getR()) : null;
             Double S = notEmpty(g.getS()) ? Double.valueOf(g.getS()) : null;
