@@ -554,7 +554,8 @@ public class InterpretationService {
         InterpretationResult result = new InterpretationResult();
         Double valueToInterpretation = testResult.getValue();
         if (valueToInterpretation == null) {
-            return null;
+            result.setResult(testResult.getRawValue());
+            return result;
         }
         BreakpointDTO g = organismBreakPointDTO.getBreakpoint();
         result.setOrganismCodeType(g.getOrganismCodeType());

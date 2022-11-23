@@ -2,6 +2,8 @@ package org.path.amr.services.service;
 
 import static org.path.amr.services.service.InterpretationService.GENUS_CODE;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -208,5 +210,55 @@ class InterpretationServiceTest {
         expertRule.setOrganismCode("sau");
 
         assert interpretationService.notMatchRuleCriteria(expertRule, isolateDTO);
+    }
+
+    @Test
+    void testECOvsFOS() throws JsonProcessingException {
+        String data =
+            "{\n" +
+            "    \"requestID\": \"5988568\",\n" +
+            "    \"method\": null,\n" +
+            "    \"orgCode\": \"eco\",\n" +
+            "    \"breakpointType\": null,\n" +
+            "    \"specType\": null,\n" +
+            "    \"guidelines\": null,\n" +
+            "    \"year\": null,\n" +
+            "    \"organism\": null,\n" +
+            "    \"test\": [\n" +
+            "      {\n" +
+            "        \"value\": null,\n" +
+            "        \"rawValue\": \"26\",\n" +
+            "        \"oper\": 0,\n" +
+            "        \"antibiotic\": null,\n" +
+            "        \"whonet5Code\": \"FOS_ND200\",\n" +
+            "        \"expertRuleCode\": null,\n" +
+            "        \"testID\": \"21355003\",\n" +
+            "        \"result\": null,\n" +
+            "        \"intrinsicResistance\": null\n" +
+            "      }\n" +
+            "    ],\n" +
+            "    \"dataFields\": {\n" +
+            "      \"INDUC_CLI\": \"\",\n" +
+            "      \"VRE\": \"\",\n" +
+            "      \"X_MLS\": null,\n" +
+            "      \"MECA_PCR\": null,\n" +
+            "      \"PBP2A_AGGL\": null,\n" +
+            "      \"X_MLS_IND\": null,\n" +
+            "      \"X_BLEE\": null,\n" +
+            "      \"OXA_SCREEN\": null,\n" +
+            "      \"MRSA\": \"\",\n" +
+            "      \"ESBL\": \"\",\n" +
+            "      \"MLS_DTEST\": null,\n" +
+            "      \"BETA_LACT\": \"\",\n" +
+            "      \"MRSA_SCRN\": null\n" +
+            "    },\n" +
+            "    \"organismCodeTypeOrder\": null\n" +
+            "  }";
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        IsolateDTO isolateDTO = objectMapper.readValue(data, IsolateDTO.class);
+        assert isolateDTO != null;
+        interpretationService.execute(isolateDTO);
+        assert isolateDTO.getTest().size() > 0;
     }
 }
