@@ -50,7 +50,7 @@ class InterpretationServiceTest {
         isolateDTO.setOrgCode("pma");
 
         TestDTO test = new TestDTO();
-        test.setRawValue(">32");
+        test.setRawValue(".50.");
         test.setWhonet5Code("TCC_NM");
 
         //        TestDTO test2 = new TestDTO();

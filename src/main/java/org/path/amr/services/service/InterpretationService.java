@@ -239,6 +239,11 @@ public class InterpretationService {
             String tmpStringValue = test.getRawValue();
             // trong trường hợp kháng sinh hỗn hợp, kết quả có dang <=1/1 chỉ cần lấy giá trị tử số
             tmpStringValue = tmpStringValue.split("/")[0];
+
+            // trường hợp . ở cuối, thường do nhập nhầm
+            if (tmpStringValue.trim().endsWith(".")) {
+                tmpStringValue = tmpStringValue.substring(0, tmpStringValue.length() - 1);
+            }
             test.setRawValue(tmpStringValue);
 
             tmpStringValue = tmpStringValue.replaceAll(PATTERN_0, "");
@@ -254,7 +259,12 @@ public class InterpretationService {
             test.setAntibiotic(antibioticMapper.toDto(antibiotic.get()));
 
             if (!testValue.isEmpty()) {
-                test.setValue(Double.valueOf(testValue));
+                try {
+                    test.setValue(Double.valueOf(testValue));
+                } catch (NumberFormatException ignore) {
+                    test.setValue(0.0);
+                    test.setRawValue("0");
+                }
             }
 
             switch (oper) {
