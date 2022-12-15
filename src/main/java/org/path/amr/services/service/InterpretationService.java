@@ -239,6 +239,7 @@ public class InterpretationService {
             String tmpStringValue = test.getRawValue();
             // trong trường hợp kháng sinh hỗn hợp, kết quả có dang <=1/1 chỉ cần lấy giá trị tử số
             tmpStringValue = tmpStringValue.split("/")[0];
+            test.setRawValue(tmpStringValue);
 
             tmpStringValue = tmpStringValue.replaceAll(PATTERN_0, "");
             String testValue = tmpStringValue.replaceAll(PATTERN_1, "");
@@ -557,10 +558,7 @@ public class InterpretationService {
         InterpretationResult result = new InterpretationResult();
         Double valueToInterpretation = testResult.getValue();
         if (valueToInterpretation == null) {
-            String tmpStringValue = testResult.getRawValue();
-            // trong trường hợp kháng sinh hỗn hợp, kết quả có dang <=1/1 chỉ cần lấy giá trị tử số
-            tmpStringValue = tmpStringValue.split("/")[0];
-            result.setResult(tmpStringValue);
+            result.setResult(testResult.getRawValue());
             return result;
         }
         BreakpointDTO g = organismBreakPointDTO.getBreakpoint();
