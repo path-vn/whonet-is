@@ -557,7 +557,10 @@ public class InterpretationService {
         InterpretationResult result = new InterpretationResult();
         Double valueToInterpretation = testResult.getValue();
         if (valueToInterpretation == null) {
-            result.setResult(testResult.getRawValue());
+            String tmpStringValue = testResult.getRawValue();
+            // trong trường hợp kháng sinh hỗn hợp, kết quả có dang <=1/1 chỉ cần lấy giá trị tử số
+            tmpStringValue = tmpStringValue.split("/")[0];
+            result.setResult(tmpStringValue);
             return result;
         }
         BreakpointDTO g = organismBreakPointDTO.getBreakpoint();
