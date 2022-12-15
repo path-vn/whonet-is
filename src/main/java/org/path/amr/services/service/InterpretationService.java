@@ -237,6 +237,9 @@ public class InterpretationService {
         for (int i = 0; i < isolate.getTest().size(); i++) {
             TestDTO test = isolate.getTest().get(i);
             String tmpStringValue = test.getRawValue();
+            // trong trường hợp kháng sinh hỗn hợp, kết quả có dang <=1/1 chỉ cần lấy giá trị tử số
+            tmpStringValue = tmpStringValue.split("/")[0];
+
             tmpStringValue = tmpStringValue.replaceAll(PATTERN_0, "");
             String testValue = tmpStringValue.replaceAll(PATTERN_1, "");
             String oper = tmpStringValue.replaceAll(PATTERN_3, "");
