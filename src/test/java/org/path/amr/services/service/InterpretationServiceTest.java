@@ -267,7 +267,7 @@ class InterpretationServiceTest {
     void testConvertNumber() {
         String testValue = ".19".replaceAll(PATTERN_1, "");
         assert Double.parseDouble(testValue) == 0.19;
-        testValue = ",19".replaceAll(PATTERN_1, "");
+        testValue = ",19".replaceAll(PATTERN_1, "").replaceAll(",", ".");
         assert Double.parseDouble(testValue) == 0.19;
     }
 }

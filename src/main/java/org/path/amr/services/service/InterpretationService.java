@@ -46,11 +46,10 @@ public class InterpretationService {
 
     private final Logger log = LoggerFactory.getLogger(WhonetResource.class);
 
-    public static final String PATTERN_0 = "[^0-9.RSI<=>]";
+    public static final String PATTERN_0 = "[^0-9.,RSI<=>]";
     public static final String PATTERN_1 = "[^0-9.,]";
-    public static final String PATTERN_2 = "[^0-9]";
-    public static final String PATTERN_3 = "[0-9.RSI]";
-    public static final String PATTERN_4 = "[0-9.<=>]";
+    public static final String PATTERN_3 = "[0-9.,RSI]";
+    public static final String PATTERN_4 = "[0-9.,<=>]";
 
     public static final String GENUS_CODE = "GENUS_CODE";
     public static final String FAMILY_CODE = "FAMILY_CODE";
