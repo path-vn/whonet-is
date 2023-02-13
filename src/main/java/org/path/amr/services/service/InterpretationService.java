@@ -47,7 +47,7 @@ public class InterpretationService {
     private final Logger log = LoggerFactory.getLogger(WhonetResource.class);
 
     public static final String PATTERN_0 = "[^0-9.RSI<=>]";
-    public static final String PATTERN_1 = "[^0-9.]";
+    public static final String PATTERN_1 = "[^0-9.,]";
     public static final String PATTERN_2 = "[^0-9]";
     public static final String PATTERN_3 = "[0-9.RSI]";
     public static final String PATTERN_4 = "[0-9.<=>]";
@@ -247,7 +247,7 @@ public class InterpretationService {
             test.setRawValue(tmpStringValue);
 
             tmpStringValue = tmpStringValue.replaceAll(PATTERN_0, "");
-            String testValue = tmpStringValue.replaceAll(PATTERN_1, "");
+            String testValue = tmpStringValue.replaceAll(PATTERN_1, "").replaceAll(",", ".");
             String oper = tmpStringValue.replaceAll(PATTERN_3, "");
             String result = tmpStringValue.replaceAll(PATTERN_4, "");
             String abxCode = test.getWhonet5Code().split("_")[0];

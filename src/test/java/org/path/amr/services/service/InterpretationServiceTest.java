@@ -1,6 +1,7 @@
 package org.path.amr.services.service;
 
 import static org.path.amr.services.service.InterpretationService.GENUS_CODE;
+import static org.path.amr.services.service.InterpretationService.PATTERN_1;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -260,5 +261,13 @@ class InterpretationServiceTest {
         assert isolateDTO != null;
         interpretationService.execute(isolateDTO);
         assert isolateDTO.getTest().size() > 0;
+    }
+
+    @Test
+    void testConvertNumber() {
+        String testValue = ".19".replaceAll(PATTERN_1, "");
+        assert Double.parseDouble(testValue) == 0.19;
+        testValue = ",19".replaceAll(PATTERN_1, "");
+        assert Double.parseDouble(testValue) == 0.19;
     }
 }
