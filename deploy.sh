@@ -1,4 +1,4 @@
-./gradlew -Pprod -Pswagger -Pwar clean bootWar
+./gradlew -Pprod,api-docs -Pswagger -Pwar clean bootWar
 
 docker build -t kks/interpretation:0.1.0 .
 
