@@ -142,6 +142,9 @@ info:
 #
 # Full reference is available at: https://www.jhipster.tech/common-application-properties/
 # ===================================================================
+springdoc:
+  swagger-ui:
+    footer-text: 'Your custom text goes here'
 
 jhipster:
   clientApp:
@@ -163,10 +166,10 @@ jhipster:
     description: AMRInterpreation API documentation
     version: 0.0.1
     terms-of-service-url:
-    contact-name:
+    contact-name: PATh
     contact-url:
     contact-email:
-    license: unlicensed
+    license: PATH
     license-url:
 # ===================================================================
 # Application specific properties

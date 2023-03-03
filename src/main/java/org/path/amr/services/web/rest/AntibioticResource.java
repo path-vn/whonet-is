@@ -1,5 +1,6 @@
 package org.path.amr.services.web.rest;
 
+import io.swagger.annotations.Api;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -28,6 +28,7 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
+@Api(value = "Whonet Resource", tags = { "2. Kháng sinh/ Antibiotic " })
 public class AntibioticResource {
 
     private final Logger log = LoggerFactory.getLogger(AntibioticResource.class);

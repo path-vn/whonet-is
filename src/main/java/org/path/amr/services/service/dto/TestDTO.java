@@ -8,11 +8,12 @@ import org.path.amr.services.service.InterpretationResult;
 
 public class TestDTO {
 
-    Double value;
     String rawValue;
+    String whonet5Code;
+
+    Double value;
     short oper;
     AntibioticDTO antibiotic;
-    String whonet5Code;
     String expertRuleCode;
     String testID;
 

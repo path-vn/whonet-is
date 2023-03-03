@@ -1,5 +1,6 @@
 package org.path.amr.services.web.rest;
 
+import io.swagger.annotations.Api;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -28,6 +28,7 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
+@Api(value = "Whonet Resource", tags = { "4. Kháng tự nhiên/ Intrinsic Resistance" })
 public class IntrinsicResistanceResource {
 
     private final Logger log = LoggerFactory.getLogger(IntrinsicResistanceResource.class);
@@ -77,7 +78,7 @@ public class IntrinsicResistanceResource {
     /**
      * {@code PUT  /intrinsic-resistances/:id} : Updates an existing intrinsicResistance.
      *
-     * @param id the id of the intrinsicResistanceDTO to save.
+     * @param id                     the id of the intrinsicResistanceDTO to save.
      * @param intrinsicResistanceDTO the intrinsicResistanceDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated intrinsicResistanceDTO,
      * or with status {@code 400 (Bad Request)} if the intrinsicResistanceDTO is not valid,
@@ -111,7 +112,7 @@ public class IntrinsicResistanceResource {
     /**
      * {@code PATCH  /intrinsic-resistances/:id} : Partial updates given fields of an existing intrinsicResistance, field will ignore if it is null
      *
-     * @param id the id of the intrinsicResistanceDTO to save.
+     * @param id                     the id of the intrinsicResistanceDTO to save.
      * @param intrinsicResistanceDTO the intrinsicResistanceDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated intrinsicResistanceDTO,
      * or with status {@code 400 (Bad Request)} if the intrinsicResistanceDTO is not valid,

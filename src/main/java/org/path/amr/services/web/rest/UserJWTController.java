@@ -1,6 +1,7 @@
 package org.path.amr.services.web.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.Api;
 import javax.validation.Valid;
 import org.path.amr.services.security.jwt.JWTFilter;
 import org.path.amr.services.security.jwt.TokenProvider;
@@ -12,13 +13,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller to authenticate users.
  */
 @RestController
 @RequestMapping("/api")
+@Api(value = "Account Resource", tags = { "0. Xác thực/ authentication" })
 public class UserJWTController {
 
     private final TokenProvider tokenProvider;

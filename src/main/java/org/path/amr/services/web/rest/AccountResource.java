@@ -1,6 +1,6 @@
 package org.path.amr.services.web.rest;
 
-import java.util.*;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
@@ -11,20 +11,23 @@ import org.path.amr.services.service.MailService;
 import org.path.amr.services.service.UserService;
 import org.path.amr.services.service.dto.AdminUserDTO;
 import org.path.amr.services.service.dto.PasswordChangeDTO;
-import org.path.amr.services.service.dto.UserDTO;
-import org.path.amr.services.web.rest.errors.*;
+import org.path.amr.services.web.rest.errors.EmailAlreadyUsedException;
+import org.path.amr.services.web.rest.errors.InvalidPasswordException;
+import org.path.amr.services.web.rest.errors.LoginAlreadyUsedException;
 import org.path.amr.services.web.rest.vm.KeyAndPasswordVM;
 import org.path.amr.services.web.rest.vm.ManagedUserVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * REST controller for managing the current user's account.
  */
 @RestController
 @RequestMapping("/api")
+@ApiIgnore
 public class AccountResource {
 
     private static class AccountResourceException extends RuntimeException {

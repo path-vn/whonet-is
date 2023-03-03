@@ -9,14 +9,16 @@ public class IsolateDTO {
 
     String requestID;
     String method;
+
     String orgCode;
-    String breakpointType; // Human or Animal
-    String specType; //...
     List<String> guidelines;
     Integer year;
-    OrganismDTO organism;
-    List<TestDTO> test;
     Map<String, String> dataFields;
+    List<TestDTO> test;
+
+    String breakpointType; // Human or Animal
+    String specType; //...
+    OrganismDTO organism;
     String organismCodeTypeOrder;
 
     public IsolateDTO() {

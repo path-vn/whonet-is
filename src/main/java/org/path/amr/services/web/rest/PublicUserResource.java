@@ -1,7 +1,8 @@
 package org.path.amr.services.web.rest;
 
-import java.util.*;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import org.path.amr.services.service.UserService;
 import org.path.amr.services.service.dto.UserDTO;
 import org.slf4j.Logger;
@@ -12,12 +13,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import springfox.documentation.annotations.ApiIgnore;
 import tech.jhipster.web.util.PaginationUtil;
 
 @RestController
 @RequestMapping("/api")
+@ApiIgnore
 public class PublicUserResource {
 
     private static final List<String> ALLOWED_ORDERED_PROPERTIES = Collections.unmodifiableList(
