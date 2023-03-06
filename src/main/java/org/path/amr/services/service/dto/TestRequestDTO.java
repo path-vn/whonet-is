@@ -10,6 +10,9 @@ public class TestRequestDTO {
     @ApiModelProperty(value = "whonet5Code", example = "FOX_ND30")
     String whonet5Code;
 
+    @ApiModelProperty(value = "testID", example = "idToMapTest")
+    String testID;
+
     public String getRawValue() {
         return rawValue;
     }
@@ -24,5 +27,13 @@ public class TestRequestDTO {
 
     public void setWhonet5Code(String whonet5Code) {
         this.whonet5Code = whonet5Code;
+    }
+
+    public String getTestID() {
+        return testID;
+    }
+
+    public void setTestID(String testID) {
+        this.testID = testID;
     }
 }

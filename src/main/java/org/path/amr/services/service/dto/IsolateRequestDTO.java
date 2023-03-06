@@ -18,7 +18,18 @@ public class IsolateRequestDTO {
     @ApiModelProperty(value = "dataFields", example = "{\"BETA_LACT\":\"+\"}")
     Map<String, String> dataFields;
 
+    @ApiModelProperty(value = "requestID", example = "idToMapRequest")
+    String requestID;
+
     List<TestRequestDTO> test;
+
+    public String getRequestID() {
+        return requestID;
+    }
+
+    public void setRequestID(String requestID) {
+        this.requestID = requestID;
+    }
 
     public String getOrgCode() {
         return orgCode;
