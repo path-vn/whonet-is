@@ -82,7 +82,7 @@ public class ExpertInterpretationRulesServiceImpl implements ExpertInterpretatio
 
     @Override
     public void flushAllAndSaveAll(List<ExpertInterpretationRulesDTO> newDTO) {
-        expertInterpretationRulesRepository.deleteAllInBatch();
+        expertInterpretationRulesRepository.deleteNotPATH();
         expertInterpretationRulesRepository.saveAll(
             newDTO.stream().map(expertInterpretationRulesMapper::toEntity).collect(Collectors.toList())
         );

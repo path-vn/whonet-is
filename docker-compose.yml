@@ -1,0 +1,23 @@
+# Use postgres/example user/password credentials
+version: '3.1'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.app1
+    restart: always
+    logging:
+      driver: 'journald'
+    ports:
+      - '8388:8080'
+
+    environment:
+      JAVA_OPTS: -Xmx2g -Xms2g -Dspring.servlet.multipart.max-file-size=50MB -Dspring.servlet.multipart.max-request-size=100MB  -Dspring.datasource.url='jdbc:mysql://host.docker.internal:3306/iis?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true' -Dspring.datasource.username=iis -Dspring.datasource.password=Amr@020. -Dspring.liquibase.enable=true -Dwhonet.thread=10 -Dwhonet.priority='Meningitis,Non-meningitis,Parenteral,Oral,,Urine,Intravenous,Extraintestinal' -Dspring.profiles.active='prod,api-docs'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.app1

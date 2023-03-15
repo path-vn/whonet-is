@@ -7,16 +7,16 @@ import { Translate, translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IRootState } from 'app/shared/reducers';
 
-import { getEntity, updateEntity, createEntity, reset } from './whonet-resource.reducer';
+import { getEntity, updateEntity, createEntity, reset, download } from './whonet-resource.reducer';
 import { IWhonetResource } from 'app/shared/model/whonet-resource.model';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
-import { mapIdList } from 'app/shared/util/entity-utils';
+import { empty, mapIdList } from 'app/shared/util/entity-utils';
 
 export interface IWhonetResourceUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
 export const WhonetResourceUpdate = (props: IWhonetResourceUpdateProps) => {
   const [isNew] = useState(!props.match.params || !props.match.params.id);
-
+  const [data, setData] = useState({});
   const { whonetResourceEntity, loading, updating } = props;
 
   const handleClose = () => {
@@ -47,9 +47,9 @@ export const WhonetResourceUpdate = (props: IWhonetResourceUpdateProps) => {
       };
 
       if (isNew) {
-        props.createEntity(entity);
+        props.createEntity(entity, data);
       } else {
-        props.updateEntity(entity);
+        props.updateEntity(entity, data);
       }
     }
   };
@@ -91,35 +91,89 @@ export const WhonetResourceUpdate = (props: IWhonetResourceUpdateProps) => {
                   value={isNew ? displayDefaultDateTime() : convertDateTimeFromServer(props.whonetResourceEntity.uploadDate)}
                 />
               </AvGroup>
-              <AvGroup>
+              <AvGroup className="padding-top-10">
                 <Label id="antibioticLabel" for="whonet-resource-antibiotic">
                   <Translate contentKey="amrInterpreationApp.whonetResource.antibiotic">Antibiotic</Translate>
                 </Label>
-                <AvField id="whonet-resource-antibiotic" data-cy="antibiotic" type="text" name="antibiotic" />
+                <AvInput
+                  name="a1"
+                  className="inputfileNew"
+                  type="file"
+                  id="file"
+                  onChange={evt => setData({ ...data, antibiotic: evt })}
+                  style={{ float: 'right' }}
+                />
+                {!empty(whonetResourceEntity.antibiotic) && (
+                  <a onClick={() => props.download(whonetResourceEntity.id, 'antibiotic')}>| Download antibiotic</a>
+                )}
               </AvGroup>
-              <AvGroup>
+              <AvGroup className="padding-top-10">
                 <Label id="organismLabel" for="whonet-resource-organism">
                   <Translate contentKey="amrInterpreationApp.whonetResource.organism">Organism</Translate>
                 </Label>
-                <AvField id="whonet-resource-organism" data-cy="organism" type="text" name="organism" />
+                <AvInput
+                  name="o1"
+                  className="inputfileNew"
+                  type="file"
+                  id="file"
+                  onChange={evt => setData({ ...data, organism: evt })}
+                  style={{ float: 'right' }}
+                />
+                {!empty(whonetResourceEntity.organism) && (
+                  <a onClick={() => props.download(whonetResourceEntity.id, 'organism')}>| Download organism</a>
+                )}
               </AvGroup>
-              <AvGroup>
+              <AvGroup className="padding-top-10">
                 <Label id="intrinsicResistanceLabel" for="whonet-resource-intrinsicResistance">
                   <Translate contentKey="amrInterpreationApp.whonetResource.intrinsicResistance">Intrinsic Resistance</Translate>
                 </Label>
-                <AvField id="whonet-resource-intrinsicResistance" data-cy="intrinsicResistance" type="text" name="intrinsicResistance" />
+                <AvInput
+                  name="i1"
+                  className="inputfileNew"
+                  type="file"
+                  id="file"
+                  onChange={evt => setData({ ...data, intrinsicResistance: evt })}
+                  style={{ float: 'right' }}
+                />
+
+                {!empty(whonetResourceEntity.intrinsicResistance) && (
+                  <a onClick={() => props.download(whonetResourceEntity.id, 'intrinsicResistance')}>| Download intrinsicResistance</a>
+                )}
               </AvGroup>
-              <AvGroup>
+              <AvGroup className="padding-top-10">
                 <Label id="expertRuleLabel" for="whonet-resource-expertRule">
                   <Translate contentKey="amrInterpreationApp.whonetResource.expertRule">Expert Rule</Translate>
                 </Label>
-                <AvField id="whonet-resource-expertRule" data-cy="expertRule" type="text" name="expertRule" />
+
+                <AvInput
+                  name="e1"
+                  className="inputfileNew"
+                  type="file"
+                  id="file"
+                  onChange={evt => setData({ ...data, expertRule: evt })}
+                  style={{ float: 'right' }}
+                />
+
+                {!empty(whonetResourceEntity.expertRule) && (
+                  <a onClick={() => props.download(whonetResourceEntity.id, 'expertRule')}>| Download expertRule</a>
+                )}
               </AvGroup>
-              <AvGroup>
+              <AvGroup className="padding-top-10">
                 <Label id="breakPointLabel" for="whonet-resource-breakPoint">
                   <Translate contentKey="amrInterpreationApp.whonetResource.breakPoint">Break Point</Translate>
                 </Label>
-                <AvField id="whonet-resource-breakPoint" data-cy="breakPoint" type="text" name="breakPoint" />
+                <AvInput
+                  name="b1"
+                  className="inputfileNew"
+                  type="file"
+                  id="file"
+                  onChange={evt => setData({ ...data, breakPoint: evt })}
+                  style={{ float: 'right' }}
+                />
+
+                {!empty(whonetResourceEntity.breakPoint) && (
+                  <a onClick={() => props.download(whonetResourceEntity.id, 'breakPoint')}>| Download breakPoint</a>
+                )}
               </AvGroup>
               <Button tag={Link} id="cancel-save" to="/whonet-resource" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
@@ -150,6 +204,7 @@ const mapStateToProps = (storeState: IRootState) => ({
 });
 
 const mapDispatchToProps = {
+  download,
   getEntity,
   updateEntity,
   createEntity,

@@ -1,7 +1,11 @@
 package org.path.amr.services.web.rest;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -14,12 +18,13 @@ import org.path.amr.services.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
@@ -39,6 +44,9 @@ public class WhonetResourceResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    @Value("${application.baseDirectory:#{'/tmp'}}")
+    private String baseDirectory;
+
     private final WhonetResourceService whonetResourceService;
 
     private final WhonetResourceRepository whonetResourceRepository;
@@ -55,32 +63,131 @@ public class WhonetResourceResource {
         this.whonetResourceQueryService = whonetResourceQueryService;
     }
 
+    @GetMapping("/whonet-resources/{id}/{file}")
+    public ResponseEntity<Resource> downloadFile(
+        @PathVariable(value = "id", required = true) final Long id,
+        @PathVariable(value = "file", required = true) final String fileType
+    ) {
+        String filePath = "";
+        switch (fileType) {
+            case "antibiotic":
+                filePath = baseDirectory + "/" + id + "/antibiotic.txt";
+                break;
+            case "organism":
+                filePath = baseDirectory + "/" + id + "/organism.txt";
+                break;
+            case "intrinsicResistance":
+                filePath = baseDirectory + "/" + id + "/intrinsicResistance.txt";
+                break;
+            case "expertRule":
+                filePath = baseDirectory + "/" + id + "/expertRule.txt";
+                break;
+            case "breakPoint":
+                filePath = baseDirectory + "/" + id + "/breakPoint.txt";
+                break;
+        }
+        if (filePath.equals("")) {
+            throw new BadRequestAlertException("Type not supported", "", "");
+        }
+        // Construct the file object from the file path
+        File file = new File(filePath);
+
+        // Check if the file exists
+        if (!file.exists()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Set the content type and disposition headers for the response
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        headers.setContentDisposition(ContentDisposition.builder("attachment").filename(file.getName()).build());
+
+        // Create a Resource object from the file and return it in a ResponseEntity
+        Resource resource = new FileSystemResource(file);
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+    }
+
     /**
      * {@code POST  /whonet-resources} : Create a new whonetResource.
      *
-     * @param whonetResourceDTO the whonetResourceDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new whonetResourceDTO, or with status {@code 400 (Bad Request)} if the whonetResource has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/whonet-resources")
-    public ResponseEntity<WhonetResourceDTO> createWhonetResource(@RequestBody WhonetResourceDTO whonetResourceDTO)
-        throws URISyntaxException {
+    public ResponseEntity<WhonetResourceDTO> createWhonetResource(
+        @RequestParam("antibiotic") Optional<MultipartFile> antibiotic,
+        @RequestParam("organism") Optional<MultipartFile> organism,
+        @RequestParam("intrinsicResistance") Optional<MultipartFile> intrinsicResistance,
+        @RequestParam("expertRule") Optional<MultipartFile> expertRule,
+        @RequestParam("breakPoint") Optional<MultipartFile> breakpoint
+    ) throws URISyntaxException, IllegalAccessException, IOException, InvocationTargetException {
+        if (baseDirectory.isEmpty()) {
+            baseDirectory = "/tmp/";
+        }
+        WhonetResourceDTO whonetResourceDTO = new WhonetResourceDTO();
+        whonetResourceDTO.setUploadDate(ZonedDateTime.now());
+
         log.debug("REST request to save WhonetResource : {}", whonetResourceDTO);
         if (whonetResourceDTO.getId() != null) {
             throw new BadRequestAlertException("A new whonetResource cannot already have an ID", ENTITY_NAME, "idexists");
         }
         WhonetResourceDTO result = whonetResourceService.save(whonetResourceDTO);
+        String dir = String.format("%s/%d/", baseDirectory, result.getId());
+
+        if (antibiotic.isPresent()) {
+            result.setAntibiotic(dir + "antibiotic.txt");
+            saveMultipartFile(antibiotic.get(), result.getAntibiotic());
+        }
+
+        if (organism.isPresent()) {
+            result.setOrganism(dir + "organism.txt");
+            saveMultipartFile(organism.get(), result.getOrganism());
+        }
+        if (intrinsicResistance.isPresent()) {
+            result.setIntrinsicResistance(dir + "intrinsicResistance.txt");
+            saveMultipartFile(intrinsicResistance.get(), result.getIntrinsicResistance());
+        }
+
+        if (breakpoint.isPresent()) {
+            result.setBreakPoint(dir + "breakpoint.txt");
+            saveMultipartFile(breakpoint.get(), result.getBreakPoint());
+        }
+        if (expertRule.isPresent()) {
+            result.setExpertRule(dir + "expertRule.txt");
+            saveMultipartFile(expertRule.get(), result.getExpertRule());
+        }
+
+        result = whonetResourceService.save(result);
+
+        whonetResourceService.doImport(result);
         return ResponseEntity
             .created(new URI("/api/whonet-resources/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
+    private void saveMultipartFile(MultipartFile file, String filePath) {
+        try {
+            // Create a new directory if it does not exist
+            File directory = new File(filePath).getParentFile();
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            File oldFile = new File(filePath);
+            if (oldFile.exists()) {
+                oldFile.delete();
+            }
+            // Save the file to disk
+            file.transferTo(oldFile);
+        } catch (IOException e) {
+            log.error("{} {} ", filePath, e);
+        }
+    }
+
     /**
      * {@code PUT  /whonet-resources/:id} : Updates an existing whonetResource.
      *
      * @param id the id of the whonetResourceDTO to save.
-     * @param whonetResourceDTO the whonetResourceDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated whonetResourceDTO,
      * or with status {@code 400 (Bad Request)} if the whonetResourceDTO is not valid,
      * or with status {@code 500 (Internal Server Error)} if the whonetResourceDTO couldn't be updated.
@@ -89,31 +196,57 @@ public class WhonetResourceResource {
     @PutMapping("/whonet-resources/{id}")
     public ResponseEntity<WhonetResourceDTO> updateWhonetResource(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody WhonetResourceDTO whonetResourceDTO
-    ) throws URISyntaxException {
-        log.debug("REST request to update WhonetResource : {}, {}", id, whonetResourceDTO);
-        if (whonetResourceDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        if (!Objects.equals(id, whonetResourceDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
-        }
+        @RequestParam("antibiotic") Optional<MultipartFile> antibiotic,
+        @RequestParam("organism") Optional<MultipartFile> organism,
+        @RequestParam("intrinsicResistance") Optional<MultipartFile> intrinsicResistance,
+        @RequestParam("expertRule") Optional<MultipartFile> expertRule,
+        @RequestParam("breakPoint") Optional<MultipartFile> breakpoint
+    ) throws URISyntaxException, IllegalAccessException, IOException, InvocationTargetException {
+        log.debug("REST request to update WhonetResource : {}", id);
+        String dir = String.format("%s/%d/", baseDirectory, id);
 
         if (!whonetResourceRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        WhonetResourceDTO result = whonetResourceService.save(whonetResourceDTO);
+        WhonetResourceDTO result = whonetResourceService.findOne(id).get();
+        result.setUploadDate(ZonedDateTime.now());
+
+        if (antibiotic.isPresent()) {
+            result.setAntibiotic(dir + "antibiotic.txt");
+            saveMultipartFile(antibiotic.get(), result.getAntibiotic());
+        }
+
+        if (organism.isPresent()) {
+            result.setOrganism(dir + "organism.txt");
+            saveMultipartFile(organism.get(), result.getOrganism());
+        }
+        if (intrinsicResistance.isPresent()) {
+            result.setIntrinsicResistance(dir + "intrinsicResistance.txt");
+            saveMultipartFile(intrinsicResistance.get(), result.getIntrinsicResistance());
+        }
+
+        if (breakpoint.isPresent()) {
+            result.setBreakPoint(dir + "breakpoint.txt");
+            saveMultipartFile(breakpoint.get(), result.getBreakPoint());
+        }
+        if (expertRule.isPresent()) {
+            result.setExpertRule(dir + "expertRule.txt");
+            saveMultipartFile(expertRule.get(), result.getExpertRule());
+        }
+
+        result = whonetResourceService.save(result);
+        whonetResourceService.doImport(result);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, whonetResourceDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /whonet-resources/:id} : Partial updates given fields of an existing whonetResource, field will ignore if it is null
      *
-     * @param id the id of the whonetResourceDTO to save.
+     * @param id                the id of the whonetResourceDTO to save.
      * @param whonetResourceDTO the whonetResourceDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated whonetResourceDTO,
      * or with status {@code 400 (Bad Request)} if the whonetResourceDTO is not valid,

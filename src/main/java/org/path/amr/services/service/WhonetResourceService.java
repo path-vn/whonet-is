@@ -1,5 +1,8 @@
 package org.path.amr.services.service;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.util.Optional;
 import org.path.amr.services.service.dto.WhonetResourceDTO;
 import org.springframework.data.domain.Page;
@@ -47,4 +50,6 @@ public interface WhonetResourceService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    void doImport(WhonetResourceDTO result) throws IOException, IllegalAccessException, InvocationTargetException;
 }

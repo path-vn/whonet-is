@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { ICrudGetAction, ICrudGetAllAction, ICrudPutAction, ICrudDeleteAction } from 'react-jhipster';
+import { ICrudGetAction, ICrudGetAllAction, ICrudDeleteAction, IPayload, IPayloadResult } from 'react-jhipster';
 
-import { cleanEntity } from 'app/shared/util/entity-utils';
+import { cleanEntity, empty } from 'app/shared/util/entity-utils';
 import { REQUEST, SUCCESS, FAILURE } from 'app/shared/reducers/action-type.util';
 
 import { IWhonetResource, defaultValue } from 'app/shared/model/whonet-resource.model';
@@ -121,19 +121,78 @@ export const getEntity: ICrudGetAction<IWhonetResource> = id => {
   };
 };
 
-export const createEntity: ICrudPutAction<IWhonetResource> = entity => async dispatch => {
+export const download = (id, type) => {
+  axios
+    .get(`${apiUrl}/${id}/${type}`, {
+      responseType: 'blob',
+    })
+    .then(response => {
+      return new Blob([response.data]);
+    })
+    .then(data => {
+      const url = window.URL.createObjectURL(data);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      // the filename you want
+      a.download = `${type}.txt`;
+      document.body.appendChild(a);
+      a.click();
+    });
+};
+
+export declare type ICrudPutAction<T> = (data?: T, files?: any) => IPayload<T> | IPayloadResult<T>;
+
+export const hasFile = f => {
+  return !empty(f) && !empty(f.antibiotic.target.files[0]) && !empty(f.antibiotic.target) && f.antibiotic.target.files.length === 1;
+};
+export const createEntity: ICrudPutAction<IWhonetResource> = (entity, data) => async dispatch => {
+  const formData = new FormData();
+  if (!empty(data.antibiotic)) {
+    formData.append('antibiotic', data.antibiotic.target.files[0], data.antibiotic.target.files[0].name);
+  }
+  if (!empty(data.organism)) {
+    formData.append('organism', data.organism.target.files[0], data.organism.target.files[0].name);
+  }
+  if (!empty(data.intrinsicResistance)) {
+    formData.append('intrinsicResistance', data.intrinsicResistance.target.files[0], data.intrinsicResistance.target.files[0].name);
+  }
+  if (!empty(data.breakPoint)) {
+    formData.append('breakPoint', data.breakPoint.target.files[0], data.breakPoint.target.files[0].name);
+  }
+  if (!empty(data.expertRule)) {
+    formData.append('expertRule', data.expertRule.target.files[0], data.expertRule.target.files[0].name);
+  }
+  formData.append('idx', '1');
   const result = await dispatch({
     type: ACTION_TYPES.CREATE_WHONETRESOURCE,
-    payload: axios.post(apiUrl, cleanEntity(entity)),
+    payload: axios.post(apiUrl, formData),
   });
   dispatch(getEntities());
   return result;
 };
 
-export const updateEntity: ICrudPutAction<IWhonetResource> = entity => async dispatch => {
+export const updateEntity: ICrudPutAction<IWhonetResource> = (entity, data) => async dispatch => {
+  const formData = new FormData();
+  if (!empty(data.antibiotic)) {
+    formData.append('antibiotic', data.antibiotic.target.files[0], data.antibiotic.target.files[0].name);
+  }
+  if (!empty(data.organism)) {
+    formData.append('organism', data.organism.target.files[0], data.organism.target.files[0].name);
+  }
+  if (!empty(data.intrinsicResistance)) {
+    formData.append('intrinsicResistance', data.intrinsicResistance.target.files[0], data.intrinsicResistance.target.files[0].name);
+  }
+  if (!empty(data.breakPoint)) {
+    formData.append('breakPoint', data.breakPoint.target.files[0], data.breakPoint.target.files[0].name);
+  }
+  if (!empty(data.expertRule)) {
+    formData.append('expertRule', data.expertRule.target.files[0], data.expertRule.target.files[0].name);
+  }
+  formData.append('idx', '1');
   const result = await dispatch({
     type: ACTION_TYPES.UPDATE_WHONETRESOURCE,
-    payload: axios.put(`${apiUrl}/${entity.id}`, cleanEntity(entity)),
+    payload: axios.put(`${apiUrl}/${entity.id}`, formData),
   });
   return result;
 };
