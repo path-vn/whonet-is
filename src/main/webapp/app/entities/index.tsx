@@ -10,6 +10,7 @@ import Antibiotic from './antibiotic';
 import Organism from './organism';
 import ExpertInterpretationRules from './expert-interpretation-rules';
 import Execute from './execute';
+import WhonetResource from './whonet-resource';
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 const Routes = ({ match }) => (
@@ -22,6 +23,7 @@ const Routes = ({ match }) => (
       <ErrorBoundaryRoute path={`${match.url}organism`} component={Organism} />
       <ErrorBoundaryRoute path={`${match.url}expert-interpretation-rules`} component={ExpertInterpretationRules} />
       <ErrorBoundaryRoute path={`${match.url}execute`} component={Execute} />
+      <ErrorBoundaryRoute path={`${match.url}whonet-resource`} component={WhonetResource} />
       {/* jhipster-needle-add-route-path - JHipster will add routes here */}
     </Switch>
   </div>

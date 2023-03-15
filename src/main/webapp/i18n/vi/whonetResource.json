@@ -1,0 +1,29 @@
+{
+  "amrInterpreationApp": {
+    "whonetResource": {
+      "home": {
+        "title": "Whonet Resources",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Whonet Resource",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Whonet Resource",
+        "notFound": "No Whonet Resources found"
+      },
+      "created": "Một Whonet Resource mới được tạo với định danh {{ param }}",
+      "updated": "Một Whonet Resource cập nhật với định danh {{ param }}",
+      "deleted": "Một Whonet Resource đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Whonet Resource {{ id }}?"
+      },
+      "detail": {
+        "title": "Whonet Resource"
+      },
+      "id": "ID",
+      "uploadDate": "Upload Date",
+      "antibiotic": "Antibiotic",
+      "organism": "Organism",
+      "intrinsicResistance": "Intrinsic Resistance",
+      "expertRule": "Expert Rule",
+      "breakPoint": "Break Point"
+    }
+  }
+}

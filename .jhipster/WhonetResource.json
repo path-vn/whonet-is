@@ -1,0 +1,40 @@
+{
+  "name": "WhonetResource",
+  "fields": [
+    {
+      "fieldName": "uploadDate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "antibiotic",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "organism",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "intrinsicResistance",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "expertRule",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "breakPoint",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [],
+  "entityTableName": "whonet_resource",
+  "dto": "mapstruct",
+  "pagination": "pagination",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": true,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["AMRInterpreation"],
+  "changelogDate": "20230315090629"
+}

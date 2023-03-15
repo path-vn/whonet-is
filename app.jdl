@@ -38,7 +38,7 @@ application {
     withAdminUi true
   }
 
-  entities Antibiotic, Breakpoint, Execute, ExpertInterpretationRules, IntrinsicResistance, Organism
+  entities *
 }
 
 entity Antibiotic {
@@ -165,7 +165,17 @@ entity Organism {
   family String
   genus String
 }
-dto Antibiotic, Breakpoint, Execute, ExpertInterpretationRules, IntrinsicResistance, Organism with mapstruct
-paginate Antibiotic, Breakpoint, Execute, ExpertInterpretationRules, IntrinsicResistance, Organism with pagination
-service Antibiotic, Breakpoint, Execute, ExpertInterpretationRules, IntrinsicResistance, Organism with serviceImpl
-filter Antibiotic, Breakpoint, Execute, ExpertInterpretationRules, IntrinsicResistance, Organism
+
+entity WhonetResource {
+    uploadDate ZonedDateTime
+    antibiotic String
+    organism String
+    intrinsicResistance String
+    expertRule String
+    breakPoint String
+}
+
+dto WhonetResource, Antibiotic, Breakpoint, Execute, ExpertInterpretationRules, IntrinsicResistance, Organism with mapstruct
+paginate WhonetResource, Antibiotic, Breakpoint, Execute, ExpertInterpretationRules, IntrinsicResistance, Organism with pagination
+service WhonetResource, Antibiotic, Breakpoint, Execute, ExpertInterpretationRules, IntrinsicResistance, Organism with serviceImpl
+filter WhonetResource, Antibiotic, Breakpoint, Execute, ExpertInterpretationRules, IntrinsicResistance, Organism
