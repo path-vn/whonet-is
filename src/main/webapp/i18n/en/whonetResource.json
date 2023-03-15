@@ -1,0 +1,29 @@
+{
+  "amrInterpreationApp": {
+    "whonetResource": {
+      "home": {
+        "title": "Whonet Resources",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Whonet Resource",
+        "createOrEditLabel": "Create or edit a Whonet Resource",
+        "notFound": "No Whonet Resources found"
+      },
+      "created": "A new Whonet Resource is created with identifier {{ param }}",
+      "updated": "A Whonet Resource is updated with identifier {{ param }}",
+      "deleted": "A Whonet Resource is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Whonet Resource {{ id }}?"
+      },
+      "detail": {
+        "title": "Whonet Resource"
+      },
+      "id": "ID",
+      "uploadDate": "Upload Date",
+      "antibiotic": "Antibiotic",
+      "organism": "Organism",
+      "intrinsicResistance": "Intrinsic Resistance",
+      "expertRule": "Expert Rule",
+      "breakPoint": "Break Point"
+    }
+  }
+}

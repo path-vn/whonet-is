@@ -36,6 +36,10 @@ import expertInterpretationRules, {
 import execute, {
   ExecuteState
 } from 'app/entities/execute/execute.reducer';
+// prettier-ignore
+import whonetResource, {
+  WhonetResourceState
+} from 'app/entities/whonet-resource/whonet-resource.reducer';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 export interface IRootState {
@@ -55,6 +59,7 @@ export interface IRootState {
   readonly organism: OrganismState;
   readonly expertInterpretationRules: ExpertInterpretationRulesState;
   readonly execute: ExecuteState;
+  readonly whonetResource: WhonetResourceState;
   /* jhipster-needle-add-reducer-type - JHipster will add reducer type here */
   readonly loadingBar: any;
 }
@@ -76,6 +81,7 @@ const rootReducer = combineReducers<IRootState>({
   organism,
   expertInterpretationRules,
   execute,
+  whonetResource,
   /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
   loadingBar,
 });
