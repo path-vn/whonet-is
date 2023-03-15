@@ -1,11 +1,11 @@
-id;upload_date;antibiotic;organism;intrinsic_resistance;expert_rule;break_point
-1;2023-03-14T11:57:03;Buckinghamshire;Utah array;indexing;Tunisia help-desk Market;Quetzal
-2;2023-03-15T00:53:34;haptic;Multi-tiered up;Shirt quantifying multi-byte;web-readiness;Metal deposit Corporate
-3;2023-03-15T07:56:03;reboot B2C;innovate Senior Harbor;users;parse Refined driver;whiteboard program Tasty
-4;2023-03-14T13:02:15;Automotive;bypassing;disintermediate value-added;Regional partnerships auxiliary;Cotton reboot initiatives
-5;2023-03-14T13:40:39;Virginia array Investment;leverage;Implementation;Incredible Fresh;Borders Wooden deposit
-6;2023-03-14T22:55:35;Bike override Streamlined;Quality Account;North Baby;Plastic back;transparent Unbranded
-7;2023-03-14T13:38:14;Accounts;deposit;Pants Iowa mobile;Loan deliverables;Cross-group revolutionary
-8;2023-03-14T19:28:37;Estates;Creative cross-platform Optimized;encompassing Wooden Garden;Saint B2B;Gateway Shoes
-9;2023-03-14T13:56:27;Somoni Rubber;intermediate Buckinghamshire;deposit;Internal Fantastic Causeway;strategic engage
-10;2023-03-14T14:18:45;Handmade Clothing;Borders Rubber multi-byte;Alaska Dynamic;Missouri;Small Handmade
+id;upload_date;antibiotic;organism;intrinsic_resistance;expert_rule;break_point;status;imported_date;message
+1;2023-03-14T11:57:03;Buckinghamshire;Utah array;indexing;Tunisia help-desk Market;Quetzal;responsive Concrete;2023-03-14T13:05:14;../fake-data/blob/hipster.txt
+2;2023-03-15T08:21:56;hacking Africa;multi-byte;web-readiness;Metal deposit Corporate;Buckinghamshire;B2C Administrator;2023-03-14T23:42:50;../fake-data/blob/hipster.txt
+3;2023-03-14T11:15:55;brand;Grocery e-enable;HTTP Refined calculating;Roads Shoes Steel;Fresh Rubber utilisation;stable whiteboard Tasty;2023-03-15T08:33:41;../fake-data/blob/hipster.txt
+4;2023-03-14T12:44:51;Cotton reboot initiatives;Intranet e-services calculate;grey;Automotive;Colorado Music;indexing Brand Granite;2023-03-14T17:41:29;../fake-data/blob/hipster.txt
+5;2023-03-15T06:57:35;deliverables pink lime;Tenge Salvador Pitcairn;paradigms payment Plastic;Health transparent Unbranded;Tasty Direct Up-sized;leading-edge;2023-03-15T02:04:16;../fake-data/blob/hipster.txt
+6;2023-03-15T05:01:30;Integration Loan deliverables;Cross-group revolutionary;Sleek tolerance;Squares Ball Forward;SDD Tasty;sexy;2023-03-14T20:29:08;../fake-data/blob/hipster.txt
+7;2023-03-14T15:00:39;B2B;Gateway Shoes;payment primary West;intermediate Buckinghamshire;deposit;Internal Fantastic Causeway;2023-03-14T17:19:07;../fake-data/blob/hipster.txt
+8;2023-03-15T00:19:46;index;haptic synthesize Books;firewall Account;multi-byte;Alaska Dynamic;Missouri;2023-03-14T21:23:10;../fake-data/blob/hipster.txt
+9;2023-03-15T07:16:32;Computer;Salad Fish mint;Buckinghamshire Practical Gold;Analyst Assurance;bottom-line;Virginia withdrawal;2023-03-15T06:39:09;../fake-data/blob/hipster.txt
+10;2023-03-15T03:14:47;Wooden back-end infomediaries;lime;Plastic world-class e-commerce;fuchsia Group up;parallelism encoding input;connect Automated Berkshire;2023-03-15T05:12:39;../fake-data/blob/hipster.txt

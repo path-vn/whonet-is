@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Row, Col } from 'reactstrap';
-import { Translate, TextFormat } from 'react-jhipster';
+import { Translate, byteSize, TextFormat } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
@@ -70,6 +70,28 @@ export const WhonetResourceDetail = (props: IWhonetResourceDetailProps) => {
             </span>
           </dt>
           <dd>{whonetResourceEntity.breakPoint}</dd>
+          <dt>
+            <span id="status">
+              <Translate contentKey="amrInterpreationApp.whonetResource.status">Status</Translate>
+            </span>
+          </dt>
+          <dd>{whonetResourceEntity.status}</dd>
+          <dt>
+            <span id="importedDate">
+              <Translate contentKey="amrInterpreationApp.whonetResource.importedDate">Imported Date</Translate>
+            </span>
+          </dt>
+          <dd>
+            {whonetResourceEntity.importedDate ? (
+              <TextFormat value={whonetResourceEntity.importedDate} type="date" format={APP_DATE_FORMAT} />
+            ) : null}
+          </dd>
+          <dt>
+            <span id="message">
+              <Translate contentKey="amrInterpreationApp.whonetResource.message">Message</Translate>
+            </span>
+          </dt>
+          <dd>{whonetResourceEntity.message}</dd>
         </dl>
         <Button tag={Link} to="/whonet-resource" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

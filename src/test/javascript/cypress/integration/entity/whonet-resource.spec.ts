@@ -106,6 +106,18 @@ describe('WhonetResource e2e test', () => {
       .invoke('val')
       .should('match', new RegExp('Savings auxiliary payment'));
 
+    cy.get(`[data-cy="status"]`)
+      .type('Peso Facilitator repurpose', { force: true })
+      .invoke('val')
+      .should('match', new RegExp('Peso Facilitator repurpose'));
+
+    cy.get(`[data-cy="importedDate"]`).type('2023-03-14T22:50').invoke('val').should('equal', '2023-03-14T22:50');
+
+    cy.get(`[data-cy="message"]`)
+      .type('../fake-data/blob/hipster.txt', { force: true })
+      .invoke('val')
+      .should('match', new RegExp('../fake-data/blob/hipster.txt'));
+
     cy.get(entityCreateSaveButtonSelector).click({ force: true });
     cy.scrollTo('top', { ensureScrollable: false });
     cy.get(entityCreateSaveButtonSelector).should('not.exist');

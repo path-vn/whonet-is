@@ -28,6 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Base64Utils;
 
 /**
  * Integration tests for the {@link WhonetResourceResource} REST controller.
@@ -55,6 +56,16 @@ class WhonetResourceResourceIT {
 
     private static final String DEFAULT_BREAK_POINT = "AAAAAAAAAA";
     private static final String UPDATED_BREAK_POINT = "BBBBBBBBBB";
+
+    private static final String DEFAULT_STATUS = "AAAAAAAAAA";
+    private static final String UPDATED_STATUS = "BBBBBBBBBB";
+
+    private static final ZonedDateTime DEFAULT_IMPORTED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_IMPORTED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final ZonedDateTime SMALLER_IMPORTED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(-1L), ZoneOffset.UTC);
+
+    private static final String DEFAULT_MESSAGE = "AAAAAAAAAA";
+    private static final String UPDATED_MESSAGE = "BBBBBBBBBB";
 
     private static final String ENTITY_API_URL = "/api/whonet-resources";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -89,7 +100,10 @@ class WhonetResourceResourceIT {
             .organism(DEFAULT_ORGANISM)
             .intrinsicResistance(DEFAULT_INTRINSIC_RESISTANCE)
             .expertRule(DEFAULT_EXPERT_RULE)
-            .breakPoint(DEFAULT_BREAK_POINT);
+            .breakPoint(DEFAULT_BREAK_POINT)
+            .status(DEFAULT_STATUS)
+            .importedDate(DEFAULT_IMPORTED_DATE)
+            .message(DEFAULT_MESSAGE);
         return whonetResource;
     }
 
@@ -106,7 +120,10 @@ class WhonetResourceResourceIT {
             .organism(UPDATED_ORGANISM)
             .intrinsicResistance(UPDATED_INTRINSIC_RESISTANCE)
             .expertRule(UPDATED_EXPERT_RULE)
-            .breakPoint(UPDATED_BREAK_POINT);
+            .breakPoint(UPDATED_BREAK_POINT)
+            .status(UPDATED_STATUS)
+            .importedDate(UPDATED_IMPORTED_DATE)
+            .message(UPDATED_MESSAGE);
         return whonetResource;
     }
 
@@ -137,6 +154,9 @@ class WhonetResourceResourceIT {
         assertThat(testWhonetResource.getIntrinsicResistance()).isEqualTo(DEFAULT_INTRINSIC_RESISTANCE);
         assertThat(testWhonetResource.getExpertRule()).isEqualTo(DEFAULT_EXPERT_RULE);
         assertThat(testWhonetResource.getBreakPoint()).isEqualTo(DEFAULT_BREAK_POINT);
+        assertThat(testWhonetResource.getStatus()).isEqualTo(DEFAULT_STATUS);
+        assertThat(testWhonetResource.getImportedDate()).isEqualTo(DEFAULT_IMPORTED_DATE);
+        assertThat(testWhonetResource.getMessage()).isEqualTo(DEFAULT_MESSAGE);
     }
 
     @Test
@@ -177,7 +197,10 @@ class WhonetResourceResourceIT {
             .andExpect(jsonPath("$.[*].organism").value(hasItem(DEFAULT_ORGANISM)))
             .andExpect(jsonPath("$.[*].intrinsicResistance").value(hasItem(DEFAULT_INTRINSIC_RESISTANCE)))
             .andExpect(jsonPath("$.[*].expertRule").value(hasItem(DEFAULT_EXPERT_RULE)))
-            .andExpect(jsonPath("$.[*].breakPoint").value(hasItem(DEFAULT_BREAK_POINT)));
+            .andExpect(jsonPath("$.[*].breakPoint").value(hasItem(DEFAULT_BREAK_POINT)))
+            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS)))
+            .andExpect(jsonPath("$.[*].importedDate").value(hasItem(sameInstant(DEFAULT_IMPORTED_DATE))))
+            .andExpect(jsonPath("$.[*].message").value(hasItem(DEFAULT_MESSAGE.toString())));
     }
 
     @Test
@@ -197,7 +220,10 @@ class WhonetResourceResourceIT {
             .andExpect(jsonPath("$.organism").value(DEFAULT_ORGANISM))
             .andExpect(jsonPath("$.intrinsicResistance").value(DEFAULT_INTRINSIC_RESISTANCE))
             .andExpect(jsonPath("$.expertRule").value(DEFAULT_EXPERT_RULE))
-            .andExpect(jsonPath("$.breakPoint").value(DEFAULT_BREAK_POINT));
+            .andExpect(jsonPath("$.breakPoint").value(DEFAULT_BREAK_POINT))
+            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS))
+            .andExpect(jsonPath("$.importedDate").value(sameInstant(DEFAULT_IMPORTED_DATE)))
+            .andExpect(jsonPath("$.message").value(DEFAULT_MESSAGE.toString()));
     }
 
     @Test
@@ -712,6 +738,188 @@ class WhonetResourceResourceIT {
         defaultWhonetResourceShouldBeFound("breakPoint.doesNotContain=" + UPDATED_BREAK_POINT);
     }
 
+    @Test
+    @Transactional
+    void getAllWhonetResourcesByStatusIsEqualToSomething() throws Exception {
+        // Initialize the database
+        whonetResourceRepository.saveAndFlush(whonetResource);
+
+        // Get all the whonetResourceList where status equals to DEFAULT_STATUS
+        defaultWhonetResourceShouldBeFound("status.equals=" + DEFAULT_STATUS);
+
+        // Get all the whonetResourceList where status equals to UPDATED_STATUS
+        defaultWhonetResourceShouldNotBeFound("status.equals=" + UPDATED_STATUS);
+    }
+
+    @Test
+    @Transactional
+    void getAllWhonetResourcesByStatusIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        whonetResourceRepository.saveAndFlush(whonetResource);
+
+        // Get all the whonetResourceList where status not equals to DEFAULT_STATUS
+        defaultWhonetResourceShouldNotBeFound("status.notEquals=" + DEFAULT_STATUS);
+
+        // Get all the whonetResourceList where status not equals to UPDATED_STATUS
+        defaultWhonetResourceShouldBeFound("status.notEquals=" + UPDATED_STATUS);
+    }
+
+    @Test
+    @Transactional
+    void getAllWhonetResourcesByStatusIsInShouldWork() throws Exception {
+        // Initialize the database
+        whonetResourceRepository.saveAndFlush(whonetResource);
+
+        // Get all the whonetResourceList where status in DEFAULT_STATUS or UPDATED_STATUS
+        defaultWhonetResourceShouldBeFound("status.in=" + DEFAULT_STATUS + "," + UPDATED_STATUS);
+
+        // Get all the whonetResourceList where status equals to UPDATED_STATUS
+        defaultWhonetResourceShouldNotBeFound("status.in=" + UPDATED_STATUS);
+    }
+
+    @Test
+    @Transactional
+    void getAllWhonetResourcesByStatusIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        whonetResourceRepository.saveAndFlush(whonetResource);
+
+        // Get all the whonetResourceList where status is not null
+        defaultWhonetResourceShouldBeFound("status.specified=true");
+
+        // Get all the whonetResourceList where status is null
+        defaultWhonetResourceShouldNotBeFound("status.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllWhonetResourcesByStatusContainsSomething() throws Exception {
+        // Initialize the database
+        whonetResourceRepository.saveAndFlush(whonetResource);
+
+        // Get all the whonetResourceList where status contains DEFAULT_STATUS
+        defaultWhonetResourceShouldBeFound("status.contains=" + DEFAULT_STATUS);
+
+        // Get all the whonetResourceList where status contains UPDATED_STATUS
+        defaultWhonetResourceShouldNotBeFound("status.contains=" + UPDATED_STATUS);
+    }
+
+    @Test
+    @Transactional
+    void getAllWhonetResourcesByStatusNotContainsSomething() throws Exception {
+        // Initialize the database
+        whonetResourceRepository.saveAndFlush(whonetResource);
+
+        // Get all the whonetResourceList where status does not contain DEFAULT_STATUS
+        defaultWhonetResourceShouldNotBeFound("status.doesNotContain=" + DEFAULT_STATUS);
+
+        // Get all the whonetResourceList where status does not contain UPDATED_STATUS
+        defaultWhonetResourceShouldBeFound("status.doesNotContain=" + UPDATED_STATUS);
+    }
+
+    @Test
+    @Transactional
+    void getAllWhonetResourcesByImportedDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        whonetResourceRepository.saveAndFlush(whonetResource);
+
+        // Get all the whonetResourceList where importedDate equals to DEFAULT_IMPORTED_DATE
+        defaultWhonetResourceShouldBeFound("importedDate.equals=" + DEFAULT_IMPORTED_DATE);
+
+        // Get all the whonetResourceList where importedDate equals to UPDATED_IMPORTED_DATE
+        defaultWhonetResourceShouldNotBeFound("importedDate.equals=" + UPDATED_IMPORTED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllWhonetResourcesByImportedDateIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        whonetResourceRepository.saveAndFlush(whonetResource);
+
+        // Get all the whonetResourceList where importedDate not equals to DEFAULT_IMPORTED_DATE
+        defaultWhonetResourceShouldNotBeFound("importedDate.notEquals=" + DEFAULT_IMPORTED_DATE);
+
+        // Get all the whonetResourceList where importedDate not equals to UPDATED_IMPORTED_DATE
+        defaultWhonetResourceShouldBeFound("importedDate.notEquals=" + UPDATED_IMPORTED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllWhonetResourcesByImportedDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        whonetResourceRepository.saveAndFlush(whonetResource);
+
+        // Get all the whonetResourceList where importedDate in DEFAULT_IMPORTED_DATE or UPDATED_IMPORTED_DATE
+        defaultWhonetResourceShouldBeFound("importedDate.in=" + DEFAULT_IMPORTED_DATE + "," + UPDATED_IMPORTED_DATE);
+
+        // Get all the whonetResourceList where importedDate equals to UPDATED_IMPORTED_DATE
+        defaultWhonetResourceShouldNotBeFound("importedDate.in=" + UPDATED_IMPORTED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllWhonetResourcesByImportedDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        whonetResourceRepository.saveAndFlush(whonetResource);
+
+        // Get all the whonetResourceList where importedDate is not null
+        defaultWhonetResourceShouldBeFound("importedDate.specified=true");
+
+        // Get all the whonetResourceList where importedDate is null
+        defaultWhonetResourceShouldNotBeFound("importedDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllWhonetResourcesByImportedDateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        whonetResourceRepository.saveAndFlush(whonetResource);
+
+        // Get all the whonetResourceList where importedDate is greater than or equal to DEFAULT_IMPORTED_DATE
+        defaultWhonetResourceShouldBeFound("importedDate.greaterThanOrEqual=" + DEFAULT_IMPORTED_DATE);
+
+        // Get all the whonetResourceList where importedDate is greater than or equal to UPDATED_IMPORTED_DATE
+        defaultWhonetResourceShouldNotBeFound("importedDate.greaterThanOrEqual=" + UPDATED_IMPORTED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllWhonetResourcesByImportedDateIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        whonetResourceRepository.saveAndFlush(whonetResource);
+
+        // Get all the whonetResourceList where importedDate is less than or equal to DEFAULT_IMPORTED_DATE
+        defaultWhonetResourceShouldBeFound("importedDate.lessThanOrEqual=" + DEFAULT_IMPORTED_DATE);
+
+        // Get all the whonetResourceList where importedDate is less than or equal to SMALLER_IMPORTED_DATE
+        defaultWhonetResourceShouldNotBeFound("importedDate.lessThanOrEqual=" + SMALLER_IMPORTED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllWhonetResourcesByImportedDateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        whonetResourceRepository.saveAndFlush(whonetResource);
+
+        // Get all the whonetResourceList where importedDate is less than DEFAULT_IMPORTED_DATE
+        defaultWhonetResourceShouldNotBeFound("importedDate.lessThan=" + DEFAULT_IMPORTED_DATE);
+
+        // Get all the whonetResourceList where importedDate is less than UPDATED_IMPORTED_DATE
+        defaultWhonetResourceShouldBeFound("importedDate.lessThan=" + UPDATED_IMPORTED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllWhonetResourcesByImportedDateIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        whonetResourceRepository.saveAndFlush(whonetResource);
+
+        // Get all the whonetResourceList where importedDate is greater than DEFAULT_IMPORTED_DATE
+        defaultWhonetResourceShouldNotBeFound("importedDate.greaterThan=" + DEFAULT_IMPORTED_DATE);
+
+        // Get all the whonetResourceList where importedDate is greater than SMALLER_IMPORTED_DATE
+        defaultWhonetResourceShouldBeFound("importedDate.greaterThan=" + SMALLER_IMPORTED_DATE);
+    }
+
     /**
      * Executes the search, and checks that the default entity is returned.
      */
@@ -726,7 +934,10 @@ class WhonetResourceResourceIT {
             .andExpect(jsonPath("$.[*].organism").value(hasItem(DEFAULT_ORGANISM)))
             .andExpect(jsonPath("$.[*].intrinsicResistance").value(hasItem(DEFAULT_INTRINSIC_RESISTANCE)))
             .andExpect(jsonPath("$.[*].expertRule").value(hasItem(DEFAULT_EXPERT_RULE)))
-            .andExpect(jsonPath("$.[*].breakPoint").value(hasItem(DEFAULT_BREAK_POINT)));
+            .andExpect(jsonPath("$.[*].breakPoint").value(hasItem(DEFAULT_BREAK_POINT)))
+            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS)))
+            .andExpect(jsonPath("$.[*].importedDate").value(hasItem(sameInstant(DEFAULT_IMPORTED_DATE))))
+            .andExpect(jsonPath("$.[*].message").value(hasItem(DEFAULT_MESSAGE.toString())));
 
         // Check, that the count call also returns 1
         restWhonetResourceMockMvc
@@ -780,7 +991,10 @@ class WhonetResourceResourceIT {
             .organism(UPDATED_ORGANISM)
             .intrinsicResistance(UPDATED_INTRINSIC_RESISTANCE)
             .expertRule(UPDATED_EXPERT_RULE)
-            .breakPoint(UPDATED_BREAK_POINT);
+            .breakPoint(UPDATED_BREAK_POINT)
+            .status(UPDATED_STATUS)
+            .importedDate(UPDATED_IMPORTED_DATE)
+            .message(UPDATED_MESSAGE);
         WhonetResourceDTO whonetResourceDTO = whonetResourceMapper.toDto(updatedWhonetResource);
 
         restWhonetResourceMockMvc
@@ -801,6 +1015,9 @@ class WhonetResourceResourceIT {
         assertThat(testWhonetResource.getIntrinsicResistance()).isEqualTo(UPDATED_INTRINSIC_RESISTANCE);
         assertThat(testWhonetResource.getExpertRule()).isEqualTo(UPDATED_EXPERT_RULE);
         assertThat(testWhonetResource.getBreakPoint()).isEqualTo(UPDATED_BREAK_POINT);
+        assertThat(testWhonetResource.getStatus()).isEqualTo(UPDATED_STATUS);
+        assertThat(testWhonetResource.getImportedDate()).isEqualTo(UPDATED_IMPORTED_DATE);
+        assertThat(testWhonetResource.getMessage()).isEqualTo(UPDATED_MESSAGE);
     }
 
     @Test
@@ -886,7 +1103,9 @@ class WhonetResourceResourceIT {
             .uploadDate(UPDATED_UPLOAD_DATE)
             .organism(UPDATED_ORGANISM)
             .intrinsicResistance(UPDATED_INTRINSIC_RESISTANCE)
-            .expertRule(UPDATED_EXPERT_RULE);
+            .expertRule(UPDATED_EXPERT_RULE)
+            .status(UPDATED_STATUS)
+            .importedDate(UPDATED_IMPORTED_DATE);
 
         restWhonetResourceMockMvc
             .perform(
@@ -906,6 +1125,9 @@ class WhonetResourceResourceIT {
         assertThat(testWhonetResource.getIntrinsicResistance()).isEqualTo(UPDATED_INTRINSIC_RESISTANCE);
         assertThat(testWhonetResource.getExpertRule()).isEqualTo(UPDATED_EXPERT_RULE);
         assertThat(testWhonetResource.getBreakPoint()).isEqualTo(DEFAULT_BREAK_POINT);
+        assertThat(testWhonetResource.getStatus()).isEqualTo(UPDATED_STATUS);
+        assertThat(testWhonetResource.getImportedDate()).isEqualTo(UPDATED_IMPORTED_DATE);
+        assertThat(testWhonetResource.getMessage()).isEqualTo(DEFAULT_MESSAGE);
     }
 
     @Test
@@ -926,7 +1148,10 @@ class WhonetResourceResourceIT {
             .organism(UPDATED_ORGANISM)
             .intrinsicResistance(UPDATED_INTRINSIC_RESISTANCE)
             .expertRule(UPDATED_EXPERT_RULE)
-            .breakPoint(UPDATED_BREAK_POINT);
+            .breakPoint(UPDATED_BREAK_POINT)
+            .status(UPDATED_STATUS)
+            .importedDate(UPDATED_IMPORTED_DATE)
+            .message(UPDATED_MESSAGE);
 
         restWhonetResourceMockMvc
             .perform(
@@ -946,6 +1171,9 @@ class WhonetResourceResourceIT {
         assertThat(testWhonetResource.getIntrinsicResistance()).isEqualTo(UPDATED_INTRINSIC_RESISTANCE);
         assertThat(testWhonetResource.getExpertRule()).isEqualTo(UPDATED_EXPERT_RULE);
         assertThat(testWhonetResource.getBreakPoint()).isEqualTo(UPDATED_BREAK_POINT);
+        assertThat(testWhonetResource.getStatus()).isEqualTo(UPDATED_STATUS);
+        assertThat(testWhonetResource.getImportedDate()).isEqualTo(UPDATED_IMPORTED_DATE);
+        assertThat(testWhonetResource.getMessage()).isEqualTo(UPDATED_MESSAGE);
     }
 
     @Test

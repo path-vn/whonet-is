@@ -38,6 +38,16 @@ public class WhonetResource implements Serializable {
     @Column(name = "break_point")
     private String breakPoint;
 
+    @Column(name = "status")
+    private String status;
+
+    @Column(name = "imported_date")
+    private ZonedDateTime importedDate;
+
+    @Lob
+    @Column(name = "message")
+    private String message;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
@@ -130,6 +140,45 @@ public class WhonetResource implements Serializable {
         this.breakPoint = breakPoint;
     }
 
+    public String getStatus() {
+        return this.status;
+    }
+
+    public WhonetResource status(String status) {
+        this.status = status;
+        return this;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public ZonedDateTime getImportedDate() {
+        return this.importedDate;
+    }
+
+    public WhonetResource importedDate(ZonedDateTime importedDate) {
+        this.importedDate = importedDate;
+        return this;
+    }
+
+    public void setImportedDate(ZonedDateTime importedDate) {
+        this.importedDate = importedDate;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public WhonetResource message(String message) {
+        this.message = message;
+        return this;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -160,6 +209,9 @@ public class WhonetResource implements Serializable {
             ", intrinsicResistance='" + getIntrinsicResistance() + "'" +
             ", expertRule='" + getExpertRule() + "'" +
             ", breakPoint='" + getBreakPoint() + "'" +
+            ", status='" + getStatus() + "'" +
+            ", importedDate='" + getImportedDate() + "'" +
+            ", message='" + getMessage() + "'" +
             "}";
     }
 }

@@ -105,6 +105,12 @@ public class WhonetResourceQueryService extends QueryService<WhonetResource> {
             if (criteria.getBreakPoint() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getBreakPoint(), WhonetResource_.breakPoint));
             }
+            if (criteria.getStatus() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getStatus(), WhonetResource_.status));
+            }
+            if (criteria.getImportedDate() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getImportedDate(), WhonetResource_.importedDate));
+            }
         }
         return specification;
     }

@@ -8,6 +8,9 @@ export interface IWhonetResource {
   intrinsicResistance?: string | null;
   expertRule?: string | null;
   breakPoint?: string | null;
+  status?: string | null;
+  importedDate?: string | null;
+  message?: string | null;
 }
 
 export const defaultValue: Readonly<IWhonetResource> = {};

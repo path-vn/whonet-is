@@ -39,6 +39,10 @@ public class WhonetResourceCriteria implements Serializable, Criteria {
 
     private StringFilter breakPoint;
 
+    private StringFilter status;
+
+    private ZonedDateTimeFilter importedDate;
+
     public WhonetResourceCriteria() {}
 
     public WhonetResourceCriteria(WhonetResourceCriteria other) {
@@ -49,6 +53,8 @@ public class WhonetResourceCriteria implements Serializable, Criteria {
         this.intrinsicResistance = other.intrinsicResistance == null ? null : other.intrinsicResistance.copy();
         this.expertRule = other.expertRule == null ? null : other.expertRule.copy();
         this.breakPoint = other.breakPoint == null ? null : other.breakPoint.copy();
+        this.status = other.status == null ? null : other.status.copy();
+        this.importedDate = other.importedDate == null ? null : other.importedDate.copy();
     }
 
     @Override
@@ -161,6 +167,36 @@ public class WhonetResourceCriteria implements Serializable, Criteria {
         this.breakPoint = breakPoint;
     }
 
+    public StringFilter getStatus() {
+        return status;
+    }
+
+    public StringFilter status() {
+        if (status == null) {
+            status = new StringFilter();
+        }
+        return status;
+    }
+
+    public void setStatus(StringFilter status) {
+        this.status = status;
+    }
+
+    public ZonedDateTimeFilter getImportedDate() {
+        return importedDate;
+    }
+
+    public ZonedDateTimeFilter importedDate() {
+        if (importedDate == null) {
+            importedDate = new ZonedDateTimeFilter();
+        }
+        return importedDate;
+    }
+
+    public void setImportedDate(ZonedDateTimeFilter importedDate) {
+        this.importedDate = importedDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -177,13 +213,15 @@ public class WhonetResourceCriteria implements Serializable, Criteria {
             Objects.equals(organism, that.organism) &&
             Objects.equals(intrinsicResistance, that.intrinsicResistance) &&
             Objects.equals(expertRule, that.expertRule) &&
-            Objects.equals(breakPoint, that.breakPoint)
+            Objects.equals(breakPoint, that.breakPoint) &&
+            Objects.equals(status, that.status) &&
+            Objects.equals(importedDate, that.importedDate)
         );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, uploadDate, antibiotic, organism, intrinsicResistance, expertRule, breakPoint);
+        return Objects.hash(id, uploadDate, antibiotic, organism, intrinsicResistance, expertRule, breakPoint, status, importedDate);
     }
 
     // prettier-ignore
@@ -197,6 +235,8 @@ public class WhonetResourceCriteria implements Serializable, Criteria {
             (intrinsicResistance != null ? "intrinsicResistance=" + intrinsicResistance + ", " : "") +
             (expertRule != null ? "expertRule=" + expertRule + ", " : "") +
             (breakPoint != null ? "breakPoint=" + breakPoint + ", " : "") +
+            (status != null ? "status=" + status + ", " : "") +
+            (importedDate != null ? "importedDate=" + importedDate + ", " : "") +
             "}";
     }
 }

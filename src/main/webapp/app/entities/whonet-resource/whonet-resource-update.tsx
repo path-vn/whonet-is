@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Row, Col, Label } from 'reactstrap';
 import { AvFeedback, AvForm, AvGroup, AvInput, AvField } from 'availity-reactstrap-validation';
-import { Translate, translate } from 'react-jhipster';
+import { setFileData, byteSize, Translate, translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IRootState } from 'app/shared/reducers';
 
-import { getEntity, updateEntity, createEntity, reset } from './whonet-resource.reducer';
+import { getEntity, updateEntity, createEntity, setBlob, reset } from './whonet-resource.reducer';
 import { IWhonetResource } from 'app/shared/model/whonet-resource.model';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { mapIdList } from 'app/shared/util/entity-utils';
@@ -18,6 +18,8 @@ export const WhonetResourceUpdate = (props: IWhonetResourceUpdateProps) => {
   const [isNew] = useState(!props.match.params || !props.match.params.id);
 
   const { whonetResourceEntity, loading, updating } = props;
+
+  const { message } = whonetResourceEntity;
 
   const handleClose = () => {
     props.history.push('/whonet-resource' + props.location.search);
@@ -31,6 +33,14 @@ export const WhonetResourceUpdate = (props: IWhonetResourceUpdateProps) => {
     }
   }, []);
 
+  const onBlobChange = (isAnImage, name) => event => {
+    setFileData(event, (contentType, data) => props.setBlob(name, data, contentType), isAnImage);
+  };
+
+  const clearBlob = name => () => {
+    props.setBlob(name, undefined, undefined);
+  };
+
   useEffect(() => {
     if (props.updateSuccess) {
       handleClose();
@@ -39,6 +49,7 @@ export const WhonetResourceUpdate = (props: IWhonetResourceUpdateProps) => {
 
   const saveEntity = (event, errors, values) => {
     values.uploadDate = convertDateTimeToServer(values.uploadDate);
+    values.importedDate = convertDateTimeToServer(values.importedDate);
 
     if (errors.length === 0) {
       const entity = {
@@ -121,6 +132,32 @@ export const WhonetResourceUpdate = (props: IWhonetResourceUpdateProps) => {
                 </Label>
                 <AvField id="whonet-resource-breakPoint" data-cy="breakPoint" type="text" name="breakPoint" />
               </AvGroup>
+              <AvGroup>
+                <Label id="statusLabel" for="whonet-resource-status">
+                  <Translate contentKey="amrInterpreationApp.whonetResource.status">Status</Translate>
+                </Label>
+                <AvField id="whonet-resource-status" data-cy="status" type="text" name="status" />
+              </AvGroup>
+              <AvGroup>
+                <Label id="importedDateLabel" for="whonet-resource-importedDate">
+                  <Translate contentKey="amrInterpreationApp.whonetResource.importedDate">Imported Date</Translate>
+                </Label>
+                <AvInput
+                  id="whonet-resource-importedDate"
+                  data-cy="importedDate"
+                  type="datetime-local"
+                  className="form-control"
+                  name="importedDate"
+                  placeholder={'YYYY-MM-DD HH:mm'}
+                  value={isNew ? displayDefaultDateTime() : convertDateTimeFromServer(props.whonetResourceEntity.importedDate)}
+                />
+              </AvGroup>
+              <AvGroup>
+                <Label id="messageLabel" for="whonet-resource-message">
+                  <Translate contentKey="amrInterpreationApp.whonetResource.message">Message</Translate>
+                </Label>
+                <AvInput id="whonet-resource-message" data-cy="message" type="textarea" name="message" />
+              </AvGroup>
               <Button tag={Link} id="cancel-save" to="/whonet-resource" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;
@@ -152,6 +189,7 @@ const mapStateToProps = (storeState: IRootState) => ({
 const mapDispatchToProps = {
   getEntity,
   updateEntity,
+  setBlob,
   createEntity,
   reset,
 };
