@@ -23,7 +23,10 @@
       "organism": "Organism",
       "intrinsicResistance": "Intrinsic Resistance",
       "expertRule": "Expert Rule",
-      "breakPoint": "Break Point"
+      "breakPoint": "Break Point",
+      "status": "Status",
+      "importedDate": "Imported Date",
+      "message": "Message"
     }
   }
 }

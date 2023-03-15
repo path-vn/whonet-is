@@ -173,6 +173,9 @@ entity WhonetResource {
     intrinsicResistance String
     expertRule String
     breakPoint String
+    status String
+    importedDate ZonedDateTime
+    message TextBlob
 }
 
 dto WhonetResource, Antibiotic, Breakpoint, Execute, ExpertInterpretationRules, IntrinsicResistance, Organism with mapstruct

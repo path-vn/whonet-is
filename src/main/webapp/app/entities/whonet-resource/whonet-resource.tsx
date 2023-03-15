@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Col, Row, Table } from 'reactstrap';
-import { Translate, TextFormat, getSortState, IPaginationBaseState, JhiPagination, JhiItemCount } from 'react-jhipster';
+import { byteSize, Translate, TextFormat, getSortState, IPaginationBaseState, JhiPagination, JhiItemCount } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
@@ -116,6 +116,16 @@ export const WhonetResource = (props: IWhonetResourceProps) => {
                   <Translate contentKey="amrInterpreationApp.whonetResource.breakPoint">Break Point</Translate>{' '}
                   <FontAwesomeIcon icon="sort" />
                 </th>
+                <th className="hand" onClick={sort('status')}>
+                  <Translate contentKey="amrInterpreationApp.whonetResource.status">Status</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('importedDate')}>
+                  <Translate contentKey="amrInterpreationApp.whonetResource.importedDate">Imported Date</Translate>{' '}
+                  <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('message')}>
+                  <Translate contentKey="amrInterpreationApp.whonetResource.message">Message</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
                 <th />
               </tr>
             </thead>
@@ -138,6 +148,13 @@ export const WhonetResource = (props: IWhonetResourceProps) => {
                   <td>{whonetResource.intrinsicResistance}</td>
                   <td>{whonetResource.expertRule}</td>
                   <td>{whonetResource.breakPoint}</td>
+                  <td>{whonetResource.status}</td>
+                  <td>
+                    {whonetResource.importedDate ? (
+                      <TextFormat type="date" value={whonetResource.importedDate} format={APP_DATE_FORMAT} />
+                    ) : null}
+                  </td>
+                  <td>{whonetResource.message}</td>
                   <td className="text-right">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`${match.url}/${whonetResource.id}`} color="info" size="sm" data-cy="entityDetailsButton">

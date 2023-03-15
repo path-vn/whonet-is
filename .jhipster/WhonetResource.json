@@ -24,6 +24,19 @@
     {
       "fieldName": "breakPoint",
       "fieldType": "String"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "importedDate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "message",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "text"
     }
   ],
   "relationships": [],

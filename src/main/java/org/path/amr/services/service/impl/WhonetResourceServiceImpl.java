@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,6 +73,13 @@ public class WhonetResourceServiceImpl implements WhonetResourceService {
         return whonetResourceMapper.toDto(whonetResource);
     }
 
+    public WhonetResourceDTO saveAndFlush(WhonetResourceDTO whonetResourceDTO) {
+        log.debug("Request to save WhonetResource : {}", whonetResourceDTO);
+        WhonetResource whonetResource = whonetResourceMapper.toEntity(whonetResourceDTO);
+        whonetResource = whonetResourceRepository.saveAndFlush(whonetResource);
+        return whonetResourceMapper.toDto(whonetResource);
+    }
+
     @Override
     public Optional<WhonetResourceDTO> partialUpdate(WhonetResourceDTO whonetResourceDTO) {
         log.debug("Request to partially update WhonetResource : {}", whonetResourceDTO);
@@ -110,22 +118,54 @@ public class WhonetResourceServiceImpl implements WhonetResourceService {
 
     @Override
     @Transactional
-    public void doImport(WhonetResourceDTO result) throws IOException, IllegalAccessException, InvocationTargetException {
-        if (result.getAntibiotic() != null && !result.getAntibiotic().isEmpty()) {
-            importAntibiotic(new URL("file://" + result.getAntibiotic()));
+    @Async
+    public void doImport(WhonetResourceDTO result) {
+        if (result.getStatus() != null && result.getStatus().equals("running")) {
+            return;
         }
-        if (result.getOrganism() != null && !result.getOrganism().isEmpty()) {
-            importOrganism(new URL("file://" + result.getOrganism()));
+        result.setStatus("running");
+        result.setMessage("");
+        result = this.saveAndFlush(result);
+        try {
+            if (result.getAntibiotic() != null && !result.getAntibiotic().isEmpty()) {
+                importAntibiotic(new URL("file://" + result.getAntibiotic()));
+                result.setMessage(result.getMessage() + " antibiotic");
+                result = this.saveAndFlush(result);
+            }
+            if (result.getOrganism() != null && !result.getOrganism().isEmpty()) {
+                importOrganism(new URL("file://" + result.getOrganism()));
+                result.setMessage(result.getMessage() + " organism");
+                result = this.saveAndFlush(result);
+            }
+            if (result.getIntrinsicResistance() != null && !result.getIntrinsicResistance().isEmpty()) {
+                importIntrinsicResistance(new URL("file://" + result.getIntrinsicResistance()));
+
+                result.setMessage(result.getMessage() + " intrinsicResistance");
+                result = this.saveAndFlush(result);
+            }
+            if (result.getBreakPoint() != null && !result.getBreakPoint().isEmpty()) {
+                importBreakpoints(new URL("file://" + result.getBreakPoint()));
+
+                result.setMessage(result.getMessage() + " breakPoint");
+                result = this.saveAndFlush(result);
+            }
+            if (result.getExpertRule() != null && !result.getExpertRule().isEmpty()) {
+                importExpertRules(new URL("file://" + result.getExpertRule()));
+
+                result.setMessage(result.getMessage() + " expertRule");
+                result = this.saveAndFlush(result);
+            }
+        } catch (Exception e) {
+            result.setStatus("Error");
+            result.setMessage(result.getMessage() + " " + e.getMessage());
+            this.saveAndFlush(result);
+            return;
         }
-        if (result.getIntrinsicResistance() != null && !result.getIntrinsicResistance().isEmpty()) {
-            importIntrinsicResistance(new URL("file://" + result.getIntrinsicResistance()));
-        }
-        if (result.getBreakPoint() != null && !result.getBreakPoint().isEmpty()) {
-            importBreakpoints(new URL("file://" + result.getBreakPoint()));
-        }
-        if (result.getExpertRule() != null && !result.getExpertRule().isEmpty()) {
-            importExpertRules(new URL("file://" + result.getExpertRule()));
-        }
+
+        result.setMessage(result.getMessage() + " done");
+        result.setImportedDate(ZonedDateTime.now());
+        result.setStatus("done");
+        this.saveAndFlush(result);
     }
 
     @JsonIgnore

@@ -3,6 +3,7 @@ package org.path.amr.services.service.dto;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
+import javax.persistence.Lob;
 
 /**
  * A DTO for the {@link org.path.amr.services.domain.WhonetResource} entity.
@@ -22,6 +23,13 @@ public class WhonetResourceDTO implements Serializable {
     private String expertRule;
 
     private String breakPoint;
+
+    private String status;
+
+    private ZonedDateTime importedDate;
+
+    @Lob
+    private String message;
 
     public Long getId() {
         return id;
@@ -79,6 +87,30 @@ public class WhonetResourceDTO implements Serializable {
         this.breakPoint = breakPoint;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public ZonedDateTime getImportedDate() {
+        return importedDate;
+    }
+
+    public void setImportedDate(ZonedDateTime importedDate) {
+        this.importedDate = importedDate;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -111,6 +143,9 @@ public class WhonetResourceDTO implements Serializable {
             ", intrinsicResistance='" + getIntrinsicResistance() + "'" +
             ", expertRule='" + getExpertRule() + "'" +
             ", breakPoint='" + getBreakPoint() + "'" +
+            ", status='" + getStatus() + "'" +
+            ", importedDate='" + getImportedDate() + "'" +
+            ", message='" + getMessage() + "'" +
             "}";
     }
 }
