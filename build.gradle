@@ -139,7 +139,7 @@ liquibase {
             url "jdbc:mysql://localhost:3307/iis"
             username "iis"
             password "Amr@020."
-            changeLogFile "$projectDir/src/main/resources/config/liquibase/master.xml"
+            changeLogFile "config/liquibase/master.xml"
             defaultSchemaName "iis"
             logLevel "debug"
             classpath "$projectDir/src/main/resources/"

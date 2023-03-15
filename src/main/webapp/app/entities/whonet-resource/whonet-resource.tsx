@@ -137,7 +137,6 @@ export const WhonetResource = (props: IWhonetResourceProps) => {
                       {whonetResource.id}
                     </Button>
                   </td>
-                  <td>{whonetResource.id}</td>
                   <td>
                     {whonetResource.uploadDate ? (
                       <TextFormat type="date" value={whonetResource.uploadDate} format={APP_DATE_FORMAT} />
