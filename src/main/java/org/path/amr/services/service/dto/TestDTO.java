@@ -17,6 +17,9 @@ public class TestDTO {
     String expertRuleCode;
     String testID;
 
+    List<InterpretationResult> result;
+    List<OrganismIntrinsicResistanceAntibioticDTO> intrinsicResistance;
+
     public String getTestID() {
         return testID;
     }
@@ -24,9 +27,6 @@ public class TestDTO {
     public void setTestID(String testID) {
         this.testID = testID;
     }
-
-    List<InterpretationResult> result;
-    List<OrganismIntrinsicResistanceAntibioticDTO> intrinsicResistance;
 
     public Double getValue() {
         return value;
