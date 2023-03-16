@@ -1,0 +1,29 @@
+# Use a base image with Java and MySQL already installed
+FROM mysql:8-debian
+
+# Install Java
+RUN apt update && \
+    apt install -y openjdk-11-jdk supervisor procps && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set the environment variables for the MySQL server
+ENV MYSQL_ROOT_PASSWORD=123456
+ENV MYSQL_DATABASE=iis
+ENV MYSQL_USER=iis
+ENV MYSQL_PASSWORD=iis@123
+
+# Copy the SQL file to the container
+COPY iis.sql /docker-entrypoint-initdb.d/
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+ARG JAR_FILE=build/libs/amr-interpreation-0.0.1-SNAPSHOT.jar
+COPY ${JAR_FILE} app.jar
+COPY iis.sql /usr/src/app/iis.sql
+COPY entrypoint.sh /entrypoint-web.sh
+RUN chmod +x /entrypoint-web.sh
+
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
+# Expose port 8080 for the app to listen on
+EXPOSE 3006 8080
+
