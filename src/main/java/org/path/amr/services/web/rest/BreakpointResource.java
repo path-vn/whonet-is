@@ -153,7 +153,7 @@ public class BreakpointResource {
      */
     @GetMapping("/breakpoints")
     public ResponseEntity<List<BreakpointDTO>> getAllBreakpoints(BreakpointCriteria criteria, Pageable pageable) {
-        log.debug("REST request to get Breakpoints by criteria: {}", criteria);
+        log.debug("REST request to get Breakpoints by criteria: {} {} {}", criteria, pageable.getPageSize(), pageable.getPageNumber());
         Page<BreakpointDTO> page = breakpointQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());

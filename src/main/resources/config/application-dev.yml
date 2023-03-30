@@ -17,7 +17,7 @@ logging:
   level:
     ROOT: DEBUG
     tech.jhipster: DEBUG
-    org.hibernate.SQL: INFO
+    org.hibernate.SQL: OFF
     org.path.amr.services: DEBUG
 
 spring:
@@ -69,9 +69,6 @@ spring:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
   thymeleaf:
     cache: false
-  data:
-    rest:
-      max-page-size: 2000000
 
 server:
   port: 8080
