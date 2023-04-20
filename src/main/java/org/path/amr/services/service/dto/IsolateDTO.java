@@ -17,12 +17,31 @@ public class IsolateDTO {
     List<TestDTO> test;
 
     String breakpointType; // Human or Animal
+    String host;
+    String breakpointTypeOrder;
     String specType; //...
     OrganismDTO organism;
+
     String organismCodeTypeOrder;
 
     public IsolateDTO() {
         dataFields = new HashMap<>();
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getBreakpointTypeOrder() {
+        return breakpointTypeOrder;
+    }
+
+    public void setBreakpointTypeOrder(String breakpointTypeOrder) {
+        this.breakpointTypeOrder = breakpointTypeOrder;
     }
 
     public String getRequestID() {

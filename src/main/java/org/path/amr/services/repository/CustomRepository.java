@@ -3,6 +3,7 @@ package org.path.amr.services.repository;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import javax.persistence.Cacheable;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -272,6 +273,8 @@ public class CustomRepository {
         String orgCode,
         String whonetTest,
         String breakpointType,
+        String host,
+        String breakpointTypeOrder,
         String status,
         int year,
         List<String> guidelines,
@@ -323,20 +326,14 @@ public class CustomRepository {
             " AND o.TAXONOMIC_STATUS = :status " +
             " AND b.GUIDELINES in (:guideline)" +
             " AND b.YEAR = :year  " +
-            " AND b.BREAKPOINT_TYPE = :breakpointType  " +
-            " AND b.BREAKPOINT_TYPE = :breakpointType  " +
+            (host.equals("") ? "" : " AND b.HOST = :host  ") +
+            (breakpointType.toLowerCase(Locale.ROOT).equals("human") ? " AND b.BREAKPOINT_TYPE = 'Human' " : " ") +
             " AND b.WHONET_TEST = :whonetTest " +
             "ORDER BY o.WHONET_ORG_CODE ASC,  " +
             " b.GUIDELINES ASC,  " +
             " b.YEAR ASC,  " +
             " b.TEST_METHOD ASC,  " +
-            " (  " +
-            "  CASE b.BREAKPOINT_TYPE  " +
-            "  WHEN 'Human' THEN 1  " +
-            "  WHEN 'Animal' THEN 2  " +
-            "  WHEN 'ECOFF' THEN 3  " +
-            "  END  " +
-            " ) ASC,  " +
+            buildBreakpointTypeOrder(breakpointType, "b", breakpointTypeOrder) +
             " b.HOST ASC, (  " +
             // "SEROVAR_GROUP,WHONET_ORG_CODE,SPECIES_GROUP,GENUS_CODE,GENUS_GROUP,FAMILY_CODE,SUBKINGDOM_CODE,ANAEROBE+SUBKINGDOM_CODE,ANAEROBE"
             buildSQL(organismCodeType, "b") +
@@ -349,8 +346,10 @@ public class CustomRepository {
         qry.setParameter("orgCode", orgCode);
         qry.setParameter("status", status);
         qry.setParameter("whonetTest", whonetTest);
-        qry.setParameter("breakpointType", breakpointType);
         qry.setParameter("guideline", guidelines);
+        if (!host.equals("")) {
+            qry.setParameter("host", host);
+        }
         List<OrganismBreakPointDTO> result = new ArrayList<>();
         List<Object[]> rows = qry.getResultList();
         for (int i = 0; i < rows.size(); i++) {
@@ -361,6 +360,56 @@ public class CustomRepository {
             result.add(breakPoint);
         }
         return result;
+    }
+
+    private String buildBreakpointTypeOrder(String breakpointType, String table, String breakpointTypeOrder) {
+        if (breakpointType != null && !breakpointTypeOrder.equals("")) {
+            return breakpointTypeOrderCustom(table, breakpointTypeOrder);
+        }
+        switch (breakpointType.toLowerCase(Locale.ROOT)) {
+            case "human":
+                return (
+                    " (  " +
+                    "  CASE b.BREAKPOINT_TYPE  " +
+                    "  WHEN 'Human' THEN 1  " +
+                    "  WHEN 'Animal' THEN 2  " +
+                    "  WHEN 'ECOFF' THEN 3  " +
+                    "  END  " +
+                    " ) ASC,  "
+                );
+            case "animal":
+                return (
+                    " (  " +
+                    "  CASE b.BREAKPOINT_TYPE  " +
+                    "  WHEN 'Animal' THEN 1  " +
+                    "  WHEN 'Human' THEN 2  " +
+                    "  WHEN 'ECOFF' THEN 3  " +
+                    "  END  " +
+                    " ) ASC,  "
+                );
+            case "ECOFF":
+                return (
+                    " (  " +
+                    "  CASE b.BREAKPOINT_TYPE  " +
+                    "  WHEN 'ECOFF' THEN 1  " +
+                    "  WHEN 'Human' THEN 2  " +
+                    "  WHEN 'Animal' THEN 3  " +
+                    "  END  " +
+                    " ) ASC,  "
+                );
+        }
+        return "";
+    }
+
+    private String breakpointTypeOrderCustom(String table, String breakpointTypeOrder) {
+        StringBuilder rs = new StringBuilder(String.format("CASE %s.BREAKPOINT_TYPE  ", table));
+        String[] order = breakpointTypeOrder.split(",");
+        int i = 0;
+        for (i = 0; i < order.length; i++) {
+            rs.append(String.format(" WHEN '%s' THEN %d ", order[i], i + 1));
+        }
+        rs.append(String.format("ELSE %d END,", i + 1));
+        return rs.toString();
     }
 
     public List<String> findAntibioticGroupByField(String field) {

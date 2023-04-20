@@ -37,6 +37,8 @@ class InterpretationServiceTest {
             "spn",
             "MFX_NM",
             "Human",
+            "",
+            "",
             null,
             null,
             null

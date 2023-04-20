@@ -8,6 +8,8 @@ public class InterpretationResult {
     String breaking = "";
     String organismCodeType = "";
     String method;
+    String host;
+    String breakPointType;
 
     int priority;
 
@@ -16,6 +18,22 @@ public class InterpretationResult {
     }
 
     public InterpretationResult() {}
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getBreakPointType() {
+        return breakPointType;
+    }
+
+    public void setBreakPointType(String breakPointType) {
+        this.breakPointType = breakPointType;
+    }
 
     public Short getIsQuestionMark() {
         return isQuestionMark;

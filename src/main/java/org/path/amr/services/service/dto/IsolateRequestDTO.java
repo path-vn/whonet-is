@@ -21,7 +21,46 @@ public class IsolateRequestDTO {
     @ApiModelProperty(value = "requestID", example = "idToMapRequest")
     String requestID;
 
+    @ApiModelProperty(value = "breakpointType", example = "Human")
+    String breakpointType; // Human or Animal
+
+    @ApiModelProperty(value = "host", example = "Human")
+    String host;
+
+    @ApiModelProperty(value = "host", example = "Human,Animal,ECOFF")
+    String breakpointTypeOrder;
+
+    @ApiModelProperty(
+        value = "organismCodeTypeOrder",
+        example = "SEROVAR_GROUP,WHONET_ORG_CODE,SPECIES_GROUP,GENUS_CODE,GENUS_GROUP,FAMILY_CODE,SUBKINGDOM_CODE,ANAEROBE+SUBKINGDOM_CODE,ANAEROBE"
+    )
+    String organismCodeTypeOrder;
+
     List<TestRequestDTO> test;
+
+    public String getHost() {
+        return host;
+    }
+
+    public String getOrganismCodeTypeOrder() {
+        return organismCodeTypeOrder;
+    }
+
+    public void setOrganismCodeTypeOrder(String organismCodeTypeOrder) {
+        this.organismCodeTypeOrder = organismCodeTypeOrder;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getBreakpointTypeOrder() {
+        return breakpointTypeOrder;
+    }
+
+    public void setBreakpointTypeOrder(String breakpointTypeOrder) {
+        this.breakpointTypeOrder = breakpointTypeOrder;
+    }
 
     public String getRequestID() {
         return requestID;
@@ -69,5 +108,13 @@ public class IsolateRequestDTO {
 
     public void setTest(List<TestRequestDTO> test) {
         this.test = test;
+    }
+
+    public String getBreakpointType() {
+        return breakpointType;
+    }
+
+    public void setBreakpointType(String breakpointType) {
+        this.breakpointType = breakpointType;
     }
 }

@@ -121,9 +121,11 @@ public class InterpretationService {
         String orgCode,
         String whonet5Test,
         String breakpointType,
+        String host,
+        String breakPointTypeOrder,
         Integer year,
         List<String> guidelines,
-        String organismCodeType
+        String organismCodeTypeOrder
     ) {
         if (year == null) {
             year = whonetConfiguration.getYear();
@@ -133,19 +135,21 @@ public class InterpretationService {
             guidelines.addAll(Arrays.asList(whonetConfiguration.getClsi().split(",")));
         }
         String key = String.format(
-            "%s%s%s%s%s%s",
+            "%s%s%s%s%s%s%s%s",
             orgCode,
             whonet5Test,
             breakpointType,
+            host,
+            breakPointTypeOrder,
             year.toString(),
             String.join(",", guidelines),
-            organismCodeType
+            organismCodeTypeOrder
         );
         if (cacheBreakpoints.containsKey(key)) {
             return cacheBreakpoints.get(key);
         }
         List<OrganismBreakPointDTO> newPoint = customRepository
-            .getBreakPoints(orgCode, whonet5Test, breakpointType, "C", year, guidelines, organismCodeType)
+            .getBreakPoints(orgCode, whonet5Test, breakpointType, host, breakPointTypeOrder, "C", year, guidelines, organismCodeTypeOrder)
             .stream()
             .peek(
                 ob -> {
@@ -154,7 +158,9 @@ public class InterpretationService {
                 }
             )
             .collect(Collectors.toList());
-        cacheBreakpoints.put(key, newPoint);
+        if (newPoint.size() > 0) {
+            cacheBreakpoints.put(key, newPoint);
+        }
         return newPoint;
     }
 
@@ -231,6 +237,8 @@ public class InterpretationService {
      */
     public void execute(IsolateDTO isolate) {
         isolate.setBreakpointType(isolate.getBreakpointType() == null ? DEFAULT_BREAKPOINT_TYPE : isolate.getBreakpointType());
+        isolate.setHost(isolate.getHost() == null ? "" : isolate.getHost());
+        isolate.setBreakpointTypeOrder(isolate.getBreakpointTypeOrder() == null ? "" : isolate.getBreakpointTypeOrder());
         Optional<Organism> organism = organismRepository.findFirstByWhonetOrgCode(isolate.getOrgCode());
         organism.ifPresent(value -> isolate.setOrganism(organismMapper.toDto(value)));
         for (int i = 0; i < isolate.getTest().size(); i++) {
@@ -304,6 +312,8 @@ public class InterpretationService {
                     isolate.getOrgCode(),
                     test.getWhonet5Code().replaceAll("_NE", "_NM").replaceAll("\\.", "_"),
                     isolate.getBreakpointType(),
+                    isolate.getHost(),
+                    isolate.getBreakpointTypeOrder(),
                     isolate.getYear(),
                     isolate.getGuidelines(),
                     isolate.getOrganismCodeTypeOrder()
@@ -577,6 +587,8 @@ public class InterpretationService {
         boolean hasBreakpoint = notEmpty(g.getI()) || notEmpty(g.getR()) || notEmpty(g.getS());
         result.setSpecType(g.getSiteOfInfection());
         result.setMethod(method);
+        result.setHost(g.getHost());
+        result.setBreakPointType(g.getBreakpointType());
         if (hasBreakpoint) {
             Double R = notEmpty(g.getR()) ? Double.valueOf(g.getR()) : null;
             Double S = notEmpty(g.getS()) ? Double.valueOf(g.getS()) : null;
