@@ -28,6 +28,7 @@ export const Home = (props: IHomeProp) => {
       ? [
           {
             orgCode: 'eco',
+            host: 'Human',
             guidelines: ['CLSI'],
             year: 2021,
             dataFields: { BETA_LACT: '-' },
