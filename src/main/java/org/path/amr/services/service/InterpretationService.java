@@ -331,7 +331,7 @@ public class InterpretationService {
                     isolate.getYear(),
                     isolate.getGuidelines(),
                     isolate.getOrganismCodeTypeOrder(),
-                    Arrays.asList(specType.split(","))
+                    specType.trim().equals("") ? new ArrayList<>() : Arrays.asList(specType.split(","))
                 );
 
                 for (int ob = 0; ob < organismBreakPointDTOList.size(); ob++) {

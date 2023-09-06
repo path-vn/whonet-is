@@ -282,6 +282,7 @@ public class CustomRepository {
         String organismCodeType,
         List<String> specTypes
     ) {
+        String siteOfInfection = specTypes.size() == 0 ? "" : " AND b.site_of_infection in (:specTypes) ";
         String sql =
             " SELECT o.ID as organismID, b.ID breakpointID " +
             " FROM organisms o  " +
@@ -327,7 +328,7 @@ public class CustomRepository {
             "WHERE o.WHONET_ORG_CODE = :orgCode " +
             " AND o.TAXONOMIC_STATUS = :status " +
             " AND b.GUIDELINES in (:guideline)" +
-            " AND b.site_of_infection in (:specTypes) " +
+            siteOfInfection +
             " AND b.YEAR = :year  " +
             (host.equals("") ? "" : " AND b.HOST = :host  ") +
             (breakpointType.toLowerCase(Locale.ROOT).equals("human") ? " AND b.BREAKPOINT_TYPE = 'Human' " : " ") +
@@ -350,7 +351,9 @@ public class CustomRepository {
         qry.setParameter("status", status);
         qry.setParameter("whonetTest", whonetTest);
         qry.setParameter("guideline", guidelines);
-        qry.setParameter("specTypes", specTypes.stream().map(String::trim).collect(Collectors.toList()));
+        if (specTypes.size() > 0) {
+            qry.setParameter("specTypes", specTypes.stream().map(String::trim).collect(Collectors.toList()));
+        }
         if (!host.equals("")) {
             qry.setParameter("host", host);
         }
