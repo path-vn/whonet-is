@@ -4,6 +4,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 import javax.persistence.Cacheable;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -278,7 +279,8 @@ public class CustomRepository {
         String status,
         int year,
         List<String> guidelines,
-        String organismCodeType
+        String organismCodeType,
+        List<String> specTypes
     ) {
         String sql =
             " SELECT o.ID as organismID, b.ID breakpointID " +
@@ -325,6 +327,7 @@ public class CustomRepository {
             "WHERE o.WHONET_ORG_CODE = :orgCode " +
             " AND o.TAXONOMIC_STATUS = :status " +
             " AND b.GUIDELINES in (:guideline)" +
+            " AND b.site_of_infection in (:specTypes) " +
             " AND b.YEAR = :year  " +
             (host.equals("") ? "" : " AND b.HOST = :host  ") +
             (breakpointType.toLowerCase(Locale.ROOT).equals("human") ? " AND b.BREAKPOINT_TYPE = 'Human' " : " ") +
@@ -347,6 +350,7 @@ public class CustomRepository {
         qry.setParameter("status", status);
         qry.setParameter("whonetTest", whonetTest);
         qry.setParameter("guideline", guidelines);
+        qry.setParameter("specTypes", specTypes.stream().map(String::trim).collect(Collectors.toList()));
         if (!host.equals("")) {
             qry.setParameter("host", host);
         }

@@ -19,7 +19,7 @@ public class IsolateDTO {
     String breakpointType; // Human or Animal
     String host;
     String breakpointTypeOrder;
-    String specType; //...
+    String specType; // filter field site_of_infection, comma separated
     OrganismDTO organism;
 
     String organismCodeTypeOrder;
@@ -107,6 +107,9 @@ public class IsolateDTO {
     }
 
     public String getSpecType() {
+        if (specType == null) {
+            return "";
+        }
         return specType;
     }
 

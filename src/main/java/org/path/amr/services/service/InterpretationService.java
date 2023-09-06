@@ -125,7 +125,8 @@ public class InterpretationService {
         String breakPointTypeOrder,
         Integer year,
         List<String> guidelines,
-        String organismCodeTypeOrder
+        String organismCodeTypeOrder,
+        List<String> specTypes
     ) {
         if (year == null) {
             year = whonetConfiguration.getYear();
@@ -143,13 +144,25 @@ public class InterpretationService {
             breakPointTypeOrder,
             year.toString(),
             String.join(",", guidelines),
-            organismCodeTypeOrder
+            organismCodeTypeOrder,
+            String.join(",", specTypes)
         );
         if (cacheBreakpoints.containsKey(key)) {
             return cacheBreakpoints.get(key);
         }
         List<OrganismBreakPointDTO> newPoint = customRepository
-            .getBreakPoints(orgCode, whonet5Test, breakpointType, host, breakPointTypeOrder, "C", year, guidelines, organismCodeTypeOrder)
+            .getBreakPoints(
+                orgCode,
+                whonet5Test,
+                breakpointType,
+                host,
+                breakPointTypeOrder,
+                "C",
+                year,
+                guidelines,
+                organismCodeTypeOrder,
+                new ArrayList<>(specTypes)
+            )
             .stream()
             .peek(
                 ob -> {
@@ -307,6 +320,7 @@ public class InterpretationService {
                 test.setIntrinsicResistance(organismIntrinsicResistanceAntibioticDTOList);
                 test.addResult("R");
             } else {
+                String specType = isolate.getSpecType();
                 // A.2, 3 Apply breakpoints
                 List<OrganismBreakPointDTO> organismBreakPointDTOList = getBreakpoints(
                     isolate.getOrgCode(),
@@ -316,7 +330,8 @@ public class InterpretationService {
                     isolate.getBreakpointTypeOrder(),
                     isolate.getYear(),
                     isolate.getGuidelines(),
-                    isolate.getOrganismCodeTypeOrder()
+                    isolate.getOrganismCodeTypeOrder(),
+                    Arrays.asList(specType.split(","))
                 );
 
                 for (int ob = 0; ob < organismBreakPointDTOList.size(); ob++) {

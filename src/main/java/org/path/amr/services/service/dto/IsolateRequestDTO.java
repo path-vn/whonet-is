@@ -27,6 +27,9 @@ public class IsolateRequestDTO {
     @ApiModelProperty(value = "host", example = "Human")
     String host;
 
+    @ApiModelProperty(value = "specType", example = "Meningitis,Non-meningitis,Parenteral,Oral,,Urine,Intravenous,Extraintestinal")
+    String specType; // filter field site_of_infection, comma separated
+
     @ApiModelProperty(value = "host", example = "Human,Animal,ECOFF")
     String breakpointTypeOrder;
 
@@ -76,6 +79,14 @@ public class IsolateRequestDTO {
 
     public void setOrgCode(String orgCode) {
         this.orgCode = orgCode;
+    }
+
+    public String getSpecType() {
+        return specType;
+    }
+
+    public void setSpecType(String specType) {
+        this.specType = specType;
     }
 
     public List<String> getGuidelines() {

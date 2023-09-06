@@ -5,6 +5,7 @@ import static org.path.amr.services.service.InterpretationService.PATTERN_1;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,8 @@ class InterpretationServiceTest {
             "",
             null,
             null,
-            null
+            null,
+            new ArrayList<>()
         );
         organismBreakPointDTOList.forEach(f -> System.out.println("KKK => " + f.getBreakPointID()));
         assert organismBreakPointDTOList.size() > 0;
