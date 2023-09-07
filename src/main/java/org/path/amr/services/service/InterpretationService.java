@@ -254,6 +254,19 @@ public class InterpretationService {
         isolate.setBreakpointTypeOrder(isolate.getBreakpointTypeOrder() == null ? "" : isolate.getBreakpointTypeOrder());
         Optional<Organism> organism = organismRepository.findFirstByWhonetOrgCode(isolate.getOrgCode());
         organism.ifPresent(value -> isolate.setOrganism(organismMapper.toDto(value)));
+        Map<String, Integer> customSpecTypeSort = new HashMap<>();
+
+        String specType = isolate.getSpecType();
+        List<String> specTypes = specType.trim().equals("") ? new ArrayList<>() : Arrays.asList(specType.split(","));
+
+        customSpecTypeSort = specTypeSort;
+
+        if (specTypes.size() > 0) {
+            for (int i = 0; i < specTypes.size(); i++) {
+                specTypeSort.put(specTypes.get(i), i + 1);
+            }
+        }
+
         for (int i = 0; i < isolate.getTest().size(); i++) {
             TestDTO test = isolate.getTest().get(i);
             String tmpStringValue = test.getRawValue();
@@ -320,7 +333,6 @@ public class InterpretationService {
                 test.setIntrinsicResistance(organismIntrinsicResistanceAntibioticDTOList);
                 test.addResult("R");
             } else {
-                String specType = isolate.getSpecType();
                 // A.2, 3 Apply breakpoints
                 List<OrganismBreakPointDTO> organismBreakPointDTOList = getBreakpoints(
                     isolate.getOrgCode(),
@@ -331,7 +343,7 @@ public class InterpretationService {
                     isolate.getYear(),
                     isolate.getGuidelines(),
                     isolate.getOrganismCodeTypeOrder(),
-                    specType.trim().equals("") ? new ArrayList<>() : Arrays.asList(specType.split(","))
+                    specTypes
                 );
 
                 for (int ob = 0; ob < organismBreakPointDTOList.size(); ob++) {
@@ -349,7 +361,7 @@ public class InterpretationService {
                 }
             }
 
-            test.sort(this.specTypeSort);
+            test.sort(customSpecTypeSort);
         }
         if (isolate.getOrganism() == null) {
             return;

@@ -1,5 +1,5 @@
 # Use a base image with Java and MySQL already installed
-FROM mysql:8-debian
+FROM mysql:8.0-debian
 
 # Install Java
 RUN apt update && \
